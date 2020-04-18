@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <title>管理员登录</title>
+    <title>管理员注册</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -76,6 +76,10 @@
             color: #0eb662;
             margin-right: 10px;
         }
+
+        .wrap-input {
+            margin-top: 15px;
+        }
     </style>
 
 </head>
@@ -107,14 +111,20 @@
 <div class="limiter">
     <div class="container-login">
         <div class="wrap-login">
-            <form class="login-form validate-form" ng-app="myApp" ng-controller="loginCtrl" name="myForm"
+            <form class="login-form validate-form" ng-app="myApp" ng-controller="registerCtrl" name="myForm"
                   ng-submit="submit(user)">
-                <span class="login-form-title">登&nbsp;录</span>
+                <span class="login-form-title">注&nbsp;册</span>
 
-                <div class="wrap-input validate-input" data-validate="请输入用户名">
-                    <span class="label-input">用户名</span>
-                    <input class="input100" type="text" id="name" ng-model="user.name" placeholder="请输入用户名" required>
+                <div class="wrap-input validate-input" data-validate="请输入姓名">
+                    <span class="label-input">姓名</span>
+                    <input class="input100" type="text" id="name" ng-model="user.name" placeholder="请输入姓名" required>
                     <span class="focus-input100" data-symbol="&#xf007;"></span>
+                </div>
+
+                <div class="wrap-input validate-input" data-validate="请输入手机号">
+                    <span class="label-input">手机号</span>
+                    <input class="input100" type="text" ng-model="user.mobile" placeholder="请输入手机号" required>
+                    <span class="focus-input100" data-symbol="&#xf10b;"></span>
                 </div>
 
                 <div class="wrap-input validate-input" data-validate="请输入密码">
@@ -124,7 +134,12 @@
                     <span class="focus-input100" data-symbol="&#xf023;"></span>
                     <input type="hidden" id="action" ng-model="user.action">
                 </div>
-
+                <div class="wrap-input validate-input" data-validate="确认密码">
+                    <span class="label-input">确认密码</span>
+                    <input class="input100" type="password" id="confirm" placeholder="确认密码" required autocomplete="on"
+                           ng-model="user.confirm">
+                    <span class="focus-input100" data-symbol="&#xf023;"></span>
+                </div>
                 <div class="wrap-input validate-input" data-validate="请输入验证码">
                     <span class="label-input">验证码</span>
                     <input class="input100 captchacode-input" type="text" id="captchacode" placeholder="请输入验证码"
@@ -138,12 +153,12 @@
                 <div class="container-login100-form-btn">
                     <div class="wrap-login100-form-btn">
                         <div class="login100-form-bgbtn"></div>
-                        <button type="submit" class="login100-form-btn">登&nbsp; 录</button>
+                        <button type="submit" class="login100-form-btn">注&nbsp; 册</button>
                     </div>
                 </div>
 
                 <div class="flex-col-c p-t-25">
-                    <a href="register.html" class="txt2">立即注册</a>
+                    <a href="login.html" class="txt2">立即登录</a>
                 </div>
             </form>
             <div class="show-msg"></div>
@@ -165,15 +180,20 @@
         };
     }]);
 
-    app.controller('loginCtrl', function ($scope, $http) {
+    app.controller('registerCtrl', function ($scope, $http) {
         $scope.captcha = "captcha/captcha1";
-        $scope.user = {name: '', password: '', captchacode: '', action: 'login'};
+        $scope.user = {name: '', password: '', mobile: '', confirm: '', captchacode: '', action: 'register'};
         $scope.submit = function (user) {
+            if (user.password != user.confirm) {
+                $scope.showMsg("两次输入的密码不正确", false);
+                return;
+            }
+            console.log(user)
             //发送请求
-            $http.post("/user/login", user).then(function successCallback(response) {
+            $http.post("/user/register", user).then(function successCallback(response) {
                 let result = response.data;
                 if (result.success) {
-                    $scope.showMsg(result.msg, result.success, "/index.html")
+                    $scope.showMsg(result.msg, result.success, "/login.html")
                 } else {
                     $scope.getCaptcha();
                     $scope.showMsg(result.msg, result.success)
@@ -183,11 +203,6 @@
                 $scope.showMsg("网络错误", false);
                 console.log(err);
             });
-        };
-
-        this.$onInit = function () {
-            //页面加载时给用户名输入框赋值
-            $scope.user.name = $scope.getCookie("username");
         };
 
         //切换验证码

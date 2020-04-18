@@ -36,4 +36,8 @@ public class DoctorService {
         return doctorMapper.register(doctor);
     }
 
+    @Transactional
+    public Doctor getUserInfo(Doctor doctor) {
+        return doctorMapper.getUserInfo(doctor);
+    }
 }

@@ -67,10 +67,43 @@ public class DoctorController {
     //注册操作
     @ResponseBody
     @RequestMapping("/register")
-    public String register(HttpServletRequest request, HttpServletResponse response) {
+    public String register(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
+        String captcha_code = (String) request.getSession().getAttribute("captcha_code");
+        String captchacode = request.getParameter("captchacode");
+        String action = request.getParameter("action");
 
+        if (CommonTools.isBlank(captchacode) || !(captchacode.equalsIgnoreCase(captcha_code))) {
+            return CommonTools.getReturnMsg("验证码错误", false);
+        }
+        if (CommonTools.isBlank(doctor.getName())) {
+            return CommonTools.getReturnMsg("用户名不能为空", false);
+        }
 
-        return "注册";
+        if (CommonTools.isBlank(doctor.getPassword())) {
+            return CommonTools.getReturnMsg("密码不能为空", false);
+        }
+
+        if ("register".equals(action)) {
+            Doctor d = doctorService.getUserInfo(doctor);
+            if (null != d) {
+                return CommonTools.getReturnMsg("用户已存在", false);
+            }
+            //获得MD5密码并赋值
+            doctor.setPassword(CommonTools.getMD5Encode(doctor.getPassword()));
+            int result = doctorService.register(doctor);
+            if (result == 0) {
+                return CommonTools.getReturnMsg("注册失败", false);
+            } else {
+                // 存到cookie
+                Cookie cookie = new Cookie("username", doctor.getName());
+                cookie.setMaxAge(30 * 24 * 60 * 60);//一月
+                cookie.setPath("/");
+                response.addCookie(cookie);
+
+                return CommonTools.getReturnMsg("注册成功", true);
+            }
+        }
+        return CommonTools.getReturnMsg("无效请求", false);
     }
 
     //退出登录

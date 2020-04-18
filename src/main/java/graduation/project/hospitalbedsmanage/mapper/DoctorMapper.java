@@ -15,4 +15,6 @@ public interface DoctorMapper {
     Doctor login(Doctor doctor);
 
     int register(Doctor doctor);
+
+    Doctor getUserInfo(Doctor doctor);
 }
