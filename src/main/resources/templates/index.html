@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>后台管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet">
+    <script src="/js/angular-1.7.0.min.js"></script>
+    <script src="/js/angular-route-1.7.0.min.js"></script>
+
+    <style type="text/css">
+        body, html {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%
+        }
+
+        .container-left {
+            background: rgb(248, 249, 250);
+            position: absolute;
+            top: 0;
+            left: 0;
+            min-height: 100%;
+            height: auto;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-bar-left-top {
+            background: #0f0f0f;
+            color: #fff;
+            height: 50px;
+            line-height: 50px;
+            padding-left: 30px;
+            font-size: 16px;
+        }
+
+        .nav-left-li {
+            padding: 15px;
+        }
+
+        .nav-left-li a {
+            color: #0f0f0f;
+            font-size: 16px;
+        }
+
+        .nav-pills > li > a:focus {
+            color: #1da1f2;
+            background: rgb(248, 249, 250);
+        }
+
+        .nav-pills > li > a:hover {
+            background: rgb(248, 249, 250);
+        }
+
+        .container-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-height: 100%;
+            height: auto;
+        }
+    </style>
+
+    <script type="text/javascript">
+        angular.module('myApp', ['ngRoute']).controller('HomeController', function ($scope, $route) {
+            $scope.$route = $route;
+        }).controller('hospitalizedControl', function ($scope, $route) {
+            $scope.$route = $route;
+        }).controller('departmentControl', function ($scope, $route) {
+            $scope.$route = $route;
+        }).controller('patientControl', function ($scope, $route) {
+            $scope.$route = $route;
+        }).controller('casehistoryControl', function ($scope, $route) {
+            $scope.$route = $route;
+        }).config(function ($routeProvider) {
+                $routeProvider.when('/home', {
+                    templateUrl: 'home.html',
+                    controller: 'HomeController'
+                }).when('/hospitalized', {
+                    templateUrl: 'hospitalized.html',
+                    controller: 'hospitalizedControl'
+                }).when('/department', {
+                    templateUrl: 'department.html',
+                    controller: 'departmentControl'
+                }).when('/patient', {
+                    templateUrl: 'patient.html',
+                    controller: 'patientControl'
+                }).when('/casehistory', {
+                    templateUrl: 'casehistory.html',
+                    controller: 'casehistoryControl'
+                }).otherwise({
+                    redirectTo: '/home'
+                });
+            });
+    </script>
+
+
+</head>
+
+<body ng-app="myApp" class="ng-scope">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="container-left col-md-2 col-sm-2 col-xs-6">
+            <div class="nav-bar-left-top">系统管理员</div>
+            <ul class="nav nav-pills nav-stacked nav-left-li">
+                <li><a href="#!/home">首页</a></li>
+                <li><a href="#!/hospitalized">住院管理</a></li>
+                <li><a href="#!/department">科室管理</a></li>
+                <li><a href="#!/patient">患者管理</a></li>
+                <li><a href="#!/casehistory">病历管理</a></li>
+            </ul>
+        </div>
+        <div class="container-right col-md-10 col-sm-10 col-xs-6">
+            <div ng-view=""></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+server:
+  port: 80
+  http:
+    encoding:
+      charset: utf8
+    #文件上传限制
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  resources:
+    #静态资源目录
+    static-locations: classpath:/static/, classpath:/templates/
+
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/hospitalmanage?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    #数据库驱动com.mysql.jdbc.Driver'已经被弃用了、应当使用新的驱动com.mysql.cj.jdbc.Driver'
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: graduation.project.hospitalbedsmanage.entity
+  config-location: classpath:config/mybatis-config.xml
+
+#showSql
+logging:
+  config: classpath:config/logback.xml
