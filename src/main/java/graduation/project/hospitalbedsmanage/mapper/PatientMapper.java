@@ -10,6 +10,6 @@ import java.util.List;
 public interface PatientMapper {
 
 
-    List<Patient> getPatientInFo(String name,int deptNo,int bedNo,String in_hospital_date);
+    List<Patient> getPatientInFo(String name,String deptNo,String bedNo,String in_hospital_date);
 
 }
