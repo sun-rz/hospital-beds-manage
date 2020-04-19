@@ -10,8 +10,6 @@ public interface DoctorMapper {
 
     Doctor getUserInfoById(int id);
 
-    Doctor getUserInfoByName(String name);
-
     Doctor login(Doctor doctor);
 
     int register(Doctor doctor);

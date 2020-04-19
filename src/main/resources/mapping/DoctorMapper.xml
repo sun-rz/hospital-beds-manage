@@ -3,15 +3,9 @@
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.DoctorMapper">
 
     <select id="login" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        select * FROM doctor where (name = #{name} and password = #{password})
+        select * FROM doctor where (mobile =#{name} and password=#{password})
         or
         ( email =#{name} and password=#{password})
-        or
-         (mobile =#{name} and password=#{password})
-    </select>
-
-    <select id="getUserInfoByName" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        select * FROM doctor where name = #{name}
     </select>
 
     <select id="getUserInfoById" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
@@ -19,7 +13,7 @@
     </select>
 
     <select id="getUserInfo" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        select * FROM doctor where name = #{name} or  mobile = #{mobile}
+        select * FROM doctor where mobile = #{mobile} or email = #{email}
     </select>
 
     <insert id="register" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">

@@ -26,7 +26,7 @@ public class DoctorController {
 
     //登录操作
     @ResponseBody
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
 
         String captcha_code = (String) request.getSession().getAttribute("captcha_code");
@@ -47,14 +47,16 @@ public class DoctorController {
         if ("login".equals(action)) {
             //获得MD5密码并赋值
             doctor.setPassword(CommonTools.getMD5Encode(doctor.getPassword()));
+            //不知道是用户手机号还是邮箱登录,先记住登录名
+            String loginName = doctor.getName();
+
             doctor = doctorService.login(doctor);
             if (doctor == null) {
                 return CommonTools.getReturnMsg("用户名或密码错误", false);
             } else {
                 request.getSession().setAttribute("session_user", doctor);//登录成功后将用户放入session中
-
                 // 存到cookie
-                Cookie cookie = new Cookie("username", doctor.getName());
+                Cookie cookie = new Cookie("doctor", "{'loginName':'"+loginName+"'='name':'"+doctor.getName()+"'}");
                 cookie.setMaxAge(30 * 24 * 60 * 60);//一月
                 cookie.setPath("/");
                 response.addCookie(cookie);
@@ -67,7 +69,7 @@ public class DoctorController {
 
     //注册操作
     @ResponseBody
-    @RequestMapping(value="/register",method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
         String captcha_code = (String) request.getSession().getAttribute("captcha_code");
         String captchacode = request.getParameter("captchacode");
@@ -96,7 +98,7 @@ public class DoctorController {
                 return CommonTools.getReturnMsg("注册失败", false);
             } else {
                 // 存到cookie
-                Cookie cookie = new Cookie("username", doctor.getName());
+                Cookie cookie = new Cookie("loginName", doctor.getMobile());
                 cookie.setMaxAge(30 * 24 * 60 * 60);//一月
                 cookie.setPath("/");
                 response.addCookie(cookie);
@@ -118,13 +120,12 @@ public class DoctorController {
     @ResponseBody
     @RequestMapping("/getUserInfo")
     public String getUserInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Doctor doctor=(Doctor)request.getSession().getAttribute("session_user");
-        doctor=doctorService.getUserInfoById(doctor.getId());
-        System.out.println(doctor);
-        JSONObject obj=new JSONObject();
-        obj.put("success","光更等");
-        System.out.println(obj);
-        return obj.toString();
+        Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
+        doctor = doctorService.getUserInfoById(doctor.getId());
+        doctor.setPassword(null);
+        JSONObject object = new JSONObject();
+        object.put("doctor", JSONObject.fromObject(doctor));
+        return object.toString();
     }
 
 }
