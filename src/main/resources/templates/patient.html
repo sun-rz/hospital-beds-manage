@@ -1,13 +1,72 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-
-</head>
 <body>
 <div class="divContainer">
-    患者管理
-
+ <div class="text-center"><h1>患者管理</h1></div>
+ <div>
+ <div class="div-table container">
+     <table id="fourTableList">
+     </table>
+ </div>
+ </div>
 </div>
+<script>
+    var parmas = $(window).width() > 1050? "width=1050,height=650":"width=100%,height=100%";
+    var select_row = null;
+    $(function () {
+        var table = $("#fourTableList").bootstrapTable({
+            url: '/',         //请求后台的URL（*）
+            method: 'get',                      //请求方式（*）
+            toolbar: '',                //工具按钮用哪个容器
+            //queryParams: oTableInit.queryParams,			  //添加筛选数据
+            striped: true,                      //是否显示行间隔色
+            uniqueId: "id",			  //每一行的唯一标识，一般为主键列
+            sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            sortOrder: "asc",                   //排序方式
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 15,                       //每页的记录行数（*）
+            pageList: [10, 15, 25, 50, 100],        //可供选择的每页的行数（*）
+            strictSearch: false,
+            showColumns: true,                  //是否显示所有的列
+            //showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 1,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                   //是否显示父子表
+            columns: [  {
+                field: 'bianhao',
+                title: '编号',
+            }, {
+                field: 'mingcheng',
+                title: '名称',
+            }, {
+                field: 'shuliang',
+                title: '数量',
+            },{
+                field: 'danjia',
+                title: '单价',
+            },{
+                field: 'zongjiner',
+                title: '总金额'
 
+            }, {
+                field: 'mingcheng',
+                title: '操作',
+                formatter: function(value, row, index) {
+                    var str ="<div><img class=\"imagesstyle mod\"  id=\"imagesstr\" style=\"width:22px;height:22px;\" src=\"../images/ck.png\" onclick=\"scmclick('"+row.bianhao+"','"+row.mingcheng+"','"+row.danjia+"')\"></div>";
+                    return str;
+                }
+            }],
+        });
+    });
+
+
+
+
+
+</script>
 </body>
 </html>
