@@ -107,10 +107,10 @@
     <script type="text/javascript">
         angular.module('myApp', ['ngRoute', 'ngResource']).controller("indexController", function ($scope, $location, $window) {
             $scope.keyword = '';
-            $scope.user = {name: '', mobile: '', email: ''};
+            $scope.user = {name: '', mobile: '', email: '',deptNo:'',age:'',gender:'',job:'',password:''};
             this.$onInit = function () {
                 //页面加载时给用户名输入框赋值
-                $scope.user.name = $scope.getCookie("username");
+                $scope.user.name = $scope.getCookie("doctor").name;
             };
 
             //获取cookie
@@ -122,10 +122,12 @@
                     //console.log(c)
                     while (c.charAt(0) == ' ') c = c.substring(1);
                     if (c.indexOf(name) != -1) {
-                        return c.substring(name.length, c.length);
+                        let doc = c.substring(name.length, c.length).replace("=", ",");
+                        doc = doc.replace(new RegExp("'", "g"), "\"");
+                        return JSON.parse(doc);
                     }
                 }
-                return "";
+                return JSON.parse("{}");
             };
             $scope.logout = function () {
                 if (confirm("确定要退出当前用户吗?")) {
@@ -147,9 +149,18 @@
         }).controller('departmentControl', function ($scope, $route) {
         }).controller('patientControl', function ($scope, $route) {
         }).controller('casehistoryControl', function ($scope, $route) {
-        }).controller('userinfoCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $resource) {
+        }).controller('userinfoCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $routeParams, $resource) {
 
-           // console.log($scope)
+            $resource('/user/getUserInfo', {}).get(function (resp) {
+                //处理成功
+                $scope.user = resp.doctor;
+                console.log(resp)
+                console.log($scope.user)
+                // $scope.user =
+            }, function (err) {
+                //处理错误
+                console.log(err)
+            });
 
 
         }]).config(function ($routeProvider) {
@@ -171,10 +182,9 @@
             }).when('/userInfo', {
                 templateUrl: 'userinfo.html',
                 controller: 'userinfoCtrl'
-            })
-                .otherwise({
-                    redirectTo: '/home'
-                });
+            }).otherwise({
+                redirectTo: '/home'
+            });
         });
 
 

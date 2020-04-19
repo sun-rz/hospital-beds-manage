@@ -22,11 +22,6 @@ public class DoctorService {
     }
 
     @Transactional
-    public Doctor getUserInfoByName(String name) {
-        return doctorMapper.getUserInfoByName(name);
-    }
-
-    @Transactional
     public Doctor login(Doctor doctor) {
         return doctorMapper.login(doctor);
     }

@@ -187,7 +187,7 @@
 
         this.$onInit = function () {
             //页面加载时给用户名输入框赋值
-            $scope.user.name = $scope.getCookie("username");
+            $scope.user.name = $scope.getCookie("doctor").loginName;
         };
 
         //切换验证码
@@ -222,10 +222,12 @@
                 //console.log(c)
                 while (c.charAt(0) == ' ') c = c.substring(1);
                 if (c.indexOf(name) != -1) {
-                    return c.substring(name.length, c.length);
+                    let doc = c.substring(name.length, c.length).replace("=", ",");
+                    doc = doc.replace(new RegExp("'", "g"), "\"");
+                    return JSON.parse(doc);
                 }
             }
-            return "";
+            return JSON.parse("{}");
         };
     });
 

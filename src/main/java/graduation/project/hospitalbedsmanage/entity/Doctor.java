@@ -106,16 +106,16 @@ public class Doctor {
     @Override
     public String toString() {
         return "{" +
-                "id:" + id +
-                ", age:" + age +
-                ", gender:" + gender +
-                ", status:" + status +
-                ", job:'" + job + '\'' +
-                ", name:'" + name + '\'' +
-                ", password:'" + password + '\'' +
-                ", deptNo:'" + deptNo + '\'' +
-                ", mobile:'" + mobile + '\'' +
-                ", email:'" + email + '\'' +
+                "id=" + id +
+                ", age=" + age +
+                ", gender=" + gender +
+                ", status=" + status +
+                ", job='" + job + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", deptNo='" + deptNo + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
