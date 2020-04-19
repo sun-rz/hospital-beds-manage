@@ -10,6 +10,38 @@
  <div class="text-center"><h1>患者管理</h1></div>
  <div>
  <div class="div-table container">
+     <div class="div_search">
+         <div class="div-insert">
+             <input type="button" class="btn btn-primary" value="新增" class="btn-insert"/>
+         </div>
+         <div class="div_name">
+             <span class="text">姓名:</span>
+         </div>
+         <div>
+             <input type="text" class="form-control" value=""  placeholder="请输入姓名" id="name"/>
+         </div>
+         <div class="div-deptNo">
+             <span class="text">科室:</span>
+         </div>
+         <div>
+             <input type="text" class="form-control" value=""  placeholder="请输入科室" id="deptNo"/>
+         </div>
+         <div class="div-bedNo">
+             <span class="text">床位号:</span>
+         </div>
+         <div>
+             <input type="text" class="form-control" value=""  placeholder="请输入床位号" id="bedNo"/>
+         </div>
+         <div class="div-starttime">
+             <span class="text">入院时间:</span>
+         </div>
+         <div>
+             <input type="text" class="form-control" value=""  placeholder="请输入入院时间" id="in_hospital_date"/>
+         </div>
+         <div class="div-searchnum">
+             <input type="button" class="btn btn-primary" value="查询" class="btn-search" onclick="search()"/>
+         </div>
+     </div>
      <table id="fourTableList">
      </table>
  </div>
@@ -20,7 +52,7 @@
     var select_row = null;
     $(function () {
         var table = $("#fourTableList").bootstrapTable({
-            url: '/',         //请求后台的URL（*）
+            url: '/patientinfo/patientsearch',         //请求后台的URL（*）
             method: 'get',                      //请求方式（*）
             toolbar: '',                //工具按钮用哪个容器
             //queryParams: oTableInit.queryParams,			  //添加筛选数据
@@ -42,36 +74,87 @@
             cardView: false,                    //是否显示详细视图
             detailView: false,                   //是否显示父子表
             columns: [  {
-                field: 'bianhao',
+                field: 'id',
                 title: '编号',
             }, {
-                field: 'mingcheng',
-                title: '名称',
+                field: 'name',
+                title: '姓名',
             }, {
-                field: 'shuliang',
-                title: '数量',
+                field: 'age',
+                title: '年龄',
             },{
-                field: 'danjia',
-                title: '单价',
+                field: 'gender',
+                title: '性别',
             },{
-                field: 'zongjiner',
-                title: '总金额'
+                field: 'deptNo',
+                title: '科室'
 
             }, {
-                field: 'mingcheng',
+                field: 'level',
+                title: '初始化优先级'
+
+            },{
+                field: 'bedNo',
+                title: '床位号'
+
+            },{
+                field: 'in_hospital_date',
+                title: '入院日期'
+
+            },{
+                field: 'out_hospital_date',
+                title: '出院日期'
+
+            },{
+                field: 'id',
                 title: '操作',
                 formatter: function(value, row, index) {
-                    var str ="<div><img class=\"imagesstyle mod\"  id=\"imagesstr\" style=\"width:22px;height:22px;\" src=\"../images/ck.png\" onclick=\"scmclick('"+row.bianhao+"','"+row.mingcheng+"','"+row.danjia+"')\"></div>";
+                    var str ="<div><input type='button' class='btn btn-primary' value='修改'/><input type='button' class='btn btn-primary' value='删除'/></div>";
                     return str;
                 }
             }],
         });
     });
 
+    $(".fixed-table-toolbar").html("");
 
+    function search(){
+        var url="/patientinfo/patientsearch";
+        var name = $("#name").val();
+        var deptNo = $("#deptNo").val();
+        var bedNo = $("#bedNo").val();
+        var in_hospital_date = $("#in_hospital_date").val();
+        $.get(url,{"name":name,"deptNo":deptNo,"bedNo":bedNo,"in_hospital_date":in_hospital_date},function(data){
+            alert(data);
+                $("#thirdTableList").bootstrapTable('refresh', {url: "/patientinfo/patientsearch?name=" + name + "&deptNo=" + deptNo + "&bedNo=" + bedNo + "&in_hospital_date=" + in_hospital_date});
+        });
 
-
-
+    }
 </script>
+<style>
+    .text-center{
+        margin-top:100px;
+    }
+    .div_search{
+        height:34px;
+        line-height: 34px;
+        margin-top:20px;
+        margin-bottom: 20px;
+
+
+    }
+    .div_search div{
+        float:left;
+    }
+    .div_name,.div-searchnum{
+        margin-left:10px;
+    }
+    .div-insert,.div-searchnum{
+        margin-top:-1px;
+    }
+    .text{
+        font-size: 16px;
+    }
+</style>
 </body>
 </html>

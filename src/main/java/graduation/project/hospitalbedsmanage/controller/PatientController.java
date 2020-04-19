@@ -23,7 +23,7 @@ public class PatientController {
     @Autowired
     private PatientService patientservice;
     @RequestMapping(value="/patientsearch",method= RequestMethod.GET)
-     public @ResponseBody List<Patient> getPatientInFo(HttpServletResponse response, HttpServletRequest request, String name, int deptNo, int bedNo, String in_hospital_date){
+     public @ResponseBody List<Patient> getPatientInFo(String name, String deptNo, String bedNo, String in_hospital_date){
 
          List<Patient> list =new ArrayList<>();
          list = patientservice.getPatientInFo(name,deptNo,bedNo,in_hospital_date);
