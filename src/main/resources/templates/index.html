@@ -11,7 +11,12 @@
     <script src="/js/jquery-1.9.1.min.js"></script>
     <script src="/js/angular-1.7.0.min.js"></script>
     <script src="/js/angular-route-1.7.0.min.js"></script>
+<<<<<<< HEAD
     <script src="/lib/bootstrap-table/bootstrap-table.js"></script>
+=======
+    <script src="/js/angular-resource-1.7.9.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
+>>>>>>> db31cbad61a9e201c167f589afedb2d085aa4c10
 
     <style type="text/css">
         body, html {
@@ -19,6 +24,10 @@
             margin: 0;
             width: 100%;
             height: 100%;
+        }
+
+        .container-fluid {
+            min-height: 100%;
         }
 
         .container-left {
@@ -41,6 +50,11 @@
             font-size: 16px;
         }
 
+        .nav-bar-left-top a {
+            color: white;
+            text-decoration: none;
+        }
+
         .nav-left-li {
             padding: 15px;
         }
@@ -52,11 +66,11 @@
 
         .nav-pills > li > a:focus {
             color: #1da1f2;
-            background: rgb(248, 249, 250);
         }
 
-        .nav-pills > li > a:hover {
-            background: rgb(248, 249, 250);
+        .nav-pills > li > .active {
+            color: #1da1f2;
+            background: #ddd;
         }
 
         .container-right {
@@ -64,61 +78,157 @@
             top: 0;
             right: 0;
             min-height: 100%;
+            padding: 0;
             height: auto;
+            overflow: hidden;
+        }
+
+        .fa {
+            margin-right: 10px;
+        }
+
+        .nav-bar-right {
+            height: 50px;
+            background: #000;
+        }
+
+        .nav-bar-right-search {
+            width: 85%;
+            display: inline-block;
+        }
+
+        .nav-bar-right-logout {
+            display: inline-block;
+            position: absolute;
+            right: 30px;
+        }
+
+        .nav-bar-right input {
+            margin-top: 7px;
         }
     </style>
 
     <script type="text/javascript">
-        angular.module('myApp', ['ngRoute']).controller('HomeController', function ($scope, $route) {
-            $scope.$route = $route;
+        angular.module('myApp', ['ngRoute', 'ngResource']).controller("indexController", function ($scope, $location, $window) {
+            $scope.keyword = '';
+            $scope.user = {name: '', mobile: '', email: ''};
+            this.$onInit = function () {
+                //页面加载时给用户名输入框赋值
+                $scope.user.name = $scope.getCookie("username");
+            };
+
+            //获取cookie
+            $scope.getCookie = function (cname) {
+                let name = cname + "=";
+                let ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    //console.log(c)
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            };
+            $scope.logout = function () {
+                if (confirm("确定要退出当前用户吗?")) {
+                    $window.location.href = '/user/logout';
+                }
+            };
+            //搜索
+            $scope.search = function (event) {
+                if (event.keyCode == 13 || event.key == "Enter") { // enter 键
+                    alert("此处回车触发搜索事件");
+                    if ($scope.keyword != "") {
+
+                    }
+                }
+            }
+
+        }).controller('HomeController', function ($scope, $route) {
         }).controller('hospitalizedControl', function ($scope, $route) {
-            $scope.$route = $route;
         }).controller('departmentControl', function ($scope, $route) {
-            $scope.$route = $route;
         }).controller('patientControl', function ($scope, $route) {
-            $scope.$route = $route;
         }).controller('casehistoryControl', function ($scope, $route) {
-            $scope.$route = $route;
-        }).config(function ($routeProvider) {
-                $routeProvider.when('/home', {
-                    templateUrl: 'home.html',
-                    controller: 'HomeController'
-                }).when('/hospitalized', {
-                    templateUrl: 'hospitalized.html',
-                    controller: 'hospitalizedControl'
-                }).when('/department', {
-                    templateUrl: 'department.html',
-                    controller: 'departmentControl'
-                }).when('/patient', {
-                    templateUrl: 'patient.html',
-                    controller: 'patientControl'
-                }).when('/casehistory', {
-                    templateUrl: 'casehistory.html',
-                    controller: 'casehistoryControl'
-                }).otherwise({
+        }).controller('userinfoCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $resource) {
+
+           // console.log($scope)
+
+
+        }]).config(function ($routeProvider) {
+            $routeProvider.when('/home', {
+                templateUrl: 'home.html',
+                controller: 'HomeController'
+            }).when('/hospitalized', {
+                templateUrl: 'hospitalized.html',
+                controller: 'hospitalizedControl'
+            }).when('/department', {
+                templateUrl: 'department.html',
+                controller: 'departmentControl'
+            }).when('/patient', {
+                templateUrl: 'patient.html',
+                controller: 'patientControl'
+            }).when('/casehistory', {
+                templateUrl: 'casehistory.html',
+                controller: 'casehistoryControl'
+            }).when('/userInfo', {
+                templateUrl: 'userinfo.html',
+                controller: 'userinfoCtrl'
+            })
+                .otherwise({
                     redirectTo: '/home'
                 });
+        });
+
+
+        $(function () {
+            var href = location.href;
+            $(".nav-pills > li > a").each(function () {
+                if (href.indexOf($(this)[0].hash) > -1) {
+                    $(this).addClass("active");
+                }
             });
+            $(".nav-pills > li > a").click(function () {
+                $(this).addClass("active");
+                let str = $(this).html();
+                $(".nav-pills > li > a").each(function () {
+                    if (str != $(this).html()) {
+                        $(this).removeClass("active");
+                    }
+                })
+            })
+        })
     </script>
 
 
 </head>
 
-<body ng-app="myApp" class="ng-scope">
+<body ng-app="myApp" class="ng-scope" ng-controller="indexController">
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 col-sm-2 col-xs-6 container-left">
-            <div class="nav-bar-left-top">系统管理员</div>
+            <div class="nav-bar-left-top"><span><a title="点击完善个人信息" href="#!/userInfo">{{user.name}}</a></span></div>
             <ul class="nav nav-pills nav-stacked nav-left-li">
-                <li><a href="#!/home">首页</a></li>
-                <li><a href="#!/hospitalized">住院管理</a></li>
-                <li><a href="#!/department">科室管理</a></li>
-                <li><a href="#!/patient">患者管理</a></li>
-                <li><a href="#!/casehistory">病历管理</a></li>
+                <li><a href="#!/home"><i class="fa fa-home" aria-hidden="true"></i>首页</a></li>
+                <li><a href="#!/hospitalized"><i class="fa fa-building-o" aria-hidden="true"></i>住院管理</a></li>
+                <li><a href="#!/department"><i class="fa fa-cart-plus" aria-hidden="true"></i>科室管理</a></li>
+                <li><a href="#!/patient"><i class="fa fa-bed" aria-hidden="true"></i>患者管理</a></li>
+                <li><a href="#!/casehistory"><i class="fa fa-list-alt" aria-hidden="true"></i>病历管理</a></li>
             </ul>
         </div>
         <div class="container-right col-md-10 col-sm-10 col-xs-6">
+            <div class="nav-bar-right col-sm-12">
+                <div class="nav-bar-right-search">
+                    <input type="text" class="form-control" placeholder="搜索" ng-model="keyword"
+                           ng-keydown="search($event)">
+                </div>
+                <div class="nav-bar-right-logout">
+                    <input type="button" class="btn btn-danger" ng-click="logout()"
+                           value="退出" title="退出登录">
+                </div>
+            </div>
             <div ng-view=""></div>
         </div>
     </div>

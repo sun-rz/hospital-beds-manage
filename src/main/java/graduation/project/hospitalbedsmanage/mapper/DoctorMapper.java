@@ -8,11 +8,13 @@ import java.util.List;
 @Repository
 public interface DoctorMapper {
 
-    Doctor getUserInfoByID(int id);
+    Doctor getUserInfoById(int id);
 
     Doctor getUserInfoByName(String name);
 
     Doctor login(Doctor doctor);
 
     int register(Doctor doctor);
+
+    Doctor getUserInfo(Doctor doctor);
 }

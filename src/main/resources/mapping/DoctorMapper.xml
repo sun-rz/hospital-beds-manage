@@ -3,18 +3,26 @@
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.DoctorMapper">
 
     <select id="login" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        select * FROM doctor where name = #{name} and password = #{password}
-        union all
-        select * from doctor where email =#{email} and password=#{password}
-        union all
-         select * from doctor where mobile =#{mobile} and password=#{password}
+        select * FROM doctor where (name = #{name} and password = #{password})
+        or
+        ( email =#{name} and password=#{password})
+        or
+         (mobile =#{name} and password=#{password})
     </select>
 
     <select id="getUserInfoByName" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
         select * FROM doctor where name = #{name}
     </select>
 
+    <select id="getUserInfoById" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
+        select * FROM doctor where id = #{id}
+    </select>
+
+    <select id="getUserInfo" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
+        select * FROM doctor where name = #{name} or  mobile = #{mobile}
+    </select>
+
     <insert id="register" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
-       insert into doctor(name, password) values (#{name},#{password})
+       insert into doctor(name, password,mobile,email) values ( #{name}, #{password}, #{mobile}, #{email})
     </insert>
 </mapper>

@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
@@ -66,11 +67,44 @@ public class DoctorController {
 
     //注册操作
     @ResponseBody
-    @RequestMapping("/register")
-    public String register(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value="/register",method = RequestMethod.POST)
+    public String register(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
+        String captcha_code = (String) request.getSession().getAttribute("captcha_code");
+        String captchacode = request.getParameter("captchacode");
+        String action = request.getParameter("action");
 
+        if (CommonTools.isBlank(captchacode) || !(captchacode.equalsIgnoreCase(captcha_code))) {
+            return CommonTools.getReturnMsg("验证码错误", false);
+        }
+        if (CommonTools.isBlank(doctor.getName())) {
+            return CommonTools.getReturnMsg("用户名不能为空", false);
+        }
 
-        return "注册";
+        if (CommonTools.isBlank(doctor.getPassword())) {
+            return CommonTools.getReturnMsg("密码不能为空", false);
+        }
+
+        if ("register".equals(action)) {
+            Doctor d = doctorService.getUserInfo(doctor);
+            if (null != d) {
+                return CommonTools.getReturnMsg("用户已存在", false);
+            }
+            //获得MD5密码并赋值
+            doctor.setPassword(CommonTools.getMD5Encode(doctor.getPassword()));
+            int result = doctorService.register(doctor);
+            if (result == 0) {
+                return CommonTools.getReturnMsg("注册失败", false);
+            } else {
+                // 存到cookie
+                Cookie cookie = new Cookie("username", doctor.getName());
+                cookie.setMaxAge(30 * 24 * 60 * 60);//一月
+                cookie.setPath("/");
+                response.addCookie(cookie);
+
+                return CommonTools.getReturnMsg("注册成功", true);
+            }
+        }
+        return CommonTools.getReturnMsg("无效请求", false);
     }
 
     //退出登录
@@ -84,8 +118,13 @@ public class DoctorController {
     @ResponseBody
     @RequestMapping("/getUserInfo")
     public String getUserInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        return "";
+        Doctor doctor=(Doctor)request.getSession().getAttribute("session_user");
+        doctor=doctorService.getUserInfoById(doctor.getId());
+        System.out.println(doctor);
+        JSONObject obj=new JSONObject();
+        obj.put("success","光更等");
+        System.out.println(obj);
+        return obj.toString();
     }
 
 }

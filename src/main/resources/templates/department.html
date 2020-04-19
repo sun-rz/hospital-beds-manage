@@ -1,12 +1,78 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <style>
+        .dept-container-left {
+            background:#ccc;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            min-height: 100%;
+            height: auto;
+            margin: 0;
+            padding: 0;
+        }
 
+        .dept-container-right {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            min-height: 100%;
+            padding: 0;
+            height: auto;
+        }
+
+    </style>
 </head>
 <body>
 <div class="divContainer">
-    科室管理
 
+    <div class="col-md-2 col-sm-2 col-xs-6 dept-container-left">
+        <ul class="nav nav-pills nav-stacked nav-left-li">
+            <li><a href="#!/home" class="active"><i class="fa fa-home" aria-hidden="true"></i>信息科</a></li>
+            <li><a href="#!/home" class=""><i class="fa fa-home" aria-hidden="true"></i>信息科</a></li>
+            <li><a href="#!/home" class=""><i class="fa fa-home" aria-hidden="true"></i>信息科</a></li>
+
+        </ul>
+
+    </div>
+    <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
+        <div class="table-responsive">
+            <table class="table">
+                <caption>响应式表格布局</caption>
+                <thead>
+                <tr>
+                    <th>产品</th>
+                    <th>付款日期</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>产品1</td>
+                    <td>23/11/2013</td>
+                    <td>待发货</td>
+                </tr>
+                <tr>
+                    <td>产品2</td>
+                    <td>10/11/2013</td>
+                    <td>发货中</td>
+                </tr>
+                <tr>
+                    <td>产品3</td>
+                    <td>20/10/2013</td>
+                    <td>待确认</td>
+                </tr>
+                <tr>
+                    <td>产品4</td>
+                    <td>20/10/2013</td>
+                    <td>已退货</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </div>
 </body>
 </html>
