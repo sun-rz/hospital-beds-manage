@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,5 +33,23 @@ public class DoctorService {
     @Transactional
     public Doctor getUserInfo(Doctor doctor) {
         return doctorMapper.getUserInfo(doctor);
+    }
+
+    @Transactional
+    public int updateUserInfo(Doctor doctor) {
+        return doctorMapper.updateUserInfo(doctor);
+    }
+
+    @Transactional
+    public List<Map<String, Doctor>> getUserInfoByLoginName(Doctor doctor) {
+        return doctorMapper.getUserInfoByLoginName(doctor);
+    }
+
+    public Doctor getUserInfoByPassword(String password,int id) {
+        return doctorMapper.getUserInfoByPassword(password,id);
+    }
+
+    public int updatePassword(String password, int id) {
+        return doctorMapper.updatePassword(password,id);
     }
 }

@@ -22,6 +22,12 @@
             height: 100%;
         }
 
+        form .required:after {
+            content: "*";
+            color: red;
+            font-size: 18px;
+        }
+
         .container-fluid {
             min-height: 100%;
         }
@@ -105,9 +111,45 @@
     </style>
 
     <script type="text/javascript">
-        angular.module('myApp', ['ngRoute', 'ngResource']).controller("indexController", function ($scope, $location, $window) {
+        angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvider) {
+            //配置路由
+            $routeProvider.when('/home', {//首页
+                templateUrl: 'home.html',
+                controller: 'HomeController'
+            }).when('/hospitalized', {//住院管理
+                templateUrl: 'hospitalized.html',
+                controller: 'hospitalizedControl'
+            }).when('/department', {//科室管理
+                templateUrl: 'department.html',
+                controller: 'departmentControl'
+            }).when('/patient', {//患者管理
+                templateUrl: 'patient.html',
+                controller: 'patientControl'
+            }).when('/casehistory', {//病历管理
+                templateUrl: 'casehistory.html',
+                controller: 'casehistoryControl'
+            }).when('/userInfo', {//修改信息
+                templateUrl: 'userinfo.html',
+                controller: 'userinfoCtrl'
+            }).when('/updatePassword', {//修改密码
+                templateUrl: 'updatepassword.html',
+                controller: 'passwordCtrl'
+            }).otherwise({
+                redirectTo: '/home'
+            });
+        }).controller("indexController", function ($scope, $location, $window) {
             $scope.keyword = '';
-            $scope.user = {name: '', mobile: '', email: '',deptNo:'',age:'',gender:'',job:'',password:''};
+            $scope.user = {
+                id: '',
+                name: '',
+                mobile: '',
+                email: '',
+                deptNo: '',
+                age: '',
+                gender: '',
+                job: '',
+                password: ''
+            };
             this.$onInit = function () {
                 //页面加载时给用户名输入框赋值
                 $scope.user.name = $scope.getCookie("doctor").name;
@@ -151,42 +193,48 @@
         }).controller('casehistoryControl', function ($scope, $route) {
         }).controller('userinfoCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $routeParams, $resource) {
 
+            $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
+
+            //页面加载时查询用户信息
             $resource('/user/getUserInfo', {}).get(function (resp) {
-                //处理成功
+                //请求成功
                 $scope.user = resp.doctor;
-                console.log(resp)
-                console.log($scope.user)
-                // $scope.user =
             }, function (err) {
                 //处理错误
                 console.log(err)
             });
 
+            //修改信息
+            $scope.updateUserInfo = function (user) {
+                $resource('/user/updateUserInfo', user).get(function (resp) {
+                    console.log(user)
+                    //请求成功
+                    alert(resp.msg);
+                }, function (err) {
+                    //处理错误
+                    console.log(err)
+                });
+            }
 
-        }]).config(function ($routeProvider) {
-            $routeProvider.when('/home', {
-                templateUrl: 'home.html',
-                controller: 'HomeController'
-            }).when('/hospitalized', {
-                templateUrl: 'hospitalized.html',
-                controller: 'hospitalizedControl'
-            }).when('/department', {
-                templateUrl: 'department.html',
-                controller: 'departmentControl'
-            }).when('/patient', {
-                templateUrl: 'patient.html',
-                controller: 'patientControl'
-            }).when('/casehistory', {
-                templateUrl: 'casehistory.html',
-                controller: 'casehistoryControl'
-            }).when('/userInfo', {
-                templateUrl: 'userinfo.html',
-                controller: 'userinfoCtrl'
-            }).otherwise({
-                redirectTo: '/home'
-            });
-        });
 
+        }]).controller('passwordCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $routeParams, $resource) {
+            $scope.pasd = {password:'',password1:'',password2: ''};
+            //修改密码
+            $scope.updatePassword = function (pasd) {
+                if($scope.pasd.password1!=$scope.pasd.password2){
+                    alert("两次输入密码不一致");
+                    return;
+                }
+                console.log(pasd)
+                $resource('/user/updatePassword',pasd).get(function (resp) {
+                    //请求成功
+                    alert(resp.msg);
+                }, function (err) {
+                    //处理错误
+                    console.log(err)
+                });
+            }
+        }]);
 
         $(function () {
             var href = location.href;

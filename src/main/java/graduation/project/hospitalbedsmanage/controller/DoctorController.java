@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -56,7 +57,7 @@ public class DoctorController {
             } else {
                 request.getSession().setAttribute("session_user", doctor);//登录成功后将用户放入session中
                 // 存到cookie
-                Cookie cookie = new Cookie("doctor", "{'loginName':'"+loginName+"'='name':'"+doctor.getName()+"'}");
+                Cookie cookie = new Cookie("doctor", "{'loginName':'" + loginName + "'='name':'" + doctor.getName() + "'}");
                 cookie.setMaxAge(30 * 24 * 60 * 60);//一月
                 cookie.setPath("/");
                 response.addCookie(cookie);
@@ -119,13 +120,46 @@ public class DoctorController {
     //个人信息查询
     @ResponseBody
     @RequestMapping("/getUserInfo")
-    public String getUserInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String getUserInfo(HttpServletRequest request) throws IOException {
         Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
         doctor = doctorService.getUserInfoById(doctor.getId());
         doctor.setPassword(null);
+        request.getSession().setAttribute("session_user", doctor);
         JSONObject object = new JSONObject();
         object.put("doctor", JSONObject.fromObject(doctor));
         return object.toString();
+    }
+
+    //修改信息
+    @ResponseBody
+    @RequestMapping("/updateUserInfo")
+    public String updateUserInfo(Doctor doctor, HttpServletRequest request) throws IOException {
+        System.out.println(doctor);
+        List<Map<String, Doctor>> list_doctor = doctorService.getUserInfoByLoginName(doctor);
+        if (list_doctor.size() > 0) {
+            return CommonTools.getReturnMsg("手机号或邮箱已经存在", false);
+        }
+        //修改
+        doctorService.updateUserInfo(doctor);
+        return CommonTools.getReturnMsg("修改成功", true);
+    }
+
+    //修改密码
+    @ResponseBody
+    @RequestMapping("/updatePassword")
+    public String updatePassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String password = request.getParameter("password");
+        String password1 = request.getParameter("password1");
+        if (CommonTools.isBlank(password) || CommonTools.isBlank(password1)) {
+            return CommonTools.getReturnMsg("密码不能为空", false);
+        }
+        Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
+        doctor = doctorService.getUserInfoByPassword(CommonTools.getMD5Encode(password),doctor.getId());
+        if (null == doctor) {
+            return CommonTools.getReturnMsg("原始密码不正确", false);
+        }
+        doctorService.updatePassword(CommonTools.getMD5Encode(password1),doctor.getId());
+        return CommonTools.getReturnMsg("修改成功", true);
     }
 
 }

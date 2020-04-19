@@ -5,7 +5,7 @@
     <select id="login" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
         select * FROM doctor where (mobile =#{name} and password=#{password})
         or
-        ( email =#{name} and password=#{password})
+        ( email =#{name} and password=#{password}) limit 1
     </select>
 
     <select id="getUserInfoById" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
@@ -13,10 +13,26 @@
     </select>
 
     <select id="getUserInfo" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        select * FROM doctor where mobile = #{mobile} or email = #{email}
+        select * FROM doctor where mobile = #{mobile} or email = #{email} limit 1
+    </select>
+
+    <select id="getUserInfoByPassword" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
+        select * FROM doctor where id=#{id} and password=#{password} limit 1
+    </select>
+
+    <select id="getUserInfoByLoginName" resultType="HashMap">
+        select ID from doctor where  <![CDATA[ id <> #{id} ]]> and( mobile = #{mobile} or email = #{email})
     </select>
 
     <insert id="register" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
        insert into doctor(name, password,mobile,email) values ( #{name}, #{password}, #{mobile}, #{email})
     </insert>
+
+    <update id="updateUserInfo" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
+        update doctor set name=#{name},age=#{age},gender=#{gender},mobile=#{mobile},email=#{email} where id=#{id}
+    </update>
+
+    <update id="updatePassword" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
+        update doctor set password=#{password} where id=#{id}
+    </update>
 </mapper>
