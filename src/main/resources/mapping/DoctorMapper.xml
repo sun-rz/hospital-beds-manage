@@ -14,6 +14,10 @@
         select * FROM doctor where name = #{name}
     </select>
 
+    <select id="getUserInfoById" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
+        select * FROM doctor where id = #{id}
+    </select>
+
     <select id="getUserInfo" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
         select * FROM doctor where name = #{name} or  mobile = #{mobile}
     </select>

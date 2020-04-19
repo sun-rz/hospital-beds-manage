@@ -10,6 +10,7 @@
     <link href="/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet">
     <script src="/js/angular-1.7.0.min.js"></script>
     <script src="/js/angular-route-1.7.0.min.js"></script>
+    <script src="/js/angular-resource-1.7.9.js"></script>
     <script src="js/jquery-1.9.1.min.js"></script>
 
     <style type="text/css">
@@ -18,6 +19,10 @@
             margin: 0;
             width: 100%;
             height: 100%;
+        }
+
+        .container-fluid {
+            min-height: 100%;
         }
 
         .container-left {
@@ -38,6 +43,11 @@
             line-height: 50px;
             padding-left: 30px;
             font-size: 16px;
+        }
+
+        .nav-bar-left-top a {
+            color: white;
+            text-decoration: none;
         }
 
         .nav-left-li {
@@ -94,7 +104,7 @@
     </style>
 
     <script type="text/javascript">
-        angular.module('myApp', ['ngRoute']).controller("indexController", function ($scope, $location, $window) {
+        angular.module('myApp', ['ngRoute', 'ngResource']).controller("indexController", function ($scope, $location, $window) {
             $scope.keyword = '';
             $scope.user = {name: '', mobile: '', email: ''};
             this.$onInit = function () {
@@ -121,7 +131,6 @@
                     $window.location.href = '/user/logout';
                 }
             };
-
             //搜索
             $scope.search = function (event) {
                 if (event.keyCode == 13 || event.key == "Enter") { // enter 键
@@ -133,16 +142,16 @@
             }
 
         }).controller('HomeController', function ($scope, $route) {
-            $scope.$route = $route;
         }).controller('hospitalizedControl', function ($scope, $route) {
-            $scope.$route = $route;
         }).controller('departmentControl', function ($scope, $route) {
-            $scope.$route = $route;
         }).controller('patientControl', function ($scope, $route) {
-            $scope.$route = $route;
         }).controller('casehistoryControl', function ($scope, $route) {
-            $scope.$route = $route;
-        }).config(function ($routeProvider) {
+        }).controller('userinfoCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $resource) {
+
+           // console.log($scope)
+
+
+        }]).config(function ($routeProvider) {
             $routeProvider.when('/home', {
                 templateUrl: 'home.html',
                 controller: 'HomeController'
@@ -158,16 +167,20 @@
             }).when('/casehistory', {
                 templateUrl: 'casehistory.html',
                 controller: 'casehistoryControl'
-            }).otherwise({
-                redirectTo: '/home'
-            });
+            }).when('/userInfo', {
+                templateUrl: 'userinfo.html',
+                controller: 'userinfoCtrl'
+            })
+                .otherwise({
+                    redirectTo: '/home'
+                });
         });
 
 
         $(function () {
-            var href=location.href;
+            var href = location.href;
             $(".nav-pills > li > a").each(function () {
-                if (href .indexOf($(this)[0].hash)>-1 ) {
+                if (href.indexOf($(this)[0].hash) > -1) {
                     $(this).addClass("active");
                 }
             });
@@ -191,7 +204,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 col-sm-2 col-xs-6 container-left">
-            <div class="nav-bar-left-top">{{user.name}}</div>
+            <div class="nav-bar-left-top"><span><a title="点击完善个人信息" href="#!/userInfo">{{user.name}}</a></span></div>
             <ul class="nav nav-pills nav-stacked nav-left-li">
                 <li><a href="#!/home"><i class="fa fa-home" aria-hidden="true"></i>首页</a></li>
                 <li><a href="#!/hospitalized"><i class="fa fa-building-o" aria-hidden="true"></i>住院管理</a></li>

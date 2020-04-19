@@ -17,8 +17,8 @@ public class DoctorService {
     DoctorMapper doctorMapper;
 
     @Transactional
-    public Doctor getUserInfoByID(int id) {
-        return doctorMapper.getUserInfoByID(id);
+    public Doctor getUserInfoById(int id) {
+        return doctorMapper.getUserInfoById(id);
     }
 
     @Transactional

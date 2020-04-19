@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
@@ -66,7 +67,7 @@ public class DoctorController {
 
     //注册操作
     @ResponseBody
-    @RequestMapping("/register")
+    @RequestMapping(value="/register",method = RequestMethod.POST)
     public String register(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
         String captcha_code = (String) request.getSession().getAttribute("captcha_code");
         String captchacode = request.getParameter("captchacode");
@@ -117,8 +118,13 @@ public class DoctorController {
     @ResponseBody
     @RequestMapping("/getUserInfo")
     public String getUserInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        return "";
+        Doctor doctor=(Doctor)request.getSession().getAttribute("session_user");
+        doctor=doctorService.getUserInfoById(doctor.getId());
+        System.out.println(doctor);
+        JSONObject obj=new JSONObject();
+        obj.put("success","光更等");
+        System.out.println(obj);
+        return obj.toString();
     }
 
 }
