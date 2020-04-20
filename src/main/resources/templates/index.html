@@ -119,7 +119,7 @@
             }).when('/hospitalized', {//住院管理
                 templateUrl: 'hospitalized.html',
                 controller: 'hospitalizedControl'
-            }).when('/department', {//科室管理
+            }).when('/department/:deptNo', {//科室管理
                 templateUrl: 'department.html',
                 controller: 'departmentControl'
             }).when('/patient', {//患者管理
@@ -134,9 +134,12 @@
             }).when('/updatePassword', {//修改密码
                 templateUrl: 'updatepassword.html',
                 controller: 'passwordCtrl'
-            }).otherwise({
-                redirectTo: '/home'
-            });
+            }).when('/doctorlist', {//修改密码
+                templateUrl: 'doctorlist.html',
+                controller: 'doctorlistCtrl'
+            }).otherwise(
+                '/home'
+            )
         }).controller("indexController", function ($scope, $location, $window) {
             $scope.keyword = '';
             $scope.user = {
@@ -188,9 +191,25 @@
 
         }).controller('HomeController', function ($scope, $route) {
         }).controller('hospitalizedControl', function ($scope, $route) {
-        }).controller('departmentControl', function ($scope, $route) {
+        }).controller('departmentControl', function ($scope, $routeParams) {
+            $scope.deptNo = $routeParams.deptNo;
+            //页面加载部门
+            $resource('/user/getDeptInfo', {"deptNo":$scope.deptNo}).get(function (resp) {
+                //请求成功
+                $scope.user = resp.doctor;
+            }, function (err) {
+                //处理错误
+                console.log(err)
+            });
+            $scope.deptlist = [];
+            /*            {deptNo: '1',deptName:'不能',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''},
+                        {deptNo: '2',deptName:'本页面',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''}*/
+
+
         }).controller('patientControl', function ($scope, $route) {
         }).controller('casehistoryControl', function ($scope, $route) {
+        }).controller('doctorlistCtrl', function ($scope, $route) {
+
         }).controller('userinfoCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $routeParams, $resource) {
 
             $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
@@ -207,7 +226,6 @@
             //修改信息
             $scope.updateUserInfo = function (user) {
                 $resource('/user/updateUserInfo', user).get(function (resp) {
-                    console.log(user)
                     //请求成功
                     alert(resp.msg);
                 }, function (err) {
@@ -218,15 +236,14 @@
 
 
         }]).controller('passwordCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $routeParams, $resource) {
-            $scope.pasd = {password:'',password1:'',password2: ''};
+            $scope.pasd = {password: '', password1: '', password2: ''};
             //修改密码
             $scope.updatePassword = function (pasd) {
-                if($scope.pasd.password1!=$scope.pasd.password2){
+                if ($scope.pasd.password1 != $scope.pasd.password2) {
                     alert("两次输入密码不一致");
                     return;
                 }
-                console.log(pasd)
-                $resource('/user/updatePassword',pasd).get(function (resp) {
+                $resource('/user/updatePassword', pasd).get(function (resp) {
                     //请求成功
                     alert(resp.msg);
                 }, function (err) {
@@ -251,8 +268,8 @@
                         $(this).removeClass("active");
                     }
                 })
-            })
-        })
+            });
+        });
     </script>
 
 
@@ -265,9 +282,9 @@
         <div class="col-md-2 col-sm-2 col-xs-6 container-left">
             <div class="nav-bar-left-top"><span><a title="点击完善个人信息" href="#!/userInfo">{{user.name}}</a></span></div>
             <ul class="nav nav-pills nav-stacked nav-left-li">
-                <li><a href="#!/home"><i class="fa fa-home" aria-hidden="true"></i>首页</a></li>
-                <li><a href="#!/hospitalized"><i class="fa fa-building-o" aria-hidden="true"></i>住院管理</a></li>
-                <li><a href="#!/department"><i class="fa fa-cart-plus" aria-hidden="true"></i>科室管理</a></li>
+                <li><a href="#!/home/"><i class="fa fa-home" aria-hidden="true"></i>首页</a></li>
+                <li><a href="#!/hospitalized/"><i class="fa fa-building-o" aria-hidden="true"></i>住院管理</a></li>
+                <li><a href="#!/department/0"><i class="fa fa-cart-plus" aria-hidden="true"></i>科室管理</a></li>
                 <li><a href="#!/patient"><i class="fa fa-bed" aria-hidden="true"></i>患者管理</a></li>
                 <li><a href="#!/casehistory"><i class="fa fa-list-alt" aria-hidden="true"></i>病历管理</a></li>
             </ul>
