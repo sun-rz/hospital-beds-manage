@@ -24,4 +24,6 @@ public interface DoctorMapper {
     Doctor getUserInfoByPassword(String password,int id);
 
     int updatePassword(String password, int id);
+
+    List<Map<String,Doctor>> getDoctorByDeptNo(int deptNo);
 }

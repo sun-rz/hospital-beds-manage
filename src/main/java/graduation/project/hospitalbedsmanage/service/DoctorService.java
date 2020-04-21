@@ -52,4 +52,8 @@ public class DoctorService {
     public int updatePassword(String password, int id) {
         return doctorMapper.updatePassword(password,id);
     }
+
+    public List<Map<String,Doctor>> getDoctorByDeptNo(int deptNo) {
+        return doctorMapper.getDoctorByDeptNo(deptNo);
+    }
 }

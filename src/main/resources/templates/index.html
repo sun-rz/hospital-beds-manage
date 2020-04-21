@@ -22,6 +22,16 @@
             height: 100%;
         }
 
+        .divContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            height: 100%;
+            overflow: auto;
+        }
+
         form .required:after {
             content: "*";
             color: red;
@@ -70,7 +80,7 @@
             color: #1da1f2;
         }
 
-        .nav-pills > li > .active {
+        #menu .nactive {
             color: #1da1f2;
             background: #ddd;
         }
@@ -113,19 +123,22 @@
     <script type="text/javascript">
         angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvider) {
             //配置路由
-            $routeProvider.when('/home', {//首页
+            $routeProvider.when('/home/:type/:id', {//首页
                 templateUrl: 'home.html',
                 controller: 'HomeController'
-            }).when('/hospitalized', {//住院管理
+            }).when('/hospitalized/:type/:id', {//住院管理
                 templateUrl: 'hospitalized.html',
                 controller: 'hospitalizedControl'
-            }).when('/department/:deptNo', {//科室管理
+            }).when('/department/:type/:deptNo', {//科室管理
                 templateUrl: 'department.html',
                 controller: 'departmentControl'
-            }).when('/patient', {//患者管理
+            }).when('/departmentlist/:type/:deptNo', {//科室管理
+                templateUrl: 'departmentlist.html',
+                controller: 'departmentlistControl'
+            }).when('/patient/:type/:id', {//患者管理
                 templateUrl: 'patient.html',
                 controller: 'patientControl'
-            }).when('/casehistory', {//病历管理
+            }).when('/casehistory/:type/:id', {//病历管理
                 templateUrl: 'casehistory.html',
                 controller: 'casehistoryControl'
             }).when('/userInfo', {//修改信息
@@ -134,14 +147,19 @@
             }).when('/updatePassword', {//修改密码
                 templateUrl: 'updatepassword.html',
                 controller: 'passwordCtrl'
-            }).when('/doctorlist', {//修改密码
-                templateUrl: 'doctorlist.html',
-                controller: 'doctorlistCtrl'
-            }).otherwise(
-                '/home'
-            )
-        }).controller("indexController", function ($scope, $location, $window) {
+            }).otherwise('/home/1/0')
+        }).controller("indexController", function ($scope, $location, $window, $rootScope) {
             $scope.keyword = '';
+            $rootScope.ntype = '1';
+            $rootScope.active = 'active';
+            $scope.nctive = 'active';
+            $scope.menu = [
+                {id: 1, url: '/home', title: '首页', fa: 'fa fa-home'},
+                {id: 2, url: '/hospitalized', title: '住院管理', fa: 'fa fa-building-o'},
+                {id: 3, url: '/department', title: '科室管理', fa: 'fa fa-cart-plus'},
+                {id: 4, url: '/patient', title: '患者管理', fa: 'fa fa-bed'},
+                {id: 5, url: '/casehistory', title: '病历管理', fa: 'fa fa-list-alt'}
+            ];
             $scope.user = {
                 id: '',
                 name: '',
@@ -189,26 +207,58 @@
                 }
             }
 
-        }).controller('HomeController', function ($scope, $route) {
-        }).controller('hospitalizedControl', function ($scope, $route) {
-        }).controller('departmentControl', function ($scope, $routeParams) {
+        }).controller('HomeController', function ($scope, $routeParams, $rootScope) {
+
+            $rootScope.ntype = $routeParams.type;
+
+        }).controller('hospitalizedControl', function ($scope, $routeParams, $rootScope) {
+            $rootScope.ntype = $routeParams.type;
+
+        }).controller('departmentControl', function ($scope, $routeParams, $resource, $rootScope) {
+            $rootScope.ntype = $routeParams.type;
+
             $scope.deptNo = $routeParams.deptNo;
+            $scope.deptlist = [];
             //页面加载部门
-            $resource('/user/getDeptInfo', {"deptNo":$scope.deptNo}).get(function (resp) {
+            $resource('/dept/getDeptInfo', {}).get(function (resp) {
                 //请求成功
-                $scope.user = resp.doctor;
+                $scope.deptlist = resp.deptList;
             }, function (err) {
                 //处理错误
                 console.log(err)
             });
-            $scope.deptlist = [];
+
+            $resource('/user/getDoctorByDeptNo', {"deptNo": $scope.deptNo}).get(function (resp) {
+                //请求成功
+                $scope.doctorList = resp.doctorList;
+            }, function (err) {
+                //处理错误
+                console.log(err)
+            });
+
             /*            {deptNo: '1',deptName:'不能',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''},
                         {deptNo: '2',deptName:'本页面',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''}*/
 
 
-        }).controller('patientControl', function ($scope, $route) {
-        }).controller('casehistoryControl', function ($scope, $route) {
-        }).controller('doctorlistCtrl', function ($scope, $route) {
+        }).controller('patientControl', function ($scope, $routeParams, $rootScope) {
+            $rootScope.ntype = $routeParams.type;
+
+            console.log($scope.type)
+        }).controller('casehistoryControl', function ($scope, $routeParams, $rootScope) {
+            $rootScope.ntype = $routeParams.type;
+
+        }).controller('departmentlistControl', function ($scope, $resource, $routeParams, $rootScope) {
+
+            $scope.deptNo = $routeParams.deptNo;
+            $scope.deptlist = [];
+            //页面加载部门
+            $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
+                //请求成功
+                $scope.deptlist = resp.deptList;
+            }, function (err) {
+                //处理错误
+                console.log(err)
+            });
 
         }).controller('userinfoCtrl', ['$scope', '$routeParams', '$resource', function ($scope, $routeParams, $resource) {
 
@@ -252,24 +302,6 @@
                 });
             }
         }]);
-
-        $(function () {
-            var href = location.href;
-            $(".nav-pills > li > a").each(function () {
-                if (href.indexOf($(this)[0].hash) > -1) {
-                    $(this).addClass("active");
-                }
-            });
-            $(".nav-pills > li > a").click(function () {
-                $(this).addClass("active");
-                let str = $(this).html();
-                $(".nav-pills > li > a").each(function () {
-                    if (str != $(this).html()) {
-                        $(this).removeClass("active");
-                    }
-                })
-            });
-        });
     </script>
 
 
@@ -280,14 +312,17 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 col-sm-2 col-xs-6 container-left">
-            <div class="nav-bar-left-top"><span><a title="点击完善个人信息" href="#!/userInfo">{{user.name}}</a></span></div>
-            <ul class="nav nav-pills nav-stacked nav-left-li">
-                <li><a href="#!/home/"><i class="fa fa-home" aria-hidden="true"></i>首页</a></li>
-                <li><a href="#!/hospitalized/"><i class="fa fa-building-o" aria-hidden="true"></i>住院管理</a></li>
-                <li><a href="#!/department/0"><i class="fa fa-cart-plus" aria-hidden="true"></i>科室管理</a></li>
-                <li><a href="#!/patient"><i class="fa fa-bed" aria-hidden="true"></i>患者管理</a></li>
-                <li><a href="#!/casehistory"><i class="fa fa-list-alt" aria-hidden="true"></i>病历管理</a></li>
-            </ul>
+            <div class="divContainer">
+                <div class="nav-bar-left-top"><span><a title="点击完善个人信息" href="#!/userInfo">{{user.name}}</a></span>
+                </div>
+                <ul class="nav nav-pills nav-stacked nav-left-li" id="menu">
+                    <li ng-repeat="m in menu">
+                        <a href="#!{{m.url}}/{{m.id}}/0" data-t="{{ntype==m.id}}" class="{{ntype==m.id?'nactive':''}}">
+                            <i class="{{m.fa}}" aria-hidden="true"></i>{{m.title}}
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="container-right col-md-10 col-sm-10 col-xs-6">
             <div class="nav-bar-right col-sm-12">

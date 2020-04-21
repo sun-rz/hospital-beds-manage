@@ -3,6 +3,7 @@ package graduation.project.hospitalbedsmanage.controller;
 import graduation.project.hospitalbedsmanage.entity.Doctor;
 import graduation.project.hospitalbedsmanage.service.DoctorService;
 import graduation.project.hospitalbedsmanage.util.CommonTools;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -154,12 +155,25 @@ public class DoctorController {
             return CommonTools.getReturnMsg("密码不能为空", false);
         }
         Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
-        doctor = doctorService.getUserInfoByPassword(CommonTools.getMD5Encode(password),doctor.getId());
+        doctor = doctorService.getUserInfoByPassword(CommonTools.getMD5Encode(password), doctor.getId());
         if (null == doctor) {
             return CommonTools.getReturnMsg("原始密码不正确", false);
         }
-        doctorService.updatePassword(CommonTools.getMD5Encode(password1),doctor.getId());
+        doctorService.updatePassword(CommonTools.getMD5Encode(password1), doctor.getId());
         return CommonTools.getReturnMsg("修改成功", true);
+    }
+
+
+    //修改密码
+    @ResponseBody
+    @RequestMapping("/getDoctorByDeptNo")
+    public String getDoctorByDeptNo(String deptNo) {
+        List<Map<String, Doctor>> list = doctorService.getDoctorByDeptNo(CommonTools.ToInt(deptNo));
+        JSONArray jsonArray = JSONArray.fromObject(list);
+        JSONObject obj=new JSONObject();
+        obj.put("doctorList",jsonArray);
+
+        return obj.toString();
     }
 
 }

@@ -66,4 +66,13 @@ public class CommonTools {
             return "";
         }
     }
+
+    public static int ToInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

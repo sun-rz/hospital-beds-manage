@@ -4,7 +4,7 @@ package graduation.project.hospitalbedsmanage.entity;
  * 部门实体类
  */
 public class Department {
-    private int ID;//部门编号
+    private int id;//部门编号
     private int totalBeds;//总床位
     private int useBeds;//使用床位
     private int freeBeds;//剩余床位
@@ -18,11 +18,11 @@ public class Department {
     }
 
     public int getID() {
-        return ID;
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setID(int id) {
+        this.id = id;
     }
 
     public int getTotalBeds() {
@@ -92,7 +92,7 @@ public class Department {
     @Override
     public String toString() {
         return "{" +
-                "ID=" + ID +
+                "id=" + id +
                 ", totalBeds=" + totalBeds +
                 ", useBeds=" + useBeds +
                 ", freeBeds=" + freeBeds +
