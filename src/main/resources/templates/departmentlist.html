@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <style>
         .dept-container-left {
-            background: #ccc;
+            background: #fff;
             position: absolute;
             top: 50px;
             left: 0;
@@ -24,23 +24,20 @@
         }
 
         .nav-pills > li > a:focus {
-            color: #1da1f2;
+            color: #0084ff;
         }
 
         #nav-pills-sub .active {
-            color: #1da1f2;
-            background: #f5f5f5;
+            color: #fff;
+            background: #0084ff;
         }
 
-        #nav-pills-sub{
+        #nav-pills-sub {
             margin-bottom: 50px;
         }
+
         .div-btn {
             margin-top: 15px;
-        }
-
-        .div-table {
-            margin-left: 10px;
         }
 
     </style>
@@ -63,41 +60,40 @@
     <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
         <div class="div-table divContainer">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#">医护人员管理</a></li>
+                <li class="active"><a>医护人员管理</a></li>
                 <li><a href="#">床位管理</a></li>
             </ul>
 
 
             <div class="table-responsive">
+                <div class="btn-group">
+                    <input type="button" class="btn btn-sm btn-default" value="新增">
+                    <input type="button" class="btn btn-sm btn-default" value="编辑">
+                    <input type="button" class="btn btn-sm btn-default" value="删除">
+                </div>
                 <table class="table">
-                    <caption>响应式表格布局</caption>
                     <thead>
                     <tr>
-                        <th>产品</th>
-                        <th>付款日期</th>
-                        <th>状态</th>
+                        <th><label><input title="全选" type="checkbox" ng-model="selectall" ng-click="selectAll()"></label></th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>部门</th>
+                        <th>职务</th>
+                        <th>电话</th>
+                        <th>邮箱</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>产品1</td>
-                        <td>23/11/2013</td>
-                        <td>待发货</td>
-                    </tr>
-                    <tr>
-                        <td>产品2</td>
-                        <td>10/11/2013</td>
-                        <td>发货中</td>
-                    </tr>
-                    <tr>
-                        <td>产品3</td>
-                        <td>20/10/2013</td>
-                        <td>待确认</td>
-                    </tr>
-                    <tr>
-                        <td>产品4</td>
-                        <td>20/10/2013</td>
-                        <td>已退货</td>
+                    <tr ng-repeat="doc in doctorList" class="{{selectDoc?'tractive':''}}">
+                        <td title="编号{{doc.id}}">
+                            <label><input ng-model="selectDoc" type="checkbox"></label>
+                        </td>
+                        <td>{{doc.name}}</td>
+                        <td>{{doc.gender>0?"女":"男"}}</td>
+                        <td>{{doc.deptName}}</td>
+                        <td>{{doc.jobname}}</td>
+                        <td>{{doc.mobile}}</td>
+                        <td>{{doc.email}}</td>
                     </tr>
                     </tbody>
                 </table>

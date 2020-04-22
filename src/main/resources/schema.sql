@@ -14,7 +14,8 @@ create table IF NOT EXISTS doctor
         primary key (id)
 );
 
-INSERT INTO doctor(name, password, mobile,deptno,email) VALUE ('系统管理员', 'E10ADC3949BA59ABBE56E057F20F883E', 'admin',1,'admin@qq.com') ON DUPLICATE KEY UPDATE mobile= 'admin';
+INSERT INTO doctor(name, password, mobile,deptno,email,job) VALUE ('系统管理员', 'E10ADC3949BA59ABBE56E057F20F883E', 'admin',1,'admin@qq.com',1) ON DUPLICATE KEY UPDATE mobile= 'admin';
+INSERT INTO doctor(name, password, mobile,deptno,email,job) VALUE ('测试账号', 'E10ADC3949BA59ABBE56E057F20F883E', 'test',1,'test@qq.com',1) ON DUPLICATE KEY UPDATE mobile= 'test';
 
 create table IF NOT EXISTS beds
 (
@@ -102,3 +103,25 @@ CREATE TABLE IF NOT EXISTS `patient`
     `out_hospital_date` datetime    DEFAULT NULL,
     PRIMARY KEY (`id`)
 );
+
+create table IF NOT EXISTS job
+(
+    id int auto_increment,
+    jobname nvarchar(50) NOT NULL unique,
+    constraint job_pk
+        primary key (id)
+);
+insert into job (jobname) values ('院长') ON DUPLICATE KEY UPDATE jobname= '院长';
+insert into job (jobname) values ('副院长') ON DUPLICATE KEY UPDATE jobname= '副院长';
+insert into job (jobname) values ('办公室主任') ON DUPLICATE KEY UPDATE jobname= '办公室主任';
+insert into job (jobname) values ('科室主任') ON DUPLICATE KEY UPDATE jobname= '科室主任';
+insert into job (jobname) values ('医生') ON DUPLICATE KEY UPDATE jobname= '医生';
+insert into job (jobname) values ('主治医生') ON DUPLICATE KEY UPDATE jobname= '主治医生';
+insert into job (jobname) values ('化验员') ON DUPLICATE KEY UPDATE jobname= '化验员';
+insert into job (jobname) values ('治疗人员') ON DUPLICATE KEY UPDATE jobname= '治疗人员';
+insert into job (jobname) values ('护士长') ON DUPLICATE KEY UPDATE jobname= '护士长';
+insert into job (jobname) values ('护士') ON DUPLICATE KEY UPDATE jobname= '护士';
+insert into job (jobname) values ('药剂师') ON DUPLICATE KEY UPDATE jobname= '药剂师';
+insert into job (jobname) values ('后勤') ON DUPLICATE KEY UPDATE jobname= '后勤';
+insert into job (jobname) values ('保安') ON DUPLICATE KEY UPDATE jobname= '保安';
+

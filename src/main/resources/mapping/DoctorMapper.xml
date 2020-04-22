@@ -25,7 +25,7 @@
     </select>
 
     <select id="getDoctorByDeptNo" resultType="HashMap">
-        select doctor.id, name, age, gender, deptno, job, mobile, email,department.deptName FROM doctor left join department on doctor.deptno=department.ID
+        select doctor.id, name, age, gender, deptno, jobname, mobile, email,department.deptName FROM doctor left join department on doctor.deptno=department.ID left join job on doctor.job=job.id
         <if test="deptNo gt 0">
          where deptno=#{deptNo}
         </if>
