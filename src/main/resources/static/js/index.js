@@ -12,9 +12,12 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     }).when('/departmentlist/:type/:deptNo', {//科室管理
         templateUrl: 'departmentlist.html',
         controller: 'departmentlistControl'
-    }).when('/editdepartment/:doctorId', {//科室管理
+    }).when('/editdepartment/:deptNo', {//科室管理
         templateUrl: 'editdepartment.html',
         controller: 'editdepartmentCtrl'
+    }).when('/editdoctor/:doctorId', {//医护人员管理
+        templateUrl: 'editdoctor.html',
+        controller: 'editdoctorCtrl'
     }).when('/patient/:type/:id', {//患者管理
         templateUrl: 'patient.html',
         controller: 'patientControl'
@@ -121,9 +124,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
                 {deptNo: '2',deptName:'本页面',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''}*/
 
 
-}).controller('departmentlistControl', function ($scope, $resource, $routeParams) {
-
-
+}).controller('departmentlistControl', function ($scope, $resource, $routeParams, $location, $window) {
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];
 
@@ -144,7 +145,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         //处理错误
         alert("网络错误,请重试");
     });
-
 
     //多选删除
     $scope.checked = []; //定义一个数组 存入id或者想要用来交互的参数...
@@ -178,9 +178,9 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         } else {
             $scope.select_all = false;
         }
-    }
+    };
 
-    //删除
+    //删除人员
     $scope.deleteDoc = function () {
         if ($scope.checked.length == 0) {
             alert("请至少选择一条记录");
@@ -189,30 +189,78 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         if (confirm("该操作不可恢复，是否要删除选中数据？")) {
             $resource('/user/deleteUserInfo', {"userID": JSON.stringify($scope.checked)}).get(function (resp) {
                 //请求成功
+                $window.location.reload();
                 alert(resp.msg);
-
             }, function (err) {
                 //处理错误
                 alert("网络错误,请重试");
             });
         }
-    }
+    };
 
-}).controller("editdepartmentCtrl", function ($scope, $resource, $routeParams) {
-    $scope.doctorId = $routeParams.doctorId;
-    $scope.doctor={};
-    $scope.title="修改信息";
-    $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
-    //页面加载职务
+    //删除部门
+    $scope.deleteDept = function (dept) {
+        if (dept.ID == undefined || dept.ID == "") {
+            alert("请选择一条记录");
+            return;
+        }
+        if (confirm("该操作不可恢复，是否要删除选中数据？")) {
+            $resource('/dept/deleteDept', {"deptNo": dept.ID}).get(function (resp) {
+                //请求成功
+                $window.location.reload();
+                alert(resp.msg);
+            }, function (err) {
+                //处理错误
+                alert("网络错误,请重试");
+            });
+        }
+    };
 
-        $resource('/dept/getJobInfo', {userId: $scope.doctorId}).get(function (resp) {
+}).controller('editdepartmentCtrl', function ($scope, $resource, $routeParams, $location, $window) {
+    $scope.deptNo = $routeParams.deptNo;
+    $scope.dept = {};
+    $scope.title = "修改部门信息";
+    if ($scope.deptNo > 0) {
+        $scope.action = "edit";
+        $resource('/dept/getDeptInfoById', {"deptNo": $scope.deptNo}).get(function (resp) {
             //请求成功
-            $scope.jobList = resp.jobInfo;
-
+            $scope.dept = resp.dept;
         }, function (err) {
             //处理错误
             alert("网络错误,请重试");
         });
+    } else {
+        $scope.action = "add";
+        $scope.title = "新增部门"
+    }
+    //编辑
+    $scope.updateDeptInfo = function (dept) {
+        let url = $scope.action == "edit" ? "/dept/updateDeptInfo" : "/dept/addDeptInfo";
+        $resource(url, dept).get(function (resp) {
+            //请求成功
+            $window.location.reload();
+            alert(resp.msg);
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+    }
+
+}).controller("editdoctorCtrl", function ($scope, $resource, $routeParams, $window) {
+    $scope.doctorId = $routeParams.doctorId;
+    $scope.doctor = {};
+    $scope.title = "修改用户信息";
+    $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
+    //页面加载职务
+
+    $resource('/dept/getJobInfo', {userId: $scope.doctorId}).get(function (resp) {
+        //请求成功
+        $scope.jobList = resp.jobInfo;
+
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
 
     //页面加载部门
     $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
@@ -223,31 +271,28 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         alert("网络错误,请重试");
     });
 
-    if($scope.doctorId>0) {
-        $scope.action="edit";
+    if ($scope.doctorId > 0) {
+        $scope.action = "edit";
         //页面加载时查询用户信息
         $resource('/user/getUserInfo', {userId: $scope.doctorId}).get(function (resp) {
             //请求成功
             $scope.doctor = resp.doctor;
-
         }, function (err) {
             //处理错误
             alert("网络错误,请重试");
         });
-    }else{
-        $scope.action="add";
-        $scope.title="新增用户";
+    } else {
+        $scope.action = "add";
+        $scope.title = "新增用户";
     }
-
-    $scope.updateUserInfo=function (doc) {
-        let url=$scope.action=="edit"?"/user/updateUserInfo":"/user/register";
-        doc.captchacode="NotVerification";
-        doc.action="register";
+    $scope.updateUserInfo = function (doc) {
+        let url = $scope.action == "edit" ? "/user/updateUserInfo" : "/user/register";
+        doc.captchacode = "NotVerification";
+        doc.action = "register";
         $resource(url, doc).get(function (resp) {
             //请求成功
+            $window.location.reload();
             alert(resp.msg);
-            console.log(resp)
-
         }, function (err) {
             //处理错误
             alert("网络错误,请重试");

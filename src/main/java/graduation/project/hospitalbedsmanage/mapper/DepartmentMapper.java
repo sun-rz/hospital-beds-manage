@@ -14,4 +14,14 @@ public interface DepartmentMapper {
     Department getDeptInfoById(String id);
 
     List getJobInfo();
+
+    List getdeptServiceInfo();
+
+    int deleteDept(String deptNo);
+
+    int updateDeptInfo(Department dept);
+
+    int addDeptInfo(Department dept);
+
+    Department getDeptInfoByName(Department dept);
 }

@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.DepartmentMapper">
-    <select id="getDeptInfoById" resultType="graduation.project.hospitalbedsmanage.entity.Department">
+    <insert id="addDeptInfo">
+        insert into department(totalbeds,borrowlevel, deptname, deptservice) values (#{totalBeds},#{borrowLevel},#{deptName},#{deptService})
+    </insert>
 
+    <select id="getDeptInfoById" resultType="graduation.project.hospitalbedsmanage.entity.Department">
+        select * from department where id=#{id}
+    </select>
+
+    <select id="getDeptInfoByName" resultType="graduation.project.hospitalbedsmanage.entity.Department">
+        select * from department where deptname=#{deptName}
     </select>
 
     <select id="getDeptInfo" resultType="HashMap">
         select  * from department
     </select>
+
+    <update id="updateDeptInfo">
+    update department set deptName=#{deptName},deptService=#{deptService},totalBeds=#{totalBeds},borrowLevel=#{borrowLevel} where id=#{id}
+    </update>
+
+    <delete id="deleteDept">
+       delete from department where id=#{deptNo}
+    </delete>
 
     <select id="getJobInfo" resultType="HashMap">
         select  * from job

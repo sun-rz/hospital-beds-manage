@@ -26,6 +26,8 @@ spring:
     schema: classpath:schema.sql
     #data: classpath:data.sql
     sql-script-encoding: utf-8
+
+    #首次启动设置为ALWAYS,之后设置为NEVER
     initialization-mode: ALWAYS
 
 mybatis:
@@ -33,6 +35,6 @@ mybatis:
   type-aliases-package: graduation.project.hospitalbedsmanage.entity
   config-location: classpath:config/mybatis-config.xml
 
-#showSql
+#日志
 logging:
   config: classpath:config/logback.xml

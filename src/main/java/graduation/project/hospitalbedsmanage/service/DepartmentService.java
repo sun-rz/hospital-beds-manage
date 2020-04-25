@@ -30,4 +30,21 @@ public class DepartmentService {
     public List getJobInfo() {
         return departmentMapper.getJobInfo();
     }
+
+    @Transactional
+    public int deleteDept(String deptNo) {
+        return departmentMapper.deleteDept(deptNo);
+    }
+
+    public int updateDeptInfo(Department dept) {
+        return departmentMapper.updateDeptInfo(dept);
+    }
+
+    public int addDeptInfo(Department dept) {
+        return departmentMapper.addDeptInfo(dept);
+    }
+
+    public Department getDeptInfoByName(Department dept) {
+        return departmentMapper.getDeptInfoByName(dept);
+    }
 }

@@ -26,7 +26,14 @@ public class DoctorController {
     private DoctorService doctorService;
 
 
-    //登录操作
+    /**
+     *  登录
+     * @param doctor
+     * @param request
+     * @param response
+     * @return
+     */
+
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
@@ -69,15 +76,22 @@ public class DoctorController {
         return CommonTools.getReturnMsg("无效请求", false);
     }
 
-    //注册操作
+    /**
+     * 注册/新增
+     * @param doctor
+     * @param request
+     * @param response
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/register")
     public String register(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
         String captcha_code = (String) request.getSession().getAttribute("captcha_code");
         String captchacode = request.getParameter("captchacode");
         String action = request.getParameter("action");
-        System.out.println(doctor);
+        String msg="";
         if (!"NotVerification".equals(captchacode)) {//是否手动新增
+            msg="注册";
             if (CommonTools.isBlank(captchacode) || !(captchacode.equalsIgnoreCase(captcha_code))) {
                 return CommonTools.getReturnMsg("验证码错误", false);
             }
@@ -87,6 +101,7 @@ public class DoctorController {
             }
             doctor.setDeptNo("6");
         } else {
+            msg="添加";
             //默认密码
             doctor.setPassword("123456");
         }
@@ -103,7 +118,7 @@ public class DoctorController {
             doctor.setPassword(CommonTools.getMD5Encode(doctor.getPassword()));
             int result = doctorService.register(doctor);
             if (result == 0) {
-                return CommonTools.getReturnMsg("注册失败", false);
+                return CommonTools.getReturnMsg(msg+"失败", false);
             } else {
                 // 存到cookie
                 Cookie cookie = new Cookie("loginName", doctor.getMobile());
@@ -111,27 +126,38 @@ public class DoctorController {
                 cookie.setPath("/");
                 response.addCookie(cookie);
 
-                return CommonTools.getReturnMsg("注册成功", true);
+                return CommonTools.getReturnMsg(msg+"成功", true);
             }
         }
         return CommonTools.getReturnMsg("无效请求", false);
     }
 
-    //退出登录
+    /**
+     * 注销登录
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @RequestMapping("/logout")
     public void outUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession().removeAttribute("session_user");
         response.sendRedirect("/login.html");
     }
 
-    //个人信息查询
+    /**
+     * 获得个人信息
+     * @param userId
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @ResponseBody
     @RequestMapping("/getUserInfo")
     public String getUserInfo(String userId, HttpServletRequest request) throws IOException {
         int uid = 0;
 
         if (!CommonTools.isBlank(userId)) {
-            CommonTools.ToInt(userId);
+            uid=CommonTools.ToInt(userId);
         }
         Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
         uid = uid > 0 ? uid : doctor.getId();
@@ -143,7 +169,13 @@ public class DoctorController {
         return object.toString();
     }
 
-    //修改信息
+    /**
+     * 修改个人信息
+     * @param doctor
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @ResponseBody
     @RequestMapping("/updateUserInfo")
     public String updateUserInfo(Doctor doctor, HttpServletRequest request) throws IOException {
@@ -156,7 +188,12 @@ public class DoctorController {
         return CommonTools.getReturnMsg("修改成功", true);
     }
 
-    //删除信息
+    /**
+     * 删除信息
+     * @param userID
+     * @return
+     * @throws IOException
+     */
     @ResponseBody
     @RequestMapping("/deleteUserInfo")
     public String deleteUserInfo(String userID) throws IOException {
@@ -172,7 +209,13 @@ public class DoctorController {
         }
     }
 
-    //修改密码
+    /**
+     * 修改密码
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @ResponseBody
     @RequestMapping("/updatePassword")
     public String updatePassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -191,7 +234,11 @@ public class DoctorController {
     }
 
 
-    //修改密码
+    /**
+     * 根据部门查询医护人员
+     * @param deptNo
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/getDoctorByDeptNo")
     public String getDoctorByDeptNo(String deptNo) {

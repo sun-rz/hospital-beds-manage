@@ -52,11 +52,14 @@
                 <li ng-repeat="dept in deptlist">
                     <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/departmentlist/c/{{dept.ID}}">
                         <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
-                        <span style="float: right">
-                             <i class="fa fa-pencil-square-o" title="编辑" aria-hidden="true"></i>
-                        <i class="fa fa-trash-o" aria-hidden="true" title="删除"></i>
-                        </span>
                     </a>
+                    <span style="position: absolute;margin-top: -30px;right: 0">
+                             <a href="#!/editdepartment/{{dept.ID}}">
+                        <i class="fa fa-pencil-square-o" title="编辑" aria-hidden="true"></i>
+                             </a>
+
+                        <i class="fa fa-trash-o" aria-hidden="true" title="删除" ng-click="deleteDept(dept)"></i>
+                        </span>
                 </li>
             </ul>
         </div>
@@ -66,14 +69,18 @@
 
             <div class="table-responsive">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-default" ><a href="#!/editdepartment/0">新增</a></button>
+                    <button type="button" class="btn btn-sm btn-default"><a href="#!/editdoctor/0">新增</a></button>
                     <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()">
                 </div>
                 <table class="table">
                     <thead>
                     <tr>
-                        <th><label><input title="全选" type="checkbox" ng-model="select_all"
-                                          ng-change="selectAll()"></label></th>
+                        <th>
+                            <label>
+                                <input title="全选" type="checkbox" ng-model="select_all"
+                                       ng-change="selectAll()">
+                            </label>
+                        </th>
                         <th>姓名</th>
                         <th>性别</th>
                         <th>部门</th>
@@ -90,7 +97,7 @@
                                        ng-change="selectOne()" type="checkbox">
                             </label>
                         </td>
-                        <td><a href="#!/editdepartment/{{doc.id}}">{{doc.name}}</a></td>
+                        <td><a href="#!/editdoctor/{{doc.id}}">{{doc.name}}</a></td>
                         <td>{{doc.gender>0?"女":"男"}}</td>
                         <td>{{doc.deptName}}</td>
                         <td>{{doc.jobname}}</td>

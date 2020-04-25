@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <form class="form-horizontal" role="form" ng-submit="updateUserInfo(doctor)">
+        <div class="text-center"><h3>{{title}}</h3></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label required">姓名</label>
+            <div class="col-sm-10">
+                <input class="form-control" ng-model="doctor.name" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">性别</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="doctor.gender" ng-options="option.value as option.name for option in gender">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">年龄</label>
+            <div class="col-sm-10">
+                <input class="form-control" ng-model="doctor.age" type="number">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label required">科室</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="doctor.deptNo" required>
+                    <option value="{{dept.ID}}" ng-repeat="dept in deptlist" ng-selected="doctor.deptNo==dept.ID">{{dept.deptName}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">职务</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="doctor.job">
+                    <option value="{{job.id}}" ng-repeat="job in jobList" ng-selected="doctor.job==job.id">{{job.jobname}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label required">手机号</label>
+            <div class="col-sm-10">
+                <input class="form-control" ng-model="doctor.mobile" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱</label>
+            <div class="col-sm-10">
+                <input class="form-control" ng-model="doctor.email" type="email">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12 text-center">
+                <input type="button" value="返回" class="btn btn-default" onclick="history.back()">
+                <a ng-show="{{doctorId>0}}" href="#!/editdoctor/0" class="btn btn-default">新增</a>
+                <input type="submit" value="提交" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
