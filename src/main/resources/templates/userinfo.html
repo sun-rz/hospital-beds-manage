@@ -33,7 +33,9 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">科室</label>
             <div class="col-sm-10">
-                <select class="form-control" disabled></select>
+                <select class="form-control" disabled>
+                    <option value="{{dept.ID}}" ng-repeat="dept in deptlist" ng-selected="user.deptNo==dept.ID">{{dept.deptName}}</option>
+                </select>
             </div>
         </div>
         <div class="form-group">
@@ -51,7 +53,8 @@
         <div class="form-group">
            <div class="col-sm-12 text-center">
                <a href="#!/updatePassword/-1" class="btn btn-default">修改密码</a>
-              <input type="submit" value="提交" class="btn btn-primary">
+               <input type="button" value="返回" class="btn btn-default" onclick="history.back()">
+               <input type="submit" value="提交" class="btn btn-primary">
            </div>
         </div>
     </form>

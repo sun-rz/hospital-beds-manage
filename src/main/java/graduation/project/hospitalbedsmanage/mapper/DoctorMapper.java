@@ -26,4 +26,6 @@ public interface DoctorMapper {
     int updatePassword(String password, int id);
 
     List<Map<String,Doctor>> getDoctorByDeptNo(int deptNo);
+
+    int deleteUserInfo(String userID);
 }

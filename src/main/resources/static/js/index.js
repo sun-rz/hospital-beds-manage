@@ -1,4 +1,4 @@
-angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvider) {
+var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvider) {
     //配置路由
     $routeProvider.when('/home/:type/:id', {//首页
         templateUrl: 'home.html',
@@ -12,6 +12,9 @@ angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvid
     }).when('/departmentlist/:type/:deptNo', {//科室管理
         templateUrl: 'departmentlist.html',
         controller: 'departmentlistControl'
+    }).when('/editdepartment/:doctorId', {//科室管理
+        templateUrl: 'editdepartment.html',
+        controller: 'editdepartmentCtrl'
     }).when('/patient/:type/:id', {//患者管理
         templateUrl: 'patient.html',
         controller: 'patientControl'
@@ -94,8 +97,6 @@ angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvid
 }).controller('departmentControl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;
     $scope.deptNo = $routeParams.deptNo;
-    $scope.selectall=false;
-    $scope.selectDoc=false;
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];
     //页面加载部门
@@ -116,20 +117,16 @@ angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvid
         alert("网络错误,请重试");
     });
 
-    $scope.selectAll=function () {
-        $scope.selectDoc=! $scope.selectall;
-    };
-
     /*            {deptNo: '1',deptName:'不能',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''},
                 {deptNo: '2',deptName:'本页面',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''}*/
 
 
-}).controller('departmentlistControl', function ($scope, $resource, $routeParams, $rootScope) {
+}).controller('departmentlistControl', function ($scope, $resource, $routeParams) {
 
-    $scope.selectall=false;
-    $scope.selectDoc=false;
+
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];
+
     //页面加载部门
     $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
         //请求成功
@@ -147,19 +144,123 @@ angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvid
         //处理错误
         alert("网络错误,请重试");
     });
-    $scope.selectAll=function () {
-        $scope.selectDoc=! $scope.selectall;
+
+
+    //多选删除
+    $scope.checked = []; //定义一个数组 存入id或者想要用来交互的参数...
+    $scope.selectAll = function () {
+        if ($scope.select_all) { //判断是全选
+            $scope.checked = [];//先清空，防止在操作了一个轮回之后，重复添加了...
+            angular.forEach($scope.doctorList, function (i) {  //doctorList这是循环从后台获取的数组，并添加到刚刚定义的数组里
+                i.checked = true; //全选即将所有的复选框变为选中
+                $scope.checked.push(i.id);//将选中的内容放到数组里
+            })
+        } else {//判断全不选
+            angular.forEach($scope.doctorList, function (i) {
+                i.checked = false; //所有复选框为不选中
+                $scope.checked = [];//将数组清空
+            })
+        }
     };
 
+    //单选
+    $scope.selectOne = function () {//下面的复选框单独点击
+        angular.forEach($scope.doctorList, function (i) {//依旧是循环......
+            var index = $scope.checked.indexOf(i.id);//检索checked中是否有i.id 如果没有则会返回-1
+            if (i.checked && index === -1) {
+                $scope.checked.push(i.id);
+            } else if (!i.checked && index !== -1) {
+                $scope.checked.splice(index, 1);
+            }
+        });
+        if ($scope.doctorList.length === $scope.checked.length) {//判断checked数组的长度是否与原来请求的后台数组的长度是否相等 即是否给全选框加上选中
+            $scope.select_all = true;
+        } else {
+            $scope.select_all = false;
+        }
+    }
+
+    //删除
+    $scope.deleteDoc = function () {
+        if ($scope.checked.length == 0) {
+            alert("请至少选择一条记录");
+            return;
+        }
+        if (confirm("该操作不可恢复，是否要删除选中数据？")) {
+            $resource('/user/deleteUserInfo', {"userID": JSON.stringify($scope.checked)}).get(function (resp) {
+                //请求成功
+                alert(resp.msg);
+
+            }, function (err) {
+                //处理错误
+                alert("网络错误,请重试");
+            });
+        }
+    }
+
+}).controller("editdepartmentCtrl", function ($scope, $resource, $routeParams) {
+    $scope.doctorId = $routeParams.doctorId;
+    $scope.doctor={};
+    $scope.title="修改信息";
+    $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
+    //页面加载职务
+
+        $resource('/dept/getJobInfo', {userId: $scope.doctorId}).get(function (resp) {
+            //请求成功
+            $scope.jobList = resp.jobInfo;
+
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+
+    //页面加载部门
+    $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
+        //请求成功
+        $scope.deptlist = resp.deptList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+    if($scope.doctorId>0) {
+        $scope.action="edit";
+        //页面加载时查询用户信息
+        $resource('/user/getUserInfo', {userId: $scope.doctorId}).get(function (resp) {
+            //请求成功
+            $scope.doctor = resp.doctor;
+
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+    }else{
+        $scope.action="add";
+        $scope.title="新增用户";
+    }
+
+    $scope.updateUserInfo=function (doc) {
+        let url=$scope.action=="edit"?"/user/updateUserInfo":"/user/register";
+        doc.captchacode="NotVerification";
+        doc.action="register";
+        $resource(url, doc).get(function (resp) {
+            //请求成功
+            alert(resp.msg);
+            console.log(resp)
+
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+    }
 }).controller('patientControl', function ($scope, $routeParams, $rootScope) {
     $rootScope.ntype = $routeParams.type;
 
-    console.log($scope.type)
 }).controller('casehistoryControl', function ($scope, $routeParams, $rootScope) {
     $rootScope.ntype = $routeParams.type;
 
-}).controller('userinfoCtrl', function ($scope, $routeParams, $resource,$rootScope) {
-    $rootScope.ntype =  $routeParams.type;
+}).controller('userinfoCtrl', function ($scope, $routeParams, $resource, $rootScope) {
+    $rootScope.ntype = $routeParams.type;
     $rootScope.active = 'active';
     $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
 
@@ -167,6 +268,16 @@ angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvid
     $resource('/user/getUserInfo', {}).get(function (resp) {
         //请求成功
         $scope.user = resp.doctor;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+    //页面加载部门
+    $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
+        //请求成功
+        $scope.deptlist = resp.deptList;
+        console.log($scope.deptlist)
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
@@ -184,8 +295,8 @@ angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvid
     }
 
 
-}).controller('passwordCtrl', function ($scope, $routeParams, $resource,$rootScope) {
-    $rootScope.ntype =  $routeParams.type;
+}).controller('passwordCtrl', function ($scope, $routeParams, $resource, $rootScope) {
+    $rootScope.ntype = $routeParams.type;
     $rootScope.active = 'active';
     $scope.pasd = {password: '', password1: '', password2: ''};
     //修改密码

@@ -25,4 +25,9 @@ public class DepartmentService {
     public Department getDeptInfoById(String id) {
         return departmentMapper.getDeptInfoById(id);
     }
+
+    @Transactional
+    public List getJobInfo() {
+        return departmentMapper.getJobInfo();
+    }
 }

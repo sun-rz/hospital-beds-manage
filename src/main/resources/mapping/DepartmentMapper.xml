@@ -8,4 +8,8 @@
     <select id="getDeptInfo" resultType="HashMap">
         select  * from department
     </select>
+
+    <select id="getJobInfo" resultType="HashMap">
+        select  * from job
+    </select>
 </mapper>

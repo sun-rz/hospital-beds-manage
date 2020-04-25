@@ -52,6 +52,10 @@
                 <li ng-repeat="dept in deptlist">
                     <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/departmentlist/c/{{dept.ID}}">
                         <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
+                        <span style="float: right">
+                             <i class="fa fa-pencil-square-o" title="编辑" aria-hidden="true"></i>
+                        <i class="fa fa-trash-o" aria-hidden="true" title="删除"></i>
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -59,22 +63,17 @@
     </div>
     <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
         <div class="div-table divContainer">
-            <ul class="nav nav-tabs">
-                <li class="active"><a>医护人员管理</a></li>
-                <li><a href="#">床位管理</a></li>
-            </ul>
-
 
             <div class="table-responsive">
                 <div class="btn-group">
-                    <input type="button" class="btn btn-sm btn-default" value="新增">
-                    <input type="button" class="btn btn-sm btn-default" value="编辑">
-                    <input type="button" class="btn btn-sm btn-default" value="删除">
+                    <button type="button" class="btn btn-sm btn-default" ><a href="#!/editdepartment/0">新增</a></button>
+                    <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()">
                 </div>
                 <table class="table">
                     <thead>
                     <tr>
-                        <th><label><input title="全选" type="checkbox" ng-model="selectall" ng-click="selectAll()"></label></th>
+                        <th><label><input title="全选" type="checkbox" ng-model="select_all"
+                                          ng-change="selectAll()"></label></th>
                         <th>姓名</th>
                         <th>性别</th>
                         <th>部门</th>
@@ -86,14 +85,20 @@
                     <tbody>
                     <tr ng-repeat="doc in doctorList" class="{{selectDoc?'tractive':''}}">
                         <td title="编号{{doc.id}}">
-                            <label><input ng-model="selectDoc" type="checkbox"></label>
+                            <label>
+                                <input ng-value="{{doc.id}}" ng-model="doc.checked"
+                                       ng-change="selectOne()" type="checkbox">
+                            </label>
                         </td>
-                        <td>{{doc.name}}</td>
+                        <td><a href="#!/editdepartment/{{doc.id}}">{{doc.name}}</a></td>
                         <td>{{doc.gender>0?"女":"男"}}</td>
                         <td>{{doc.deptName}}</td>
                         <td>{{doc.jobname}}</td>
                         <td>{{doc.mobile}}</td>
                         <td>{{doc.email}}</td>
+                    </tr>
+                    <tr ng-if="doctorList==0">
+                        <td colspan="7">暂无数据！</td>
                     </tr>
                     </tbody>
                 </table>

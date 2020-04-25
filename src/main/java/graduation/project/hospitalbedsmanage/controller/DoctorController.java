@@ -71,21 +71,27 @@ public class DoctorController {
 
     //注册操作
     @ResponseBody
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping("/register")
     public String register(Doctor doctor, HttpServletRequest request, HttpServletResponse response) {
         String captcha_code = (String) request.getSession().getAttribute("captcha_code");
         String captchacode = request.getParameter("captchacode");
         String action = request.getParameter("action");
+        System.out.println(doctor);
+        if (!"NotVerification".equals(captchacode)) {//是否手动新增
+            if (CommonTools.isBlank(captchacode) || !(captchacode.equalsIgnoreCase(captcha_code))) {
+                return CommonTools.getReturnMsg("验证码错误", false);
+            }
 
-        if (CommonTools.isBlank(captchacode) || !(captchacode.equalsIgnoreCase(captcha_code))) {
-            return CommonTools.getReturnMsg("验证码错误", false);
+            if (CommonTools.isBlank(doctor.getPassword())) {
+                return CommonTools.getReturnMsg("密码不能为空", false);
+            }
+            doctor.setDeptNo("6");
+        } else {
+            //默认密码
+            doctor.setPassword("123456");
         }
         if (CommonTools.isBlank(doctor.getName())) {
             return CommonTools.getReturnMsg("用户名不能为空", false);
-        }
-
-        if (CommonTools.isBlank(doctor.getPassword())) {
-            return CommonTools.getReturnMsg("密码不能为空", false);
         }
 
         if ("register".equals(action)) {
@@ -121,9 +127,15 @@ public class DoctorController {
     //个人信息查询
     @ResponseBody
     @RequestMapping("/getUserInfo")
-    public String getUserInfo(HttpServletRequest request) throws IOException {
+    public String getUserInfo(String userId, HttpServletRequest request) throws IOException {
+        int uid = 0;
+
+        if (!CommonTools.isBlank(userId)) {
+            CommonTools.ToInt(userId);
+        }
         Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
-        doctor = doctorService.getUserInfoById(doctor.getId());
+        uid = uid > 0 ? uid : doctor.getId();
+        doctor = doctorService.getUserInfoById(uid);
         doctor.setPassword(null);
         request.getSession().setAttribute("session_user", doctor);
         JSONObject object = new JSONObject();
@@ -135,7 +147,6 @@ public class DoctorController {
     @ResponseBody
     @RequestMapping("/updateUserInfo")
     public String updateUserInfo(Doctor doctor, HttpServletRequest request) throws IOException {
-        System.out.println(doctor);
         List<Map<String, Doctor>> list_doctor = doctorService.getUserInfoByLoginName(doctor);
         if (list_doctor.size() > 0) {
             return CommonTools.getReturnMsg("手机号或邮箱已经存在", false);
@@ -143,6 +154,22 @@ public class DoctorController {
         //修改
         doctorService.updateUserInfo(doctor);
         return CommonTools.getReturnMsg("修改成功", true);
+    }
+
+    //删除信息
+    @ResponseBody
+    @RequestMapping("/deleteUserInfo")
+    public String deleteUserInfo(String userID) throws IOException {
+        if (CommonTools.isBlank(userID)) {
+            return CommonTools.getReturnMsg("参数错误", false);
+        }
+        userID = userID.substring(1, userID.length() - 1);
+        int result = doctorService.deleteUserInfo(userID);
+        if (result > 0) {
+            return CommonTools.getReturnMsg("删除成功", true);
+        } else {
+            return CommonTools.getReturnMsg("删除失败", false);
+        }
     }
 
     //修改密码
@@ -169,9 +196,8 @@ public class DoctorController {
     @RequestMapping("/getDoctorByDeptNo")
     public String getDoctorByDeptNo(String deptNo) {
         List<Map<String, Doctor>> list = doctorService.getDoctorByDeptNo(CommonTools.ToInt(deptNo));
-        JSONArray jsonArray = JSONArray.fromObject(list);
-        JSONObject obj=new JSONObject();
-        obj.put("doctorList",jsonArray);
+        JSONObject obj = new JSONObject();
+        obj.put("doctorList", JSONArray.fromObject(list));
 
         return obj.toString();
     }

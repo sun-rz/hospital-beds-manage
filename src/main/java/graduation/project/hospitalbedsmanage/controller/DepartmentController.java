@@ -20,18 +20,26 @@ public class DepartmentController {
 
     @ResponseBody
     @RequestMapping("/getDeptInfo")
-    public String getDeptInfo(){
+    public String getDeptInfo() {
         List deptInfo = departmentService.getDeptInfo();
-        JSONArray jsonArray = JSONArray.fromObject(deptInfo);
-        System.out.println(jsonArray);
         JSONObject obj = new JSONObject();
-        obj.put("deptList",jsonArray);
+        obj.put("deptList", JSONArray.fromObject(deptInfo));
         return obj.toString();
     }
 
     @ResponseBody
     @RequestMapping("/getDeptInfoById")
-    public String getDeptInfoById(String id){
+    public String getDeptInfoById(String id) {
         return departmentService.getDeptInfoById(id).toString();
     }
+
+    @ResponseBody
+    @RequestMapping("/getJobInfo")
+    public String getJobInfo() {
+        List jobInfo = departmentService.getJobInfo();
+        JSONObject obj=new JSONObject();
+        obj.put("jobInfo",JSONArray.fromObject(jobInfo));
+        return obj.toString();
+    }
+
 }

@@ -13,5 +13,5 @@ public interface DepartmentMapper {
 
     Department getDeptInfoById(String id);
 
-
+    List getJobInfo();
 }

@@ -45,15 +45,23 @@ public class DoctorService {
         return doctorMapper.getUserInfoByLoginName(doctor);
     }
 
-    public Doctor getUserInfoByPassword(String password,int id) {
-        return doctorMapper.getUserInfoByPassword(password,id);
+    @Transactional
+    public Doctor getUserInfoByPassword(String password, int id) {
+        return doctorMapper.getUserInfoByPassword(password, id);
     }
 
+    @Transactional
     public int updatePassword(String password, int id) {
-        return doctorMapper.updatePassword(password,id);
+        return doctorMapper.updatePassword(password, id);
     }
 
-    public List<Map<String,Doctor>> getDoctorByDeptNo(int deptNo) {
+    @Transactional
+    public List<Map<String, Doctor>> getDoctorByDeptNo(int deptNo) {
         return doctorMapper.getDoctorByDeptNo(deptNo);
+    }
+
+    @Transactional
+    public int deleteUserInfo(String userID) {
+        return doctorMapper.deleteUserInfo(userID);
     }
 }

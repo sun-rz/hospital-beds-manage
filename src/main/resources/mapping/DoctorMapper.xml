@@ -25,18 +25,30 @@
     </select>
 
     <select id="getDoctorByDeptNo" resultType="HashMap">
-        select doctor.id, name, age, gender, deptno, jobname, mobile, email,department.deptName FROM doctor left join department on doctor.deptno=department.ID left join job on doctor.job=job.id
+        select doctor.id, name, age, gender, deptno, jobname, mobile, email,department.deptName FROM doctor left join
+        department on doctor.deptno=department.ID left join job on doctor.job=job.id
         <if test="deptNo gt 0">
-         where deptno=#{deptNo}
+            where deptno=#{deptNo}
         </if>
     </select>
 
     <insert id="register" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
-       insert into doctor(name, password,mobile,email) values ( #{name}, #{password}, #{mobile}, #{email})
+       insert into doctor(name, password,mobile,email,age,gender,job,deptNo) values ( #{name}, #{password}, #{mobile}, #{email},#{age},#{gender},#{job},#{deptNo})
     </insert>
 
     <update id="updateUserInfo" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        update doctor set name=#{name},age=#{age},gender=#{gender},mobile=#{mobile},email=#{email} where id=#{id}
+        update doctor set name=#{name},age=#{age},gender=#{gender},mobile=#{mobile},email=#{email}
+        <if test="job != null and job != ''  and job !='0'">
+            ,job=#{job}
+        </if>
+        <if test="deptNo != null and deptNo != ''">
+            ,deptNo=#{deptNo}
+        </if>
+         where id=#{id}
+    </update>
+
+    <update id="deleteUserInfo" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
+        delete from doctor where id in (#{userId})
     </update>
 
     <update id="updatePassword" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
