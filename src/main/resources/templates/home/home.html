@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+
+</head>
+<body>
+<div class="col-md-12 col-sm-12 col-xs-12" id="myiframe">
+    <iframe src="/home/views/index.html" id="c_iframe" frameborder="0" scrolling="yes"
+            style="border:0px;min-width: 100%;overflow: scroll" onload="autoHeight()"></iframe>
+</div>
+</body>
+<script type="text/javascript">
+    function autoHeight() {//自适应窗口大小
+        var b_height = Math.max(document.body.scrollHeight, document.body.clientHeight);
+        var c_iframe = document.getElementById("c_iframe");
+        c_iframe.height = b_height - 60;
+    }
+
+    //窗口改变时
+    window.onresize = function () {
+        autoHeight();
+    }
+</script>
+</html>

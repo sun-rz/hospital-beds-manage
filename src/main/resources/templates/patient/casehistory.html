@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <script src="js/jquery.bigautocomplete.js"></script>
+
+    <style>
+        .bigautocomplete-layout{display:none;background-color:#FFFFFF;border:1px solid #BCBCBC;position:absolute;z-index:100;max-height:220px;overflow-x:hidden;overflow-y:auto; }
+        .bigautocomplete-layout table{border-collapse:collapse;border-spacing:0;background:none repeat scroll 0 0 #FFFFFF;width:100%;cursor:default;}
+        .bigautocomplete-layout table tr{background:none repeat scroll 0 0 #FFFFFF;}
+        .bigautocomplete-layout .ct{background:none repeat scroll 0 0 #D2DEE8 !important;}
+        .bigautocomplete-layout div{word-wrap:break-word;word-break:break-all;padding:1px 5px;}
+
+        .demo{width:720px;margin:30px auto;}
+        .demo h2{font-size:16px;color:#3366cc;height:30px;}
+        .demo li{float:left;}
+        .text,.button{background:url(http://su.bdimg.com/static/superpage/img/spis_031ddf34.png) no-repeat;}
+        .text{width:529px;height:22px;padding:4px 7px;padding:6px 7px 2px\9;font:16px arial;border:1px solid #cdcdcd;border-color:#9a9a9a #cdcdcd #cdcdcd #9a9a9a;vertical-align:top;outline:none;margin:0 5px 0 0;}
+        .button{width:95px;height:32px;padding:0;padding-top:2px\9;border:0;background-position:0 -35px;background-color:#ddd;cursor:pointer}
+    </style>
+</head>
+
+<body>
+<script type="text/javascript">
+    $(function(){
+        $("#tt").bigAutocomplete({
+            width:543,
+            data:[{title:"中国好声音",result:{ff:"qq"}},
+                {title:"中国移动网上营业厅"},
+                {title:"中国银行"},
+                {title:"中国移动"},
+                {title:"中国好声音第三期"},
+                {title:"中国好声音 第一期"},
+                {title:"中国电信网上营业厅"},
+                {title:"中国工商银行"},
+                {title:"中国好声音第二期"},
+                {title:"中国地图"}],
+            callback:function(data){
+                alert(data.title);
+            }
+        });
+
+    })
+</script>
+<div class="divContainer">
+    病历管理
+    <div class="demo">
+        <form action="http://www.jsfoot.com/e/search/index.php" method="post" name="searchform" id="searchform" class="searchinfo">
+            <ul>
+                <li><input type="text" id="tt" value="" class="text" /></li>
+                <li><input type="submit" value="搜索" class="button" /></li>
+            </ul>
+        </form>
+    </div>
+
+               
+
+</div>
+</body>
+</html>

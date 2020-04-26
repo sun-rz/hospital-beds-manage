@@ -1,34 +1,34 @@
 var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvider) {
     //配置路由
     $routeProvider.when('/home/:type/:id', {//首页
-        templateUrl: 'home.html',
+        templateUrl: 'home/home.html',
         controller: 'HomeController'
     }).when('/hospitalized/:type/:id', {//住院管理
         templateUrl: 'hospitalized.html',
         controller: 'hospitalizedControl'
     }).when('/department/:type/:deptNo', {//科室管理
-        templateUrl: 'department.html',
+        templateUrl: 'dept/department.html',
         controller: 'departmentControl'
     }).when('/departmentlist/:type/:deptNo', {//科室管理
-        templateUrl: 'departmentlist.html',
+        templateUrl: 'dept/departmentlist.html',
         controller: 'departmentlistControl'
     }).when('/editdepartment/:deptNo', {//科室管理
-        templateUrl: 'editdepartment.html',
+        templateUrl: 'dept/editdepartment.html',
         controller: 'editdepartmentCtrl'
     }).when('/editdoctor/:doctorId', {//医护人员管理
-        templateUrl: 'editdoctor.html',
+        templateUrl: 'user/editdoctor.html',
         controller: 'editdoctorCtrl'
     }).when('/patient/:type/:id', {//患者管理
         templateUrl: 'patient.html',
         controller: 'patientControl'
     }).when('/casehistory/:type/:id', {//病历管理
-        templateUrl: 'casehistory.html',
+        templateUrl: 'patient/casehistory.html',
         controller: 'casehistoryControl'
     }).when('/userInfo/:type', {//修改信息
-        templateUrl: 'userinfo.html',
+        templateUrl: 'user/userinfo.html',
         controller: 'userinfoCtrl'
     }).when('/updatePassword/:type', {//修改密码
-        templateUrl: 'updatepassword.html',
+        templateUrl: 'user/updatepassword.html',
         controller: 'passwordCtrl'
     }).otherwise('/home/1/0')
 }).controller("indexController", function ($scope, $location, $window, $rootScope) {
