@@ -27,7 +27,8 @@ public class DoctorController {
 
 
     /**
-     *  登录
+     * 登录
+     *
      * @param doctor
      * @param request
      * @param response
@@ -78,6 +79,7 @@ public class DoctorController {
 
     /**
      * 注册/新增
+     *
      * @param doctor
      * @param request
      * @param response
@@ -89,9 +91,9 @@ public class DoctorController {
         String captcha_code = (String) request.getSession().getAttribute("captcha_code");
         String captchacode = request.getParameter("captchacode");
         String action = request.getParameter("action");
-        String msg="";
+        String msg = "";
         if (!"NotVerification".equals(captchacode)) {//是否手动新增
-            msg="注册";
+            msg = "注册";
             if (CommonTools.isBlank(captchacode) || !(captchacode.equalsIgnoreCase(captcha_code))) {
                 return CommonTools.getReturnMsg("验证码错误", false);
             }
@@ -99,9 +101,8 @@ public class DoctorController {
             if (CommonTools.isBlank(doctor.getPassword())) {
                 return CommonTools.getReturnMsg("密码不能为空", false);
             }
-            doctor.setDeptNo("6");
         } else {
-            msg="添加";
+            msg = "添加";
             //默认密码
             doctor.setPassword("123456");
         }
@@ -114,11 +115,14 @@ public class DoctorController {
             if (null != d) {
                 return CommonTools.getReturnMsg("用户已存在", false);
             }
+            if (doctor.getDeptNo() < 1) {
+                doctor.setDeptNo(1);
+            }
             //获得MD5密码并赋值
             doctor.setPassword(CommonTools.getMD5Encode(doctor.getPassword()));
             int result = doctorService.register(doctor);
             if (result == 0) {
-                return CommonTools.getReturnMsg(msg+"失败", false);
+                return CommonTools.getReturnMsg(msg + "失败", false);
             } else {
                 // 存到cookie
                 Cookie cookie = new Cookie("loginName", doctor.getMobile());
@@ -126,7 +130,7 @@ public class DoctorController {
                 cookie.setPath("/");
                 response.addCookie(cookie);
 
-                return CommonTools.getReturnMsg(msg+"成功", true);
+                return CommonTools.getReturnMsg(msg + "成功", true);
             }
         }
         return CommonTools.getReturnMsg("无效请求", false);
@@ -134,6 +138,7 @@ public class DoctorController {
 
     /**
      * 注销登录
+     *
      * @param request
      * @param response
      * @throws IOException
@@ -146,6 +151,7 @@ public class DoctorController {
 
     /**
      * 获得个人信息
+     *
      * @param userId
      * @param request
      * @return
@@ -157,7 +163,7 @@ public class DoctorController {
         int uid = 0;
 
         if (!CommonTools.isBlank(userId)) {
-            uid=CommonTools.ToInt(userId);
+            uid = CommonTools.ToInt(userId);
         }
         Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
         uid = uid > 0 ? uid : doctor.getId();
@@ -171,6 +177,7 @@ public class DoctorController {
 
     /**
      * 修改个人信息
+     *
      * @param doctor
      * @param request
      * @return
@@ -190,6 +197,7 @@ public class DoctorController {
 
     /**
      * 删除信息
+     *
      * @param userID
      * @return
      * @throws IOException
@@ -211,6 +219,7 @@ public class DoctorController {
 
     /**
      * 修改密码
+     *
      * @param request
      * @param response
      * @return
@@ -236,6 +245,7 @@ public class DoctorController {
 
     /**
      * 根据部门查询医护人员
+     *
      * @param deptNo
      * @return
      */

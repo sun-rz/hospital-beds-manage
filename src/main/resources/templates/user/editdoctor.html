@@ -17,7 +17,8 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">性别</label>
             <div class="col-sm-10">
-                <select class="form-control" ng-model="doctor.gender" ng-options="option.value as option.name for option in gender">
+                <select class="form-control" ng-model="doctor.gender"
+                        ng-options="option.value as option.name for option in gender">
                 </select>
             </div>
         </div>
@@ -31,15 +32,19 @@
             <label class="col-sm-2 control-label required">科室</label>
             <div class="col-sm-10">
                 <select class="form-control" ng-model="doctor.deptNo" required>
-                    <option value="{{dept.ID}}" ng-repeat="dept in deptlist" ng-selected="doctor.deptNo==dept.ID">{{dept.deptName}}</option>
+                    <option value="{{dept.ID}}" ng-repeat="dept in deptlist" ng-selected="doctor.deptNo==dept.ID">
+                        {{dept.deptName}}
+                    </option>
                 </select>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">职务</label>
+            <label class="col-sm-2 control-label required">职务</label>
             <div class="col-sm-10">
-                <select class="form-control" ng-model="doctor.job">
-                    <option value="{{job.id}}" ng-repeat="job in jobList" ng-selected="doctor.job==job.id">{{job.jobname}}</option>
+                <select class="form-control" ng-model="doctor.job" required>
+                    <option value="{{job.id}}" ng-repeat="job in jobList" ng-selected="doctor.job==job.id">
+                        {{job.jobname}}
+                    </option>
                 </select>
             </div>
         </div>
@@ -59,7 +64,7 @@
         <div class="form-group">
             <div class="col-sm-12 text-center">
                 <input type="button" value="返回" class="btn btn-default" onclick="history.back()">
-                <a ng-show="{{doctorId>0}}" href="#!/editdoctor/0" class="btn btn-default">新增</a>
+                <a ng-show="{{doctorId>0}}" href="#!/editdoctor/0/{{deptNo}}" class="btn btn-default">新增</a>
                 <input type="submit" value="提交" class="btn btn-primary">
             </div>
         </div>

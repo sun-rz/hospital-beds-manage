@@ -15,7 +15,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     }).when('/editdepartment/:deptNo', {//科室管理
         templateUrl: 'dept/editdepartment.html',
         controller: 'editdepartmentCtrl'
-    }).when('/editdoctor/:doctorId', {//医护人员管理
+    }).when('/editdoctor/:doctorId/:deptNo', {//医护人员管理
         templateUrl: 'user/editdoctor.html',
         controller: 'editdoctorCtrl'
     }).when('/patient/:type/:id', {//患者管理
@@ -33,7 +33,16 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     }).otherwise('/home/1/0')
 }).controller("indexController", function ($scope, $location, $window, $rootScope) {
     $scope.keyword = '';
-    $rootScope.ntype = '1';
+
+    //解决刷新后无法选中
+    let path = $location.path();
+    var x=path.indexOf("/");
+    for(var i=0;i<1;i++){
+        x=path.indexOf("/",x+1);
+    }
+    path=path.substring(x+1,path.lastIndexOf("/"));
+    $rootScope.ntype = path;
+
     $rootScope.active = 'active';
     $scope.nctive = 'active';
     $scope.menu = [
@@ -88,7 +97,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
 
             }
         }
-    }
+    };
 
 }).controller('HomeController', function ($scope, $routeParams, $rootScope) {
 
@@ -238,7 +247,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         let url = $scope.action == "edit" ? "/dept/updateDeptInfo" : "/dept/addDeptInfo";
         $resource(url, dept).get(function (resp) {
             //请求成功
-            $window.location.reload();
+            history.back();
             alert(resp.msg);
         }, function (err) {
             //处理错误
@@ -248,6 +257,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
 
 }).controller("editdoctorCtrl", function ($scope, $resource, $routeParams, $window) {
     $scope.doctorId = $routeParams.doctorId;
+    $scope.deptNo = $routeParams.deptNo;
     $scope.doctor = {};
     $scope.title = "修改用户信息";
     $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
@@ -284,6 +294,8 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     } else {
         $scope.action = "add";
         $scope.title = "新增用户";
+        $scope.doctor.deptNo = $scope.deptNo
+
     }
     $scope.updateUserInfo = function (doc) {
         let url = $scope.action == "edit" ? "/user/updateUserInfo" : "/user/register";
@@ -291,7 +303,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         doc.action = "register";
         $resource(url, doc).get(function (resp) {
             //请求成功
-            $window.location.reload();
+            history.back();
             alert(resp.msg);
         }, function (err) {
             //处理错误
@@ -301,8 +313,17 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
 }).controller('patientControl', function ($scope, $routeParams, $rootScope) {
     $rootScope.ntype = $routeParams.type;
 
-}).controller('casehistoryControl', function ($scope, $routeParams, $rootScope) {
+}).controller('casehistoryControl', function ($scope, $routeParams, $rootScope,$resource) {
     $rootScope.ntype = $routeParams.type;
+    $resource('/casehistory/getCaseHistory', {}).get(function (resp) {
+        //请求成功
+        $scope.casehistoryList = resp.casehistoryList;
+        console.log( $scope.casehistoryList)
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
 
 }).controller('userinfoCtrl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;

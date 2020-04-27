@@ -11,7 +11,7 @@ public class Doctor {
     private int status;//状态
     private String name; //姓名
     private String password; //密码
-    private String deptNo; //部门
+    private int deptNo; //部门
     private String mobile;//手机
     private String email;//邮箱
 
@@ -79,11 +79,11 @@ public class Doctor {
         this.password = password;
     }
 
-    public String getDeptNo() {
+    public int getDeptNo() {
         return deptNo;
     }
 
-    public void setDeptNo(String deptNo) {
+    public void setDeptNo(int deptNo) {
         this.deptNo = deptNo;
     }
 

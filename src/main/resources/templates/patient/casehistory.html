@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!chTYPE html>
 <html lang="zh-CN">
 <head>
     <script src="js/jquery.bigautocomplete.js"></script>
@@ -26,7 +26,7 @@
             width:543,
             data:[{title:"中国好声音",result:{ff:"qq"}},
                 {title:"中国移动网上营业厅"},
-                {title:"中国银行"},
+                {title:"中国银行",result:{ff:"qq"}},
                 {title:"中国移动"},
                 {title:"中国好声音第三期"},
                 {title:"中国好声音 第一期"},
@@ -41,8 +41,8 @@
 
     })
 </script>
-<div class="divContainer">
-    病历管理
+<div>
+<!--    病历管理
     <div class="demo">
         <form action="http://www.jsfoot.com/e/search/index.php" method="post" name="searchform" id="searchform" class="searchinfo">
             <ul>
@@ -52,8 +52,54 @@
         </form>
     </div>
 
-               
+      -->         
+    <div class="div-table divContainer" style="margin-top: 50px">
 
+        <div class="table-responsive">
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-default"><a href="#!/editchtor/0/{{deptNo}}">新增</a></button>
+                <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deletech()">
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        <label>
+                            <input title="全选" type="checkbox" ng-model="select_all"
+                                   ng-change="selectAll()">
+                        </label>
+                    </th>
+                    <th>编号</th>
+                    <th>患者姓名</th>
+                    <th>部门</th>
+                    <th>主治医师</th>
+                    <th>病历状态</th>
+                    <th>更新日期</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="ch in casehistoryList" class="{{selectch?'tractive':''}}">
+                    <td title="选择">
+                        <label>
+                            <input ng-value="{{ch.id}}" ng-model="ch.checked"
+                                   ng-change="selectOne()" type="checkbox">
+                        </label>
+                    </td>
+                    <td>{{ch.id}}</td>
+                    <td><a href="#!/editchtor/{{ch.id}}/{{deptNo}}">{{ch.patientID}}</a></td>
+                    <td>{{ch.doctorID}}</td>
+                    <td>{{ch.deptNo}}</td>
+                    <td>{{ch.status}}</td>
+                    <td>{{ch.submitTime}}</td>
+                </tr>
+                <tr ng-if="chtorList==0">
+                    <td colspan="7">暂无数据！</td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="casehistoryList.length>0">记录数：{{casehistoryList.length}}</div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

@@ -44,8 +44,8 @@
 
         <div class="divContainer">
             <ul class="nav nav-pills nav-stacked nav-left-li" id="nav-pills-sub">
-                <li ng-repeat="dept in deptlist">
-                    <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/departmentlist/c/{{dept.ID}}">
+                <li ng-repeat="dept in deptlist" title="编号{{dept.ID}}">
+                    <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/departmentlist/3/{{dept.ID}}">
                         <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
                     </a>
                 </li>
@@ -61,7 +61,7 @@
                         <th>编号</th>
                         <th>姓名</th>
                         <th>性别</th>
-                        <th>部门</th>
+                        <th>科室</th>
                         <th>职务</th>
                         <th>电话</th>
                         <th>邮箱</th>
@@ -80,10 +80,11 @@
                         <td>{{doc.email}}</td>
                     </tr>
                     <tr ng-if="doctorsList==0">
-                        <td colspan="7">暂无数据！</td>
+                        <td colspan="8">暂无数据！</td>
                     </tr>
                     </tbody>
                 </table>
+                <div ng-show="doctorsList.length>0">记录数：{{doctorsList.length}}</div>
             </div>
         </div>
 
