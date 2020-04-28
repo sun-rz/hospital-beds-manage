@@ -26,6 +26,6 @@
     </delete>
 
     <select id="getJobInfo" resultType="HashMap">
-        select  * from job
+        select * from job
     </select>
 </mapper>

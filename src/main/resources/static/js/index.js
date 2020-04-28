@@ -10,20 +10,23 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         templateUrl: 'dept/department.html',
         controller: 'departmentControl'
     }).when('/departmentlist/:type/:deptNo', {//科室管理
-        templateUrl: 'dept/departmentlist.html',
+        templateUrl: 'dept/department_list.html',
         controller: 'departmentlistControl'
     }).when('/editdepartment/:deptNo', {//科室管理
-        templateUrl: 'dept/editdepartment.html',
+        templateUrl: 'dept/department_edit.html',
         controller: 'editdepartmentCtrl'
     }).when('/editdoctor/:doctorId/:deptNo', {//医护人员管理
-        templateUrl: 'user/editdoctor.html',
+        templateUrl: 'user/doctor_edit.html',
         controller: 'editdoctorCtrl'
     }).when('/patient/:type/:id', {//患者管理
-        templateUrl: 'patient.html',
+        templateUrl: 'patient/patient.html',
         controller: 'patientControl'
     }).when('/casehistory/:type/:id', {//病历管理
         templateUrl: 'patient/casehistory.html',
         controller: 'casehistoryControl'
+    }).when('/editCasehistory/:id', {//病历管理
+        templateUrl: 'patient/casehistory_edit.html',
+        controller: 'editcasehistoryControl'
     }).when('/userInfo/:type', {//修改信息
         templateUrl: 'user/userinfo.html',
         controller: 'userinfoCtrl'
@@ -36,11 +39,11 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
 
     //解决刷新后无法选中
     let path = $location.path();
-    var x=path.indexOf("/");
-    for(var i=0;i<1;i++){
-        x=path.indexOf("/",x+1);
+    var x = path.indexOf("/");
+    for (var i = 0; i < 1; i++) {
+        x = path.indexOf("/", x + 1);
     }
-    path=path.substring(x+1,path.lastIndexOf("/"));
+    path = path.substring(x + 1, path.lastIndexOf("/"));
     $rootScope.ntype = path;
 
     $rootScope.active = 'active';
@@ -261,7 +264,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     $scope.doctor = {};
     $scope.title = "修改用户信息";
     $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
-    //页面加载职务
+    //页面加载职务de
 
     $resource('/dept/getJobInfo', {userId: $scope.doctorId}).get(function (resp) {
         //请求成功
@@ -310,20 +313,131 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
             alert("网络错误,请重试");
         });
     }
-}).controller('patientControl', function ($scope, $routeParams, $rootScope) {
+}).controller('patientControl', function ($scope, $routeParams, $rootScope,$resource) {
     $rootScope.ntype = $routeParams.type;
+    $scope.patientList=[];
 
-}).controller('casehistoryControl', function ($scope, $routeParams, $rootScope,$resource) {
-    $rootScope.ntype = $routeParams.type;
-    $resource('/casehistory/getCaseHistory', {}).get(function (resp) {
+    $resource('/patient/getPatientInfo', {}).get(function (resp) {
         //请求成功
-        $scope.casehistoryList = resp.casehistoryList;
-        console.log( $scope.casehistoryList)
+        $scope.patientList = resp.patientList;
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
     });
 
+    //多选删除
+    $scope.checked = []; //定义一个数组 存入id或者想要用来交互的参数...
+    $scope.selectAll = function () {
+        if ($scope.select_all) { //判断是全选
+            $scope.checked = [];//先清空，防止在操作了一个轮回之后，重复添加了...
+            angular.forEach($scope.patientList, function (i) {  //doctorList这是循环从后台获取的数组，并添加到刚刚定义的数组里
+                i.checked = true; //全选即将所有的复选框变为选中
+                $scope.checked.push(i.id);//将选中的内容放到数组里
+            })
+        } else {//判断全不选
+            angular.forEach($scope.patientList, function (i) {
+                i.checked = false; //所有复选框为不选中
+                $scope.checked = [];//将数组清空
+            })
+        }
+    };
+
+    //单选
+    $scope.selectOne = function () {//下面的复选框单独点击
+        angular.forEach($scope.patientList, function (i) {//依旧是循环......
+            var index = $scope.checked.indexOf(i.id);//检索checked中是否有i.id 如果没有则会返回-1
+            if (i.checked && index === -1) {
+                $scope.checked.push(i.id);
+            } else if (!i.checked && index !== -1) {
+                $scope.checked.splice(index, 1);
+            }
+        });
+        if ($scope.patientList.length === $scope.checked.length) {//判断checked数组的长度是否与原来请求的后台数组的长度是否相等 即是否给全选框加上选中
+            $scope.select_all = true;
+        } else {
+            $scope.select_all = false;
+        }
+    };
+
+    $scope.deletech = function () {
+        if ($scope.checked.length == 0) {
+            alert("请至少选择一条记录");
+            return;
+        }
+        if (confirm("该操作不可恢复，是否要删除选中数据？")) {
+            $resource('/patient/deletePatient', {"patientID": JSON.stringify($scope.checked)}).get(function (resp) {
+                //请求成功
+                $window.location.reload();
+                alert(resp.msg);
+            }, function (err) {
+                //处理错误
+                alert("网络错误,请重试");
+            });
+        }
+    };
+
+}).controller('casehistoryControl', function ($scope, $routeParams, $rootScope, $resource) {
+    $rootScope.ntype = $routeParams.type;
+    $scope.casehistoryList = [];
+    $resource('/casehistory/getCaseHistory', {}).get(function (resp) {
+        //请求成功
+        $scope.casehistoryList = resp.casehistoryList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+    //多选删除
+    $scope.checked = []; //定义一个数组 存入id或者想要用来交互的参数...
+    $scope.selectAll = function () {
+        if ($scope.select_all) { //判断是全选
+            $scope.checked = [];//先清空，防止在操作了一个轮回之后，重复添加了...
+            angular.forEach($scope.casehistoryList, function (i) {  //doctorList这是循环从后台获取的数组，并添加到刚刚定义的数组里
+                i.checked = true; //全选即将所有的复选框变为选中
+                $scope.checked.push(i.id);//将选中的内容放到数组里
+            })
+        } else {//判断全不选
+            angular.forEach($scope.casehistoryList, function (i) {
+                i.checked = false; //所有复选框为不选中
+                $scope.checked = [];//将数组清空
+            })
+        }
+    };
+
+    //单选
+    $scope.selectOne = function () {//下面的复选框单独点击
+        angular.forEach($scope.casehistoryList, function (i) {//依旧是循环......
+            var index = $scope.checked.indexOf(i.id);//检索checked中是否有i.id 如果没有则会返回-1
+            if (i.checked && index === -1) {
+                $scope.checked.push(i.id);
+            } else if (!i.checked && index !== -1) {
+                $scope.checked.splice(index, 1);
+            }
+        });
+        if ($scope.casehistoryList.length === $scope.checked.length) {//判断checked数组的长度是否与原来请求的后台数组的长度是否相等 即是否给全选框加上选中
+            $scope.select_all = true;
+        } else {
+            $scope.select_all = false;
+        }
+    };
+
+    $scope.deletech = function () {
+        if ($scope.checked.length == 0) {
+            alert("请至少选择一条记录");
+            return;
+        }
+        if (confirm("该操作不可恢复，是否要删除选中数据？")) {
+            $resource('/casehistory/deleteCaseHistory', {"CaseHistoryID": JSON.stringify($scope.checked)}).get(function (resp) {
+                //请求成功
+                $window.location.reload();
+                alert(resp.msg);
+            }, function (err) {
+                //处理错误
+                alert("网络错误,请重试");
+            });
+        }
+    };
+}).controller('editcasehistoryControl', function ($scope, $routeParams, $resource, $rootScope) {
 
 }).controller('userinfoCtrl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;

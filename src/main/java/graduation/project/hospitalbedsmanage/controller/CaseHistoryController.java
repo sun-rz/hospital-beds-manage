@@ -16,6 +16,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/casehistory")
 public class CaseHistoryController {
+
     @Autowired
     private CaseHistoryService caseHistoryService;
 

@@ -20,4 +20,7 @@
         </if>
     </select>
 
+    <select id="getPatientInfo" resultType="HashMap">
+        select * from patient
+    </select>
 </mapper>
