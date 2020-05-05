@@ -1,9 +1,9 @@
 <div class="div-table divContainer" style="margin-top: 50px">
-
     <div class="table-responsive">
         <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-default"><a href="#!/editchtor/0/{{deptNo}}">新增</a></button>
-            <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deletech()">
+            <button type="button" class="btn btn-sm btn-default"><a href="#!/editPatient/0">新增</a></button>
+            <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deletePatient()"
+                   ng-disabled="checked.length==0">
         </div>
         <table class="table">
             <thead>
@@ -25,7 +25,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="patient in patientList" class="{{selectch?'tractive':''}}">
+            <tr ng-repeat="patient in patientList" class="{{patient.checked?'tractive':''}}">
                 <td title="选择">
                     <label>
                         <input ng-value="{{patient.id}}" ng-model="patient.checked"
@@ -33,12 +33,12 @@
                     </label>
                 </td>
                 <td>{{patient.id}}</td>
-                <td><a href="#!/editCasehistory/{{patient.id}}">{{patient.id}}</a></td>
+                <td><a href="#!/editPatient/{{patient.id}}" title="点击查看详情">{{patient.name}}</a></td>
                 <td>{{patient.age}}</td>
-                <td>{{patient.gender}}</td>
-                <td>{{patient.deptNo}}</td>
+                <td>{{patient.gender>0?"女":"男"}}</td>
+                <td>{{patient.deptName}}</td>
                 <td>{{patient.level}}</td>
-                <td>{{patient.in_hospital_date}}</td>
+                <td>{{patient.in_hospital_date+"~"+patient.out_hospital_date}}</td>
                 <td>{{patient.bedNo}}</td>
             </tr>
             <tr ng-if="patientList==0">
@@ -46,7 +46,7 @@
             </tr>
             </tbody>
         </table>
-        <div ng-show="patientList.length>0">记录数：{{patientList.length}}</div>
+        <div class="table-bottom-bar" ng-show="patientList.length>0">记录数：{{patientList.length}}</div>
     </div>
 </div>
 </div>

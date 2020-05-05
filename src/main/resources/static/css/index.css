@@ -105,7 +105,9 @@ form .required:after {
     margin-top: 7px;
 }
 
-
+/**
+通用样式
+ */
 /**
 *表格
 */
@@ -143,7 +145,6 @@ form .required:after {
     border-left: 1px solid #c0c0c0 !important;
 }
 
-
 /*
  *选项卡
 */
@@ -160,8 +161,7 @@ form .required:after {
 }
 
 .table .tractive{
-    background: #20b4ff !important;
-    color: #fff;
+    background: #f1f1f1 !important;
 }
 
 label{
@@ -174,14 +174,39 @@ label:hover,i:hover{
     margin-left: 15px;
 }
 
-.btn a{
-    color: #000;
-    text-decoration: none;
-}
 .form-horizontal{
     margin-top: 100px;
 }
 
 .table-bottom-bar{
     margin-bottom: 50px;
+    border-top: 1px solid #ccc;
+    padding: 15px;
+}
+
+.form-control[disabled], .form-control[readonly]{
+    background: #fff;
+}
+
+.table a,.btn a{
+    display: block;
+    color: #0084ff;
+    text-decoration: none;
+}
+
+.list-bottom-bar{
+    margin-bottom: 50px;
+    padding: 15px 15px 15px 30px;
+    border-top: 1px solid #ccc;
+}
+
+
+/*公祭日全网灰色哀悼主题色*/
+.theme-grey {
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }

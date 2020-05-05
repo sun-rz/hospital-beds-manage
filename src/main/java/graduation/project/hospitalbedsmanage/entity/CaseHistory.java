@@ -18,6 +18,27 @@ public class CaseHistory {
     public CaseHistory() {
     }
 
+    public CaseHistory(int patientID, int deptNo, int doctorID, int status, String description, String treatmentPlan, Date submitTime) {
+        this.patientID = patientID;
+        this.deptNo = deptNo;
+        this.doctorID = doctorID;
+        this.status = status;
+        this.description = description;
+        this.treatmentPlan = treatmentPlan;
+        this.submitTime = submitTime;
+    }
+
+    public CaseHistory(int id, int patientID, int deptNo, int doctorID, int status, String description, String treatmentPlan, Date submitTime) {
+        this.id = id;
+        this.patientID = patientID;
+        this.deptNo = deptNo;
+        this.doctorID = doctorID;
+        this.status = status;
+        this.description = description;
+        this.treatmentPlan = treatmentPlan;
+        this.submitTime = submitTime;
+    }
+
     public int getId() {
         return id;
     }

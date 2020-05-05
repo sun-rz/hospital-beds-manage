@@ -3,9 +3,12 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     $routeProvider.when('/home/:type/:id', {//首页
         templateUrl: 'home/home.html',
         controller: 'HomeController'
-    }).when('/hospitalized/:type/:id', {//住院管理
-        templateUrl: 'hospitalized.html',
+    }).when('/hospitalized/:type/:deptNo', {//住院管理
+        templateUrl: '/hospitalized/hospitalized.html',
         controller: 'hospitalizedControl'
+    }).when('/hospitalizedlist/:type/:deptNo', {//住院管理
+        templateUrl: '/hospitalized/hospitalized_list.html',
+        controller: 'hospitalizedlistCtrl'
     }).when('/department/:type/:deptNo', {//科室管理
         templateUrl: 'dept/department.html',
         controller: 'departmentControl'
@@ -24,9 +27,9 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     }).when('/casehistory/:type/:id', {//病历管理
         templateUrl: 'patient/casehistory.html',
         controller: 'casehistoryControl'
-    }).when('/editCasehistory/:id', {//病历管理
-        templateUrl: 'patient/casehistory_edit.html',
-        controller: 'editcasehistoryControl'
+    }).when('/editPatient/:id', {//病历管理
+        templateUrl: 'patient/patient_edit.html',
+        controller: 'editPatientCtrl'
     }).when('/userInfo/:type', {//修改信息
         templateUrl: 'user/userinfo.html',
         controller: 'userinfoCtrl'
@@ -106,12 +109,33 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
 
     $rootScope.ntype = $routeParams.type;
 
-}).controller('hospitalizedControl', function ($scope, $routeParams, $rootScope) {
+}).controller('hospitalizedControl', function ($scope, $routeParams, $rootScope,$resource) {
     $rootScope.ntype = $routeParams.type;
 
+    //页面加载部门
+    $resource('/dept/getDeptInfoByCondition', {"condition":"totalBeds>0"}).get(function (resp) {
+        //请求成功
+        $scope.deptlist = resp.deptList;
+        console.log($scope.deptlist)
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+}).controller("hospitalizedlistCtrl",function ($scope, $resource, $routeParams, $location, $window) {
+    $scope.deptNo = $routeParams.deptNo;
+    $scope.deptlist = [];
+
+    //页面加载部门
+    $resource('/dept/getDeptInfoByCondition', {"condition":"totalBeds>0"}).get(function (resp) {
+        //请求成功
+        $scope.deptlist = resp.deptList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
 }).controller('departmentControl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;
-    $scope.deptNo = $routeParams.deptNo;
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];
     //页面加载部门
@@ -131,11 +155,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         //处理错误
         alert("网络错误,请重试");
     });
-
-    /*            {deptNo: '1',deptName:'不能',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''},
-                {deptNo: '2',deptName:'本页面',deptService:'',totalBeds:'',useBeds:'',freeBeds:'',borrowBeds:'',borrowLevel:'',usage:''}*/
-
-
 }).controller('departmentlistControl', function ($scope, $resource, $routeParams, $location, $window) {
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];
@@ -313,9 +332,9 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
             alert("网络错误,请重试");
         });
     }
-}).controller('patientControl', function ($scope, $routeParams, $rootScope,$resource) {
+}).controller('patientControl', function ($scope, $routeParams, $rootScope, $resource,$window) {
     $rootScope.ntype = $routeParams.type;
-    $scope.patientList=[];
+    $scope.patientList = [];
 
     $resource('/patient/getPatientInfo', {}).get(function (resp) {
         //请求成功
@@ -359,7 +378,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         }
     };
 
-    $scope.deletech = function () {
+    $scope.deletePatient = function () {
         if ($scope.checked.length == 0) {
             alert("请至少选择一条记录");
             return;
@@ -376,7 +395,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         }
     };
 
-}).controller('casehistoryControl', function ($scope, $routeParams, $rootScope, $resource) {
+}).controller('casehistoryControl', function ($scope, $routeParams, $rootScope, $resource,$window) {
     $rootScope.ntype = $routeParams.type;
     $scope.casehistoryList = [];
     $resource('/casehistory/getCaseHistory', {}).get(function (resp) {
@@ -421,13 +440,13 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
         }
     };
 
-    $scope.deletech = function () {
+    $scope.deleteCasehistory = function () {
         if ($scope.checked.length == 0) {
             alert("请至少选择一条记录");
             return;
         }
         if (confirm("该操作不可恢复，是否要删除选中数据？")) {
-            $resource('/casehistory/deleteCaseHistory', {"CaseHistoryID": JSON.stringify($scope.checked)}).get(function (resp) {
+            $resource('/casehistory/deleteCaseHistory', {"caseHistoryID": JSON.stringify($scope.checked)}).get(function (resp) {
                 //请求成功
                 $window.location.reload();
                 alert(resp.msg);
@@ -437,8 +456,87 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
             });
         }
     };
-}).controller('editcasehistoryControl', function ($scope, $routeParams, $resource, $rootScope) {
+}).controller('editPatientCtrl', function ($scope, $routeParams, $resource) {
+    $scope.patient = {};
+    $scope.casehistory = {};
+    $scope.patientID = $routeParams.id;
+    $scope.title = "修改患者信息";
+    $scope.casehistory_title = "修改病历信息";
+    $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
+    //页面加载部门
+    $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
+        //请求成功
+        $scope.deptlist = resp.deptList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
 
+    if ($scope.patientID > 0) {
+        $scope.action = "edit";
+        //页面加载时查询患者信息
+        $resource('/patient/getPatientInfo', {id: $scope.patientID}).get(function (resp) {
+            //请求成功
+            $scope.patient = resp.patientList[0];
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+
+        //页面加载时查询病历信息
+        $resource('/casehistory/getCaseHistory', {patientID: $scope.patientID}).get(function (resp) {
+            //请求成功
+            $scope.casehistory = resp.casehistoryList[0];
+            if(undefined==$scope.casehistory){
+                $scope.casehistory={}
+            }
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+
+    } else {
+        $scope.action = "add";
+        $scope.title = "新增患者信息";
+        $scope.casehistory_title = "新增病历信息";
+    }
+
+    $resource('/user/getDoctorByDeptNo', {"deptNo": $scope.patient.deptNo}).get(function (resp) {
+        //请求成功
+        $scope.doctorsList = resp.doctorList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+    $scope.updatePatientInfo = function (p,c) {
+
+        //不懂为什么ng-module后ng-selected会失效,用dom操作吧
+        c.doctorID=angular.element(document.querySelector("#doctorID")).val();
+        c.status=angular.element(document.querySelector("#cstatus")).val();
+
+        p.casehistory=c;
+        let url = $scope.action == "edit" ? "/patient/updatePatientInfo" : "/patient/addPatientInfo";
+        $resource(url, p).get(function (resp) {
+            //请求成功
+            history.back();
+            alert(resp.msg);
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+    };
+
+    $scope.getDocByDept=function (p) {
+        //根据部门加载医生列表
+        $resource('/user/getDoctorByDeptNo', {"deptNo": p.patient.deptNo}).get(function (resp) {
+            //请求成功
+            $scope.doctorsList = resp.doctorList;
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+    }
 }).controller('userinfoCtrl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;
     $rootScope.active = 'active';
@@ -457,7 +555,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
         //请求成功
         $scope.deptlist = resp.deptList;
-        console.log($scope.deptlist)
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");

@@ -1,5 +1,7 @@
 package graduation.project.hospitalbedsmanage.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -11,9 +13,11 @@ public class Patient {
     private int gender;//性别
     private int deptNo;//科室
     private int level;//初始化优先级别
-    private int bedNo;//床位号
+    private String bedNo;//床位号
     private String name; //姓名
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date in_hospital_date;//入院日期
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date out_hospital_date;//出院日期
 
     public Patient() {
@@ -59,11 +63,11 @@ public class Patient {
         this.level = level;
     }
 
-    public int getBedNo() {
+    public String getBedNo() {
         return bedNo;
     }
 
-    public void setBedNo(int bedNo) {
+    public void setBedNo(String bedNo) {
         this.bedNo = bedNo;
     }
 

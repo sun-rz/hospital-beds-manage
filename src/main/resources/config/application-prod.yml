@@ -22,11 +22,19 @@ spring:
     #数据库驱动com.mysql.jdbc.Driver'已经被弃用了、应当使用新的驱动com.mysql.cj.jdbc.Driver'
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+    #初始化数据
+    schema: classpath:schema.sql
+    #data: classpath:data.sql
+    sql-script-encoding: utf-8
+
+    #首次启动设置为ALWAYS,之后设置为NEVER
+    initialization-mode: ALWAYS
+
 mybatis:
-  mapper-locations: classpath:mapping/*.xml
+  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: graduation.project.hospitalbedsmanage.entity
   config-location: classpath:config/mybatis-config.xml
 
-#showSql
+#日志
 logging:
   config: classpath:config/logback.xml

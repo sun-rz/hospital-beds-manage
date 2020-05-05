@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="graduation.project.hospitalbedsmanage.mapper.PatientMapper">
+
+    <select id="getPatientInFo" resultType="graduation.project.hospitalbedsmanage.entity.Patient">
+        select *
+        from patient
+        where 1=1
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        <if test="deptNo != null and deptNo != ''">
+            and deptNo = #{deptNo}
+        </if>
+        <if test="bedNo != null and bedNo != ''">
+            and bedNo = #{bedNo}
+        </if>
+        <if test="in_hospital_date != null and in_hospital_date != ''">
+            and in_hospital_date = #{in_hospital_date}
+        </if>
+    </select>
+
+    <select id="getPatientInfo" resultType="HashMap">
+        select patient.id,name,age, gender, deptNo, level, bedNo, in_hospital_date,
+        out_hospital_date,department.deptName from patient left join department on patient.deptNo=department.ID
+        <if test="id &gt; 0">
+            where patient.id=#{id}
+        </if>
+        order by level,in_hospital_date,patient.id
+    </select>
+
+    <insert id="addPatientInfo">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into patient (name,age, gender, deptNo, level, bedNo, in_hospital_date, out_hospital_date) values (#{name},#{age},#{gender},#{deptNo},#{level},#{bedNo},#{in_hospital_date},#{out_hospital_date})
+    </insert>
+
+    <update id="updatePatientInfo">
+        update patient set name=#{name},age=#{age},gender=#{gender},deptNo=#{deptNo},level=#{level},bedNo=#{bedNo},in_hospital_date=#{in_hospital_date},out_hospital_date=#{out_hospital_date} where id=#{id}
+    </update>
+
+    <delete id="deletePatient">
+        delete from patient where id in ${patientID}
+    </delete>
+</mapper>

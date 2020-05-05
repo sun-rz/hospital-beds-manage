@@ -15,8 +15,6 @@ public interface DepartmentMapper {
 
     List getJobInfo();
 
-    List getdeptServiceInfo();
-
     int deleteDept(String deptNo);
 
     int updateDeptInfo(Department dept);
@@ -24,4 +22,6 @@ public interface DepartmentMapper {
     int addDeptInfo(Department dept);
 
     Department getDeptInfoByName(Department dept);
+
+    List getDeptInfoByCondition(String condition);
 }

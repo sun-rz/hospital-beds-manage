@@ -19,7 +19,7 @@ public interface DoctorMapper {
 
     int updateUserInfo(Doctor doctor);
 
-    List<Map<String,Doctor>> getUserInfoByLoginName(Doctor doctor);
+    List<Map<String,Doctor>> getUserInfoByLoginName(String loginName,int userId);
 
     Doctor getUserInfoByPassword(String password,int id);
 

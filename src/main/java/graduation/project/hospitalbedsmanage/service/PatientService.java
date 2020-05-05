@@ -24,4 +24,17 @@ public class PatientService {
     public List getPatientInfo(Patient patient) {
         return patientMapper.getPatientInfo(patient);
     }
+
+    @Transactional
+    public int addPatientInfo(Patient patient) {
+        return patientMapper.addPatientInfo(patient);
+    }
+
+    public int updatePatientInfo(Patient patient) {
+        return patientMapper.updatePatientInfo(patient);
+    }
+
+    public int deletePatient(String patientID) {
+        return patientMapper.deletePatient(patientID);
+    }
 }

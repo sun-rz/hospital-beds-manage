@@ -1,0 +1,47 @@
+<style>
+    .dept-container-left {
+        background: #fff;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        min-height: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dept-container-right {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        min-height: 100%;
+        padding: 0;
+        height: auto;
+    }
+    .nav-pills > li > a:focus {
+        color: #0084ff;
+    }
+
+    #nav-pills-sub .active {
+        color: #fff;
+        background: #0084ff;
+    }
+
+</style>
+<div class="">
+    <div class="col-md-2 col-sm-2 col-xs-6 dept-container-left">
+        <div class="divContainer">
+            <ul class="nav nav-pills nav-stacked nav-left-li" id="nav-pills-sub">
+                <li ng-repeat="dept in deptlist" title="编号{{dept.ID}}">
+                    <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/hospitalizedlist/2/{{dept.ID}}">
+                        <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
+                    </a>
+                </li>
+            </ul>
+            <div class="list-bottom-bar">记录数：{{deptlist.length}}</div>
+        </div>
+    </div>
+    <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
+<div>床位</div>
+    </div>
+</div>

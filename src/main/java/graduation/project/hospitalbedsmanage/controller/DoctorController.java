@@ -15,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -186,9 +187,19 @@ public class DoctorController {
     @ResponseBody
     @RequestMapping("/updateUserInfo")
     public String updateUserInfo(Doctor doctor, HttpServletRequest request) throws IOException {
-        List<Map<String, Doctor>> list_doctor = doctorService.getUserInfoByLoginName(doctor);
-        if (list_doctor.size() > 0) {
-            return CommonTools.getReturnMsg("手机号或邮箱已经存在", false);
+        List<Map<String, Doctor>> list_doctor = null;
+        if (!CommonTools.isBlank(doctor.getEmail())) {
+            list_doctor = doctorService.getUserInfoByLoginName(doctor.getEmail(), doctor.getId());
+            if (list_doctor.size() > 0) {
+                return CommonTools.getReturnMsg("手机号或邮箱已经存在", false);
+            }
+        }
+
+        if (!CommonTools.isBlank(doctor.getMobile())) {
+            list_doctor = doctorService.getUserInfoByLoginName(doctor.getMobile(), doctor.getId());
+            if (list_doctor.size() > 0) {
+                return CommonTools.getReturnMsg("手机号或邮箱已经存在", false);
+            }
         }
         //修改
         doctorService.updateUserInfo(doctor);
@@ -208,13 +219,14 @@ public class DoctorController {
         if (CommonTools.isBlank(userID)) {
             return CommonTools.getReturnMsg("参数错误", false);
         }
-        userID = userID.substring(1, userID.length() - 1);
+        //userID = userID.substring(1, userID.length() - 1);
+        //userID=CommonTools.getSqlInStrByStrArray(userID);
+        userID = userID.replace("[", "(").replace("]", ")");
         int result = doctorService.deleteUserInfo(userID);
         if (result > 0) {
             return CommonTools.getReturnMsg("删除成功", true);
-        } else {
-            return CommonTools.getReturnMsg("删除失败", false);
         }
+        return CommonTools.getReturnMsg("删除失败", false);
     }
 
     /**

@@ -14,7 +14,11 @@
     </select>
 
     <select id="getDeptInfo" resultType="HashMap">
-        select  * from department
+        select * from department
+    </select>
+
+    <select id="getDeptInfoByCondition" resultType="HashMap">
+        select * from department where ${condition}
     </select>
 
     <update id="updateDeptInfo">

@@ -21,7 +21,7 @@
     </select>
 
     <select id="getUserInfoByLoginName" resultType="HashMap">
-        select ID from doctor where  <![CDATA[ id <> #{id} ]]> and( mobile = #{mobile} or email = #{email})
+        select ID from doctor where id &lt;&gt; #{userId} and (mobile = #{loginName} or email = #{loginName})
     </select>
 
     <select id="getDoctorByDeptNo" resultType="HashMap">
@@ -30,6 +30,7 @@
         <if test="deptNo gt 0">
             where deptno=#{deptNo}
         </if>
+        order by deptno,doctor.id
     </select>
 
     <insert id="register" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
@@ -44,12 +45,12 @@
         <if test="deptNo != null and deptNo != ''">
             ,deptNo=#{deptNo}
         </if>
-         where id=#{id}
+        where id=#{id}
     </update>
 
-    <update id="deleteUserInfo" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        delete from doctor where id in (#{userId})
-    </update>
+    <delete id="deleteUserInfo">
+        delete from doctor where id in ${userID}
+    </delete>
 
     <update id="updatePassword" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
         update doctor set password=#{password} where id=#{id}

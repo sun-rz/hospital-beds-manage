@@ -28,10 +28,6 @@
             background: #0084ff;
         }
 
-        #nav-pills-sub {
-            margin-bottom: 50px;
-        }
-
         .div-btn {
             margin-top: 15px;
         }
@@ -57,6 +53,7 @@
                         </span>
                 </li>
             </ul>
+            <div class="list-bottom-bar">记录数：{{deptlist.length}}</div>
         </div>
     </div>
     <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
@@ -65,7 +62,7 @@
             <div class="table-responsive">
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-default"><a href="#!/editdoctor/0/{{deptNo}}">新增</a></button>
-                    <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()">
+                    <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()" ng-disabled="checked.length==0">
                 </div>
                 <table class="table">
                     <thead>
@@ -86,7 +83,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="doc in doctorList" class="{{selectDoc?'tractive':''}}">
+                    <tr ng-repeat="doc in doctorList" class="{{doc.checked?'tractive':''}}">
                         <td title="选择">
                             <label>
                                 <input ng-value="{{doc.id}}" ng-model="doc.checked"
@@ -94,7 +91,7 @@
                             </label>
                         </td>
                         <td>{{doc.id}}</td>
-                        <td><a href="#!/editdoctor/{{doc.id}}/{{deptNo}}">{{doc.name}}</a></td>
+                        <td><a href="#!/editdoctor/{{doc.id}}/{{deptNo}}" title="点击查看详情">{{doc.name}}</a></td>
                         <td>{{doc.gender>0?"女":"男"}}</td>
                         <td>{{doc.deptName}}</td>
                         <td>{{doc.jobname}}</td>

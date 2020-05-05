@@ -33,6 +33,15 @@ public class DepartmentController {
         return obj.toString();
     }
 
+    @ResponseBody
+    @RequestMapping("/getDeptInfoByCondition")
+    public String getDeptInfoByCondition(String condition) {
+        List deptInfo = departmentService.getDeptInfoByCondition(condition);
+        JSONObject obj = new JSONObject();
+        obj.put("deptList", JSONArray.fromObject(deptInfo));
+        return obj.toString();
+    }
+
     /**
      * 根据id获得部门信息
      *

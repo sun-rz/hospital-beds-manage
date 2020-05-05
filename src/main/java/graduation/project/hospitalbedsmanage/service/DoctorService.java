@@ -41,8 +41,8 @@ public class DoctorService {
     }
 
     @Transactional
-    public List<Map<String, Doctor>> getUserInfoByLoginName(Doctor doctor) {
-        return doctorMapper.getUserInfoByLoginName(doctor);
+    public List<Map<String, Doctor>> getUserInfoByLoginName(String loginName,int userId) {
+        return doctorMapper.getUserInfoByLoginName(loginName,userId);
     }
 
     @Transactional

@@ -1,9 +1,13 @@
 package graduation.project.hospitalbedsmanage.util;
 
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CommonTools {
     /**
@@ -68,11 +72,70 @@ public class CommonTools {
     }
 
     public static int ToInt(String str) {
+        if(isBlank(str)) return 0;
         try {
             return Integer.parseInt(str);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    /**
+     * 获得格式化的事件字符串
+     *
+     * @param date   日期
+     * @param format 格式
+     * @return
+     */
+    public static String parseDate(Date date, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
+    }
+
+    /**
+     * 格式化日期
+     *
+     * @param dateStr String 字符型日期
+     * @param format  String 格式
+     * @return Date 日期
+     */
+    public static Date parseDate(String dateStr, String format) {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat(format);
+            return dateFormat.parse(dateStr);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * StringUtil.getSqlInStrByStrArray()<BR>
+     * <P>Author :  wyp </P>
+     * <P>Date : 2016年6月15日下午6:14:05</P>
+     * <P>Desc : 数组字符串转换为SQL in 字符串拼接 </P>
+     * @return  SQL in 字符串
+     */
+    public static String getSqlInStrByStrArray(String str) {
+        StringBuffer temp = new StringBuffer();
+        if (isBlank(str)) {
+            return "('')";
+        }
+        temp.append("(");
+        if (!isBlank(str)) {
+            String[] strArray = str.split(",");
+            if (strArray != null && strArray.length > 0) {
+                for (int i = 0; i < strArray.length; i++) {
+                    temp.append("'");
+                    temp.append(strArray[i]);
+                    temp.append("'");
+                    if (i != (strArray.length - 1)) {
+                        temp.append(",");
+                    }
+                }
+            }
+        }
+        temp.append(")");
+        return temp.toString();
     }
 }

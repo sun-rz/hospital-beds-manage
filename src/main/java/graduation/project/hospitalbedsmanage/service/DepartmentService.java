@@ -47,4 +47,8 @@ public class DepartmentService {
     public Department getDeptInfoByName(Department dept) {
         return departmentMapper.getDeptInfoByName(dept);
     }
+
+    public List getDeptInfoByCondition(String condition) {
+        return departmentMapper.getDeptInfoByCondition(condition);
+    }
 }
