@@ -1,38 +1,43 @@
 <style>
-        .dept-container-left {
-            background: #fff;
-            position: absolute;
-            top: 50px;
-            left: 0;
-            min-height: 100%;
-            height: auto;
-            margin: 0;
-            padding: 0;
-        }
+    .dept-container-left {
+        background: #fff;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        min-height: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+    }
 
-        .dept-container-right {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            min-height: 100%;
-            padding: 0;
-            height: auto;
-        }
+    .dept-container-right {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        min-height: 100%;
+        padding: 0;
+        height: auto;
+    }
 
-        .nav-pills > li > a:focus {
-            color: #0084ff;
-        }
+    .nav-pills > li > a:focus {
+        color: #0084ff;
+    }
 
-        #nav-pills-sub .active {
-            color: #fff;
-            background: #0084ff;
-        }
+    #nav-pills-sub .active {
+        color: #fff;
+        background: #0084ff;
+    }
 
-        .div-btn {
-            margin-top: 15px;
-        }
 
-    </style>
+    #nav-pills-sub .active + span a, #nav-pills-sub .active + span .fa {
+        color: #fff;
+    }
+
+    .div-btn {
+        margin-top: 15px;
+    }
+
+</style>
 
 <div class="">
 
@@ -40,7 +45,8 @@
 
         <div class="divContainer">
             <ul class="nav nav-pills nav-stacked nav-left-li" id="nav-pills-sub">
-                <li ng-repeat="dept in deptlist" title="编号{{dept.ID}}">
+                <li ng-repeat="dept in deptlist"
+                    title="编号：{{dept.ID}}&#10;床位总数：{{dept.totalBeds}}&#10;病房数：{{dept.romms}}&#10;外借优先级：{{dept.borrowLevel}}">
                     <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/departmentlist/3/{{dept.ID}}">
                         <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
                     </a>
@@ -53,7 +59,7 @@
                         </span>
                 </li>
             </ul>
-            <div class="list-bottom-bar">记录数：{{deptlist.length}}</div>
+            <div class="list-bottom-bar" ng-show="deptlist.length>0">记录数：{{deptlist.length}}</div>
         </div>
     </div>
     <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
@@ -61,8 +67,10 @@
 
             <div class="table-responsive">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-default"><a href="#!/editdoctor/0/{{deptNo}}">新增</a></button>
-                    <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()" ng-disabled="checked.length==0">
+                    <button type="button" class="btn btn-sm btn-default"><a href="#!/editdoctor/0/{{deptNo}}">新增</a>
+                    </button>
+                    <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()"
+                           ng-disabled="checked.length==0">
                 </div>
                 <table class="table">
                     <thead>

@@ -6,7 +6,8 @@ import java.util.Date;
  * 床位实体类
  */
 public class Beds {
-    private int id;//床位编号
+    private int id;//自增id
+    private String bedNo;//床位编号=部门编号+病房号
     private int deptNo;//所属科室编号
     private int patientID;//患者ID
     private int status;//使用状态
@@ -15,6 +16,20 @@ public class Beds {
     private Date freeDate;//归还日期
 
     public Beds() {
+    }
+
+    public Beds(String bedNo, int deptNo,String address) {
+        this.bedNo = bedNo;
+        this.deptNo = deptNo;
+        this.address = address;
+    }
+
+    public String getBedNo() {
+        return bedNo;
+    }
+
+    public void setBedNo(String bedNo) {
+        this.bedNo = bedNo;
     }
 
     public int getId() {
@@ -77,6 +92,7 @@ public class Beds {
     public String toString() {
         return "{" +
                 "id=" + id +
+                ", bedNo=" + bedNo +
                 ", deptNo=" + deptNo +
                 ", patientID=" + patientID +
                 ", status=" + status +

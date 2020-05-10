@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.DepartmentMapper">
     <insert id="addDeptInfo">
-        insert into department(totalbeds,borrowlevel, deptname, deptservice) values (#{totalBeds},#{borrowLevel},#{deptName},#{deptService})
+        insert into department(totalbeds,borrowlevel, deptname, deptservice) values (#{totalBeds},rooms=#{rooms},#{borrowLevel},#{deptName},#{deptService})
     </insert>
 
     <select id="getDeptInfoById" resultType="graduation.project.hospitalbedsmanage.entity.Department">
@@ -22,7 +22,7 @@
     </select>
 
     <update id="updateDeptInfo">
-    update department set deptName=#{deptName},deptService=#{deptService},totalBeds=#{totalBeds},borrowLevel=#{borrowLevel} where id=#{id}
+    update department set deptName=#{deptName},deptService=#{deptService},totalBeds=#{totalBeds},rooms=#{rooms},borrowLevel=#{borrowLevel} where id=#{id}
     </update>
 
     <delete id="deleteDept">

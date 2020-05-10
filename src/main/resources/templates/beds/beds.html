@@ -1,0 +1,84 @@
+<style>
+    .dept-container-left {
+        background: #fff;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        min-height: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dept-container-right {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        min-height: 100%;
+        padding: 0;
+        height: auto;
+    }
+
+    .nav-pills > li > a:focus {
+        color: #0084ff;
+    }
+
+    #nav-pills-sub .active {
+        color: #fff;
+        background: #0084ff;
+    }
+
+    .ul-beds li {
+        list-style: none;
+        float: left;
+        width: 80px;
+        height: 80px;
+        margin: 15px 15px;
+        background-size: 100%;
+        cursor: pointer;
+    }
+
+    .ul-beds-title {
+        width: 80px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .ul-beds-img {
+        width: 100%;
+        height: 100%;
+    }
+
+</style>
+<div class="">
+    <div class="col-md-2 col-sm-2 col-xs-6 dept-container-left">
+        <div class="divContainer">
+            <ul class="nav nav-pills nav-stacked nav-left-li" id="nav-pills-sub">
+                <li ng-repeat="dept in deptlist"
+                    title="编号：{{dept.ID}}&#10;床位总数：{{dept.totalBeds}}&#10;病房数：{{dept.romms}}&#10;外借优先级：{{dept.borrowLevel}}">
+                    <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/bedslist/6/{{dept.ID}}">
+                        <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
+                    </a>
+                </li>
+            </ul>
+            <div class="list-bottom-bar" ng-show="deptlist.length>0">记录数：{{deptlist.length}}</div>
+        </div>
+    </div>
+    <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
+        <div class="divContainer">
+            <div>
+                <ul class="ul-beds">
+                    <li ng-repeat="bed in bedList" title="编号：{{bed.bedNo}}&#10;床位号：{{bed.address}}">
+                        <div class="ul-beds-img" style="background: url('pic/bed_0.png');background-size: 100%;"></div>
+                        <div class="ul-beds-title">{{bed.address}}</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="table-bottom-bar" style="float: left;display: inline-block;width: 100%;margin-top: 50px;" ng-show="bedList.length>0">记录数：{{bedList.length}}</div>
+
+        </div>
+
+    </div>
+</div>

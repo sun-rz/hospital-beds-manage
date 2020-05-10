@@ -6,6 +6,7 @@ package graduation.project.hospitalbedsmanage.entity;
 public class Department {
     private int id;//部门编号
     private int totalBeds;//总床位
+    private int rooms;//病房个数
     private int useBeds;//使用床位
     private int freeBeds;//剩余床位
     private int borrowBeds;//外借床位
@@ -15,6 +16,14 @@ public class Department {
     private float usage;//使用率
 
     public Department() {
+    }
+
+    public int getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(int rooms) {
+        this.rooms = rooms;
     }
 
     public int getID() {
@@ -94,6 +103,7 @@ public class Department {
         return "{" +
                 "id=" + id +
                 ", totalBeds=" + totalBeds +
+                ", rooms=" + rooms +
                 ", useBeds=" + useBeds +
                 ", freeBeds=" + freeBeds +
                 ", borrowBeds=" + borrowBeds +
