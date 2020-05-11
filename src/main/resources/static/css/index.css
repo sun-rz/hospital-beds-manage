@@ -180,9 +180,10 @@ label:hover,i:hover{
 }
 
 .table-bottom-bar{
-    margin-bottom: 50px;
     border-top: 1px solid #ccc;
     padding: 15px;
+    margin:auto 15px;
+    margin-bottom: 50px;
 }
 
 .form-control[disabled], .form-control[readonly]{
@@ -196,9 +197,10 @@ label:hover,i:hover{
 }
 
 .list-bottom-bar{
-    margin-bottom: 50px;
-    padding: 15px 15px 15px 30px;
+    padding: 15px 15px 15px 15px;
     border-top: 1px solid #ccc;
+    margin:auto 15px;
+    margin-bottom: 50px;
 }
 
 
