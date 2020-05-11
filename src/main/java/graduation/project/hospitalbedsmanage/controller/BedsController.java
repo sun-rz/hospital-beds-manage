@@ -36,9 +36,9 @@ public class BedsController {
     @RequestMapping("/getBeds")
     public String getBeds(String deptNo){
         List beds=bedsService.getBeds(CommonTools.ToInt(deptNo));
-        System.out.println(beds);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         JSONObject obj = new JSONObject();
-        obj.put("bedList", JSONArray.fromObject(beds));
+        obj.put("bedList", JSONArray.fromObject(gson.toJson(beds)));
         return obj.toString();
     }
 }

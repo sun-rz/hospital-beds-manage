@@ -1,4 +1,4 @@
-var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function ($routeProvider) {
+var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).config(function ($routeProvider) {
     //配置路由
     $routeProvider.when('/home/:type/:id', {//首页
         templateUrl: 'home/home.html',
@@ -24,6 +24,9 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     }).when('/bedslist/:type/:deptNo', {//床位管理
         templateUrl: 'beds/beds_list.html',
         controller: 'bedslistCtrl'
+    }).when('/editbeds/:bedNo/:deptNo', {//床位编辑
+        templateUrl: 'beds/beds_edit.html',
+        controller: 'editbedsCtrl'
     }).when('/editdoctor/:doctorId/:deptNo', {//医护人员管理
         templateUrl: 'user/doctor_edit.html',
         controller: 'editdoctorCtrl'
@@ -567,10 +570,31 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     $resource('/beds/getBeds', {}).get(function (resp) {
         //请求成功
         $scope.bedList = resp.bedList;
+        console.log($scope.bedList)
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
     });
+    $scope.myCheck=true;
+    $scope.showModal=function(){
+        $scope.myCheck=!$scope.myCheck;
+    };
+
+    //获取状态名称
+    $scope.getStatusTitle = function (status) {
+        let str = "";
+        switch (status) {
+            case 1:
+                str = "占用";
+                break;
+            case 2:
+                str = "维修";
+                break;
+            default:
+                str = "空闲";
+        }
+        return str;
+    }
 
 }).controller('bedslistCtrl', function ($scope, $routeParams, $resource, $rootScope) {
     $scope.deptNo = $routeParams.deptNo;
@@ -580,6 +604,21 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource']).config(function
     $resource('/dept/getDeptInfoByCondition', {"condition": "totalBeds>0"}).get(function (resp) {
         //请求成功
         $scope.deptlist = resp.deptList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+
+}).controller('editbedsCtrl', function ($scope, $routeParams, $resource, $rootScope) {
+    $scope.deptNo = $routeParams.deptNo;
+    $scope.deptlist = [];
+
+    //加载病床
+    $resource('/beds/getBeds', {}).get(function (resp) {
+        //请求成功
+        $scope.bedList = resp.bedList;
+        console.log($scope.bedList)
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");

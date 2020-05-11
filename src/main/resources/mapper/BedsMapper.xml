@@ -10,7 +10,7 @@
     </select>
 
     <select id="getBeds" resultType="HashMap">
-        select deptNo, patientID, status, address, useDate, freeDate, bedNo,department.deptName from beds left join department on beds.deptNo=department.ID
+        select beds.id,beds.deptNo, beds.patientID, beds.status, beds.address, beds.useDate, beds.freeDate, beds.bedNo,patient.name as patientName,department.deptName from beds left join patient on beds.patientID=patient.id left join department on beds.deptNo=department.ID
         <if test="deptNo gt 0">
             where deptno=#{deptNo}
         </if>
