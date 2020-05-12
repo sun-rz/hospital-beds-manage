@@ -24,4 +24,6 @@ public interface DepartmentMapper {
     Department getDeptInfoByName(Department dept);
 
     List getDeptInfoByCondition(String condition);
+
+    int updateDeptBeds(int deptNo);
 }

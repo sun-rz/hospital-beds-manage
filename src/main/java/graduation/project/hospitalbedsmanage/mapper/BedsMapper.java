@@ -16,7 +16,12 @@ public interface BedsMapper {
 
     int deleteBed(Beds bed);
 
+    int deleteBedByBedNo(Beds bed);
+
+    int deleteBeds(String bedNo);
+
     List getBeds(int deptNo);
 
     int updateBedStatus(Beds bed);
+
 }

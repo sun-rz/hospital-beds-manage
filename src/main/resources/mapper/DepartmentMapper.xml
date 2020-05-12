@@ -32,4 +32,8 @@
     <select id="getJobInfo" resultType="HashMap">
         select * from job
     </select>
+
+    <update id="updateDeptBeds">
+        update department set totalBeds=totalBeds-1 where ID=#{deptNo}
+    </update>
 </mapper>

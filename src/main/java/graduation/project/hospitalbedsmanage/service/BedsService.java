@@ -20,15 +20,46 @@ public class BedsService {
     @Autowired
     BedsMapper bedsMapper;
 
+    StringBuilder sb=null;
+
+    public List getBeds(int deptNo) {
+        return bedsMapper.getBeds(deptNo);
+    }
+
+    public List getBed(Beds bed) {
+        return bedsMapper.getBed(bed);
+    }
+
+    public int updateBedStatus(Beds bed) {
+        return bedsMapper.updateBedStatus(bed);
+    }
+
+    public int addBed(Beds bed) {
+        return bedsMapper.addBed(bed);
+    }
+
+    public int deleteBed(Beds bed) {
+        return bedsMapper.deleteBed(bed);
+    }
+
+    public int deleteBedByBedNo(Beds bed) {
+        return bedsMapper.deleteBedByBedNo(bed);
+    }
+
     /**
      * 自动分配床位
+     *
      * @param deptNo
      */
     public void autoModeBeds(int deptNo) {
+        sb=new StringBuilder();
         List<Department> depts = bedsMapper.getBedsRooms(deptNo);
         for (Department dept : depts) {
             getBedsNumber(dept);
         }
+
+        //删除多余的房间
+        bedsMapper.deleteBeds(sb.append("0").toString());
     }
 
     /**
@@ -70,12 +101,9 @@ public class BedsService {
             for (int j = 0; j < bedNumber[i].length; j++) {
                 count += bedNumber[i][j];
             }
-            //System.out.println("病房" + (i + 1) + "：床位数" + count);
+           // System.out.println("病房" + (i + 1) + "：床位数" + count);
             String roomno = i + 1 > 9 ? "" + dept.getID() + (i + 1) : dept.getID() + "0" + (i + 1);
-            Beds lastBed = getRoomBeds(dept.getID(), roomno, count);
-            if(i == bedNumber.length-1) {//删除
-                bedsMapper.deleteBed(lastBed);
-            }
+            getRoomBeds(dept.getID(), roomno, count);
         }
     }
 
@@ -84,31 +112,20 @@ public class BedsService {
      * @param beds  床位数
      * @return
      */
-    private Beds getRoomBeds(int deptNo, String bedNo, int beds) {
-        Beds lastBed = null;
+    private void getRoomBeds(int deptNo, String bedNo, int beds) {
+        JSONObject obj;
         for (int i = 1; i <= beds; i++) {
-            Beds bed = new Beds(bedNo + i, deptNo,bedNo + "号病房-" + i + "号床");
-            // System.out.println(bed);
-            List getbeds = bedsMapper.getBed(bed);//查询
+            Beds bed = new Beds(bedNo + i, deptNo, bedNo + "号病房-" + i + "号床");
+            List getbeds = getBed(bed);//查询
             if (getbeds.size() < 1) {
-                bedsMapper.addBed(bed);//添加
-            }
-            if (i == beds) {
-                lastBed = bed;//返回最大id的床位号
+                addBed(bed);//添加
+                sb.append(bed.getBedNo()).append(",");
+            }else{
+                for (int m=0;m< getbeds.size();m++){
+                   obj=JSONObject.fromObject(getbeds.get(m));
+                    sb.append(obj.getString("bedNo")).append(",");
+                }
             }
         }
-        return lastBed;
-    }
-
-    public List getBeds(int deptNo) {
-        return bedsMapper.getBeds(deptNo);
-    }
-
-    public List getBed(Beds bed) {
-        return bedsMapper.getBed(bed);
-    }
-
-    public int updateBedStatus(Beds bed) {
-        return bedsMapper.updateBedStatus(bed);
     }
 }

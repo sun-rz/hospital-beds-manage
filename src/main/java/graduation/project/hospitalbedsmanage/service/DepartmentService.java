@@ -51,4 +51,9 @@ public class DepartmentService {
     public List getDeptInfoByCondition(String condition) {
         return departmentMapper.getDeptInfoByCondition(condition);
     }
+
+
+    public int updateDeptBeds(int deptNo) {
+        return departmentMapper.updateDeptBeds(deptNo);
+    }
 }

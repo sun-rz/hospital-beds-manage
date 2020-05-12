@@ -28,19 +28,94 @@
         background: #0084ff;
     }
 
-    .div-btn {
-        margin-top: 15px;
+    .ul-beds li {
+        list-style: none;
+        float: left;
+        width: 85px;
+        height: 85px;
+        margin: 15px 15px;
+        background-size: 100%;
+        cursor: pointer;
+        border: 1px solid #999;
     }
 
+    .ul-beds-title {
+        width: 80px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .ul-beds-icon .fa-bed {
+        font-size: 45px;
+        padding-left: 8px;
+        margin-bottom: 8px;
+    }
+
+    .ul-beds-icon {
+        padding: 5px;
+    }
+
+    .ul-beds-icon:hover {
+        background: #ddd;
+    }
+
+    /*正常*/
+    .ul-beds-icon .status0 {
+        color: #008000;
+    }
+
+    /*占用*/
+    .ul-beds-icon .status1 {
+        color: #ff0000;
+    }
+
+    /*维修*/
+    .ul-beds-icon .status2 {
+        color: #ffcf20;
+    }
+
+    .div-modal {
+        transition: all linear 0.3s;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        position: fixed;
+        z-index: 1050;
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+        outline: 0;
+        background: rgba(0, 0, 0, .5);
+    }
+
+    .ng-hide {
+        height: 0;
+        width: 0;
+        background-color: transparent;
+        top: -200px;
+        left: 50%;
+    }
+
+    @media (min-width: 768px) {
+        .modal-dialog {
+            width: 50%;
+            margin: 30px auto
+        }
+    }
+
+    .ul-beds-title a{
+        color: #0084ff;
+        text-decoration: none;
+    }
 </style>
-
 <div class="">
-
     <div class="col-md-2 col-sm-2 col-xs-6 dept-container-left">
-
         <div class="divContainer">
             <ul class="nav nav-pills nav-stacked nav-left-li" id="nav-pills-sub">
-                <li ng-repeat="dept in deptlist" title="编号：{{dept.ID}}&#10;床位总数：{{dept.totalBeds}}&#10;病房数：{{dept.romms}}&#10;外借优先级：{{dept.borrowLevel}}">
+                <li ng-repeat="dept in deptlist"
+                    title="编号：{{dept.ID}}&#10;床位总数：{{dept.totalBeds}}&#10;病房数：{{dept.romms}}&#10;外借优先级：{{dept.borrowLevel}}">
                     <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/bedslist/6/{{dept.ID}}">
                         <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
                     </a>
@@ -50,8 +125,26 @@
         </div>
     </div>
     <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
-        <div class="div-table divContainer">
+        <div class="divContainer">
+            <div>
+                <ul class="ul-beds">
+                    <li ng-repeat="bed in bedList"
+                        title="病床编号：{{bed.bedNo}}&#10;床位名称：{{bed.address}}&#10;病床状态：{{getStatusTitle(bed.status)}}&#10;患者姓名：{{bed.patientName}}&#10;使用日期：{{bed.useDate}}&#10;归还日期：{{bed.freeDate}}"
+                        ng-click="showModal()">
+                        <div class="ul-beds-icon">
+                            <i class="fa fa-bed status{{bed.status}}"></i>
+                            <div class="ul-beds-title">
+                                <a href="#!/editbeds/{{bed.deptNo}}/{{bed.bedNo}}">{{bed.address}}</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="table-bottom-bar" style="float: left;display: inline-block;width: 100%;margin-top: 50px;"
+                 ng-show="bedList.length>0">记录数：{{bedList.length}}
+            </div>
 
         </div>
+
     </div>
 </div>
