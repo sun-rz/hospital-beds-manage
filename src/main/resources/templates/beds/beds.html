@@ -150,11 +150,11 @@
             <div>
                 <ul class="ul-beds">
                     <li ng-repeat="bed in bedList"
-                        title="病床编号：{{bed.bedNo}}&#10;床 位 号 ：{{bed.address}}&#10;病床状态：{{getStatusTitle(bed.status)}}&#10;患者姓名：{{bed.patientName}}&#10;使用日期：{{bed.useDate}}&#10;归还日期：{{bed.freeDate}}"
+                        title="病床编号：{{bed.bedNo}}&#10;床位名称：{{bed.address}}&#10;病床状态：{{getStatusTitle(bed.status)}}&#10;患者姓名：{{bed.patientName}}&#10;使用日期：{{bed.useDate}}&#10;归还日期：{{bed.freeDate}}"
                         ng-click="showModal()">
                         <div class="ul-beds-icon">
                             <i class="fa fa-bed status{{bed.status}}"></i>
-                            <div class="ul-beds-title"><a href="#!/editbeds/{{bed.id}}/{{bed.deptNo}}">{{bed.address}}</a></div>
+                            <div class="ul-beds-title"><a href="#!/editbeds/{{bed.deptNo}}/{{bed.bedNo}}">{{bed.address}}</a></div>
                         </div>
                     </li>
                 </ul>

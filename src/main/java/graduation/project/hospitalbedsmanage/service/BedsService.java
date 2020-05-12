@@ -89,7 +89,7 @@ public class BedsService {
         for (int i = 1; i <= beds; i++) {
             Beds bed = new Beds(bedNo + i, deptNo,bedNo + "号病房-" + i + "号床");
             // System.out.println(bed);
-            List<Beds> getbeds = bedsMapper.getBed(bed);//查询
+            List getbeds = bedsMapper.getBed(bed);//查询
             if (getbeds.size() < 1) {
                 bedsMapper.addBed(bed);//添加
             }
@@ -102,5 +102,13 @@ public class BedsService {
 
     public List getBeds(int deptNo) {
         return bedsMapper.getBeds(deptNo);
+    }
+
+    public List getBed(Beds bed) {
+        return bedsMapper.getBed(bed);
+    }
+
+    public int updateBedStatus(Beds bed) {
+        return bedsMapper.updateBedStatus(bed);
     }
 }

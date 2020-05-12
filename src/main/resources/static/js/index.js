@@ -24,7 +24,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     }).when('/bedslist/:type/:deptNo', {//床位管理
         templateUrl: 'beds/beds_list.html',
         controller: 'bedslistCtrl'
-    }).when('/editbeds/:bedNo/:deptNo', {//床位编辑
+    }).when('/editbeds/:deptNo/:bedNo', {//床位编辑
         templateUrl: 'beds/beds_edit.html',
         controller: 'editbedsCtrl'
     }).when('/editdoctor/:doctorId/:deptNo', {//医护人员管理
@@ -570,7 +570,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     $resource('/beds/getBeds', {}).get(function (resp) {
         //请求成功
         $scope.bedList = resp.bedList;
-        console.log($scope.bedList)
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
@@ -610,20 +609,32 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     });
 
 
-}).controller('editbedsCtrl', function ($scope, $routeParams, $resource, $rootScope) {
+}).controller('editbedsCtrl', function ($scope, $routeParams, $resource) {
     $scope.deptNo = $routeParams.deptNo;
-    $scope.deptlist = [];
+    $scope.bedNo = $routeParams.bedNo;
+    $scope.bed = {};
 
     //加载病床
-    $resource('/beds/getBeds', {}).get(function (resp) {
+    $resource('/beds/getBed', {bedNo:$scope.bedNo,deptNo:$scope.deptNo}).get(function (resp) {
         //请求成功
-        $scope.bedList = resp.bedList;
-        console.log($scope.bedList)
+        $scope.bed = resp.bed[0];
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
     });
 
+    //更新状态
+    $scope.updateBedStatus=function (b) {
+        console.log(b)
+        $resource('/beds/updateBedStatus', b).get(function (resp) {
+            //请求成功
+            history.back();
+            alert(resp.msg);
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+    }
 
 }).controller('userinfoCtrl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;

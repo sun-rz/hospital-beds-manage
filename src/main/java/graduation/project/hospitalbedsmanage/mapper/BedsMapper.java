@@ -12,9 +12,11 @@ public interface BedsMapper {
 
     int addBed(Beds bed);
 
-    List<Beds> getBed(Beds bed);
+    List getBed(Beds bed);
 
     int deleteBed(Beds bed);
 
     List getBeds(int deptNo);
+
+    int updateBedStatus(Beds bed);
 }

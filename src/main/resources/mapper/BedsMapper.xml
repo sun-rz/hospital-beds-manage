@@ -5,8 +5,8 @@
         select id,totalBeds,rooms from department where totalBeds>0 order by id
     </select>
 
-    <select id="getBed" resultType="graduation.project.hospitalbedsmanage.entity.Beds">
-        select * from beds where deptNo=#{deptNo} and bedNo=#{bedNo}
+    <select id="getBed" resultType="HashMap">
+        select beds.id,beds.deptNo, beds.patientID, beds.status, beds.address, beds.useDate, beds.freeDate, beds.bedNo,patient.name as patientName,department.deptName from beds left join patient on beds.patientID=patient.id left join department on beds.deptNo=department.ID where beds.deptNo=#{deptNo} and beds.bedNo=#{bedNo}
     </select>
 
     <select id="getBeds" resultType="HashMap">
@@ -16,11 +16,16 @@
         </if>
     </select>
 
-    <delete id="deleteBed">
-        delete from beds where deptNo=#{deptNo} and bedNo >#{bedNo}
-    </delete>
     <insert id="addBed">
         insert into beds(deptNo, address,bedNo) values (#{deptNo},#{address},#{bedNo})
     </insert>
+
+    <update id="updateBedStatus">
+        update beds set status=#{status} where bedNo =#{bedNo}
+    </update>
+
+    <delete id="deleteBed">
+        delete from beds where deptNo=#{deptNo} and bedNo >#{bedNo}
+    </delete>
 </mapper>
 

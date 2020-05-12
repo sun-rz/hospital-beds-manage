@@ -67,7 +67,6 @@ public class PatientController {
     public String addPatientInfo(Patient patient, String casehistory) {
         int result = patientservice.addPatientInfo(patient);
 
-        System.out.println(patient.getId());
         JSONObject object = JSONObject.fromObject(casehistory);
         if (result > 0) {
             CaseHistory caseHistory = new CaseHistory(patient.getId(), patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
