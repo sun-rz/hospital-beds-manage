@@ -151,7 +151,12 @@
                 </ul>
             </div>
             <div class="table-bottom-bar" style="float: left;display: inline-block;width: 100%;margin-top: 50px;"
-                 ng-show="bedList.length>0">记录数：{{bedList.length}}
+                 ng-show="bedList.length>0">
+                <span>记录数：{{bedList.length}}</span>
+                <span>空闲：{{freeCount}}</span>
+                <span>占用：{{useCount}}</span>
+                <span>维修：{{serviceCount}}</span>
+                <span>使用率：{{useCount/bedList.length*100 | number : 2}}%</span>
             </div>
 
         </div>

@@ -185,7 +185,9 @@ label:hover,i:hover{
     margin:auto 15px;
     margin-bottom: 50px;
 }
-
+.table-bottom-bar span{
+    margin: auto 15px;
+}
 .form-control[disabled], .form-control[readonly]{
     background: #fff;
 }

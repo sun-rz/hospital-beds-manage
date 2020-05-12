@@ -1,4 +1,4 @@
-var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).config(function ($routeProvider) {
+var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).config(function ($routeProvider) {
     //配置路由
     $routeProvider.when('/home/:type/:id', {//首页
         templateUrl: 'home/home.html',
@@ -46,7 +46,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         templateUrl: 'user/updatepassword.html',
         controller: 'passwordCtrl'
     }).otherwise('/home/1/0')
-}).controller("indexController", function ($scope, $location, $window, $rootScope,$resource) {
+}).controller("indexController", function ($scope, $location, $window, $rootScope, $resource) {
     $scope.keyword = '';
 
     //解决刷新后无法选中
@@ -74,7 +74,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         $scope.user = resp.doctor;
 
         //管理员菜单权限控制
-        if( $scope.user.mobile=='admin'||$scope.user.email=='admin@qq.com'){
+        if ($scope.user.mobile == 'admin' || $scope.user.email == 'admin@qq.com') {
             $scope.menu.push({id: 3, url: '/department', title: '科室管理', fa: 'fa fa-cart-plus'})
         }
     }, function (err) {
@@ -501,9 +501,9 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         alert("网络错误,请重试");
     });
 
-    $scope.findBed=function(p){
+    $scope.findBed = function (p) {
         console.log(p)
-        
+
         $resource('/beds/getBedsByRule', {"patientID": $scope.patientID}).get(function (resp) {
             //请求成功
             console.log(resp)
@@ -539,8 +539,12 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
             alert("网络错误,请重试");
         });
     }
-}).controller('bedsCtrl', function ($scope, $routeParams, $resource, $rootScope,$window) {
+}).controller('bedsCtrl', function ($scope, $routeParams, $resource, $rootScope, $window) {
     $rootScope.ntype = $routeParams.type;
+    $scope.useCount = 0;
+    $scope.freeCount = 0;
+    $scope.serviceCount = 0;
+
     //页面加载部门
     $resource('/dept/getDeptInfoByCondition', {"condition": "totalBeds>0"}).get(function (resp) {
         //请求成功
@@ -562,6 +566,20 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     $resource('/beds/getBeds', {}).get(function (resp) {
         //请求成功
         $scope.bedList = resp.bedList;
+
+        for (let i = 0; i < $scope.bedList.length; i++) {
+            switch ($scope.bedList[i].status) {
+                case 0:
+                    $scope.freeCount+=1;
+                    break;
+                case 1:
+                    $scope.useCount+=1;
+                    break;
+                case 2:
+                    $scope.serviceCount+=1;
+                    break;
+            }
+        }
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
@@ -583,11 +601,11 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         return str;
     }
 
-    $scope.deleteBed=function (b) {
-        if(confirm("该操作不可恢复，是否要删除该病床？")){
+    $scope.deleteBed = function (b) {
+        if (confirm("该操作不可恢复，是否要删除该病床？")) {
             $resource('/beds/deleteBedByBedNo', b).get(function (resp) {
                 //请求成功
-               alert(resp.msg);
+                alert(resp.msg);
                 $window.location.reload();
             }, function (err) {
                 //处理错误
@@ -595,8 +613,11 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
             });
         }
     }
-}).controller('bedslistCtrl', function ($scope, $routeParams, $resource,$window) {
+}).controller('bedslistCtrl', function ($scope, $routeParams, $resource, $window) {
     $scope.deptNo = $routeParams.deptNo;
+    $scope.useCount = 0;
+    $scope.freeCount = 0;
+    $scope.serviceCount = 0;
     //页面加载部门
     $resource('/dept/getDeptInfoByCondition', {"condition": "totalBeds>0"}).get(function (resp) {
         //请求成功
@@ -607,9 +628,23 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     });
 
     //加载病床
-    $resource('/beds/getBeds', {deptNo:$scope.deptNo}).get(function (resp) {
+    $resource('/beds/getBeds', {deptNo: $scope.deptNo}).get(function (resp) {
         //请求成功
         $scope.bedList = resp.bedList;
+
+        for (let i = 0; i < $scope.bedList.length; i++) {
+            switch ($scope.bedList[i].status) {
+                case 0:
+                    $scope.freeCount+=1;
+                    break;
+                case 1:
+                    $scope.useCount+=1;
+                    break;
+                case 2:
+                    $scope.serviceCount+=1;
+                    break;
+            }
+        }
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
@@ -631,8 +666,8 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         return str;
     };
 
-    $scope.deleteBed=function (b) {
-        if(confirm("该操作不可恢复，是否要删除该病床？")){
+    $scope.deleteBed = function (b) {
+        if (confirm("该操作不可恢复，是否要删除该病床？")) {
             $resource('/beds/deleteBedByBedNo', b).get(function (resp) {
                 //请求成功
                 alert(resp.msg);
@@ -649,7 +684,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     $scope.bed = {};
 
     //加载病床
-    $resource('/beds/getBed', {bedNo:$scope.bedNo,deptNo:$scope.deptNo}).get(function (resp) {
+    $resource('/beds/getBed', {bedNo: $scope.bedNo, deptNo: $scope.deptNo}).get(function (resp) {
         //请求成功
         $scope.bed = resp.bed[0];
     }, function (err) {
@@ -658,7 +693,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     });
 
     //更新状态
-    $scope.updateBedStatus=function (b) {
+    $scope.updateBedStatus = function (b) {
         $resource('/beds/updateBedStatus', b).get(function (resp) {
             //请求成功
             history.back();

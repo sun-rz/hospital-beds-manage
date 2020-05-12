@@ -105,17 +105,18 @@
         }
     }
 
-    .ul-beds-title a{
+    .ul-beds-title a {
         color: #0084ff;
         text-decoration: none;
     }
-    .close{
+
+    .close {
         font-size: 14px;
-        opacity:0;
+        opacity: 0;
     }
 
-    .ul-beds li:hover .close{
-        opacity:1;
+    .ul-beds li:hover .close {
+        opacity: 1;
         color: #ff0000;
     }
 </style>
@@ -140,7 +141,8 @@
                     <li ng-repeat="bed in bedList"
                         title="病床编号：{{bed.bedNo}}&#10;床位名称：{{bed.address}}&#10;病床状态：{{getStatusTitle(bed.status)}}&#10;患者姓名：{{bed.patientName}}&#10;使用日期：{{bed.useDate}}&#10;归还日期：{{bed.freeDate}}"
                         ng-click="showModal()">
-                        <span title="删除" class="close" data-dismiss="modal" aria-hidden="true" ng-click="deleteBed(bed)">×</span>
+                        <span title="删除" class="close" data-dismiss="modal" aria-hidden="true"
+                              ng-click="deleteBed(bed)">×</span>
                         <div class="ul-beds-icon">
                             <i class="fa fa-bed status{{bed.status}}"></i>
                             <div class="ul-beds-title">
@@ -151,7 +153,12 @@
                 </ul>
             </div>
             <div class="table-bottom-bar" style="float: left;display: inline-block;width: 100%;margin-top: 50px;"
-                 ng-show="bedList.length>0">记录数：{{bedList.length}}
+                 ng-show="bedList.length>0">
+                <span>记录数：{{bedList.length}}</span>
+                <span>空闲：{{freeCount}}</span>
+                <span>占用：{{useCount}}</span>
+                <span>维修：{{serviceCount}}</span>
+                <span>使用率：{{useCount/bedList.length*100 | number : 2}}%</span>
             </div>
 
         </div>
