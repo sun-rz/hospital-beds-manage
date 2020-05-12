@@ -73,7 +73,7 @@
 
     /*维修*/
     .ul-beds-icon .status2 {
-        color: #ffcf20;
+        color: #777;
     }
 
     .div-modal {
@@ -109,6 +109,15 @@
         color: #0084ff;
         text-decoration: none;
     }
+    .close{
+        font-size: 14px;
+        opacity:0;
+    }
+
+    .ul-beds li:hover .close{
+        opacity:1;
+        color: #ff0000;
+    }
 </style>
 <div class="">
     <div class="col-md-2 col-sm-2 col-xs-6 dept-container-left">
@@ -131,6 +140,7 @@
                     <li ng-repeat="bed in bedList"
                         title="病床编号：{{bed.bedNo}}&#10;床位名称：{{bed.address}}&#10;病床状态：{{getStatusTitle(bed.status)}}&#10;患者姓名：{{bed.patientName}}&#10;使用日期：{{bed.useDate}}&#10;归还日期：{{bed.freeDate}}"
                         ng-click="showModal()">
+                        <span title="删除" class="close" data-dismiss="modal" aria-hidden="true" ng-click="deleteBed(bed)">×</span>
                         <div class="ul-beds-icon">
                             <i class="fa fa-bed status{{bed.status}}"></i>
                             <div class="ul-beds-title">

@@ -162,16 +162,21 @@ public class DoctorController {
     @RequestMapping("/getUserInfo")
     public String getUserInfo(String userId, HttpServletRequest request) throws IOException {
         int uid = 0;
-
+        JSONObject object;
         if (!CommonTools.isBlank(userId)) {
             uid = CommonTools.ToInt(userId);
         }
         Doctor doctor = (Doctor) request.getSession().getAttribute("session_user");
+        if (null == doctor) {
+            object = new JSONObject();
+            object.put("doctor", "{}");
+            return object.toString();
+        }
         uid = uid > 0 ? uid : doctor.getId();
         doctor = doctorService.getUserInfoById(uid);
         doctor.setPassword(null);
         request.getSession().setAttribute("session_user", doctor);
-        JSONObject object = new JSONObject();
+        object = new JSONObject();
         object.put("doctor", JSONObject.fromObject(doctor));
         return object.toString();
     }

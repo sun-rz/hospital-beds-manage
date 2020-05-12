@@ -6,27 +6,27 @@
     </select>
 
     <select id="getBed" resultType="HashMap">
-        select beds.id,beds.deptNo, beds.patientID, beds.status, beds.address, beds.useDate, beds.freeDate, beds.bedNo,patient.name as patientName,department.deptName from beds left join patient on beds.patientID=patient.id left join department on beds.deptNo=department.ID where beds.deptNo=#{deptNo} and beds.bedNo=#{bedNo}
+        select beds.id,beds.deptNo, beds.patientID, beds.status, beds.address, beds.useDate, beds.freeDate, beds.bedNo,beds.roomNo,patient.name as patientName,department.deptName from beds left join patient on beds.patientID=patient.id left join department on beds.deptNo=department.ID where beds.deptNo=#{deptNo} and beds.bedNo=#{bedNo}
     </select>
 
     <select id="getBeds" resultType="HashMap">
-        select beds.id,beds.deptNo, beds.patientID, beds.status, beds.address, beds.useDate, beds.freeDate, beds.bedNo,patient.name as patientName,department.deptName from beds left join patient on beds.patientID=patient.id left join department on beds.deptNo=department.ID
+        select beds.id,beds.deptNo, beds.patientID, beds.status, beds.address, beds.useDate, beds.freeDate, beds.bedNo,beds.roomNo,patient.name as patientName,department.deptName from beds left join patient on beds.patientID=patient.id left join department on beds.deptNo=department.ID
         <if test="deptNo gt 0">
             where beds.deptno=#{deptNo}
         </if>
     </select>
 
+    <select id="getBedsByRule" resultType="HashMap">
+         select * from beds
+    </select>
+
     <insert id="addBed">
-        insert into beds(deptNo, address,bedNo) values (#{deptNo},#{address},#{bedNo})
+        insert into beds(deptNo,roomNo,address,bedNo) values (#{deptNo},#{roomNo},#{address},#{bedNo})
     </insert>
 
     <update id="updateBedStatus">
         update beds set status=#{status} where bedNo =#{bedNo}
     </update>
-
-    <delete id="deleteBed">
-        delete from beds where deptNo=#{deptNo} and bedNo >#{bedNo}
-    </delete>
 
     <delete id="deleteBedByBedNo">
         delete from beds where deptNo=#{deptNo} and bedNo = #{bedNo}

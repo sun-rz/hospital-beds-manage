@@ -39,6 +39,20 @@ public class BedsController {
     }
 
     /**
+     * 根据算法查找病床
+     * @param deptNo
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getBedsByRule")
+    public String getBedsByRule(String patientID) {
+        System.out.println(patientID);
+        List beds = bedsService.getBedsByRule();
+
+        return CommonTools.getReturnMsg("ok",true);
+    }
+
+    /**
      * 获取单个病床信息
      *
      * @param bed
@@ -88,7 +102,6 @@ public class BedsController {
     @ResponseBody
     @RequestMapping("/deleteBedByBedNo")
     public String deleteBedByBedNo(Beds bed) {
-        System.out.println(bed);
         int result = bedsService.deleteBedByBedNo(bed);
         if (result > 0) {
             departmentService.updateDeptBeds(bed.getDeptNo());

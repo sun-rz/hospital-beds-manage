@@ -9,6 +9,7 @@ public class Beds {
     private int id;//自增id
     private String bedNo;//床位编号=部门编号+病房号
     private int deptNo;//所属科室编号
+    private int roomNo;//病房编号
     private int patientID;//患者ID
     private int status;//使用状态
     private String address;//地点
@@ -18,10 +19,19 @@ public class Beds {
     public Beds() {
     }
 
-    public Beds(String bedNo, int deptNo,String address) {
+    public Beds(String bedNo, int deptNo,int roomNo,String address) {
         this.bedNo = bedNo;
         this.deptNo = deptNo;
+        this.roomNo = roomNo;
         this.address = address;
+    }
+
+    public int getRoomNo() {
+        return roomNo;
+    }
+
+    public void setRoomNo(int roomNo) {
+        this.roomNo = roomNo;
     }
 
     public String getBedNo() {
@@ -94,6 +104,7 @@ public class Beds {
                 "id=" + id +
                 ", bedNo=" + bedNo +
                 ", deptNo=" + deptNo +
+                ", roomNo=" + roomNo +
                 ", patientID=" + patientID +
                 ", status=" + status +
                 ", address='" + address + '\'' +

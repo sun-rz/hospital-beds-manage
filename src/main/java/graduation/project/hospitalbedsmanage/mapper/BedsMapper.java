@@ -24,4 +24,5 @@ public interface BedsMapper {
 
     int updateBedStatus(Beds bed);
 
+    List getBedsByRule();
 }

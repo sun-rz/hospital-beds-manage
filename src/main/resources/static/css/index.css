@@ -92,7 +92,7 @@ form .required:after {
 }
 
 .nav-bar-right-search {
-    width: 85%;
+    width: 80%;
     display: inline-block;
 }
 
@@ -102,7 +102,7 @@ form .required:after {
     right: 30px;
 }
 
-.nav-bar-right input {
+.nav-bar-right input,.nav-bar-right span {
     margin-top: 7px;
 }
 

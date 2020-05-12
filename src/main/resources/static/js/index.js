@@ -46,7 +46,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         templateUrl: 'user/updatepassword.html',
         controller: 'passwordCtrl'
     }).otherwise('/home/1/0')
-}).controller("indexController", function ($scope, $location, $window, $rootScope) {
+}).controller("indexController", function ($scope, $location, $window, $rootScope,$resource) {
     $scope.keyword = '';
 
     //解决刷新后无法选中
@@ -63,43 +63,25 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
     $scope.menu = [
         {id: 1, url: '/home', title: '首页', fa: 'fa fa-home'},
         {id: 2, url: '/hospitalized', title: '住院管理', fa: 'fa fa-building-o'},
-        {id: 3, url: '/department', title: '科室管理', fa: 'fa fa-cart-plus'},
         {id: 4, url: '/patient', title: '患者管理', fa: 'fa fa-user-circle-o'},
         {id: 5, url: '/casehistory', title: '病历管理', fa: 'fa fa-list-alt'},
         {id: 6, url: '/beds', title: '床位管理', fa: 'fa fa-bed'}
     ];
-    $scope.user = {
-        id: '',
-        name: '',
-        mobile: '',
-        email: '',
-        deptNo: '',
-        age: '',
-        gender: '',
-        job: '',
-        password: ''
-    };
-    this.$onInit = function () {
-        //页面加载时给用户名输入框赋值
-        $scope.user.name = $scope.getCookie("doctor").name;
-    };
 
-    //获取cookie
-    $scope.getCookie = function (cname) {
-        let name = cname + "=";
-        let ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            //console.log(c)
-            while (c.charAt(0) == ' ') c = c.substring(1);
-            if (c.indexOf(name) != -1) {
-                let doc = c.substring(name.length, c.length).replace("=", ",");
-                doc = doc.replace(new RegExp("'", "g"), "\"");
-                return JSON.parse(doc);
-            }
+    $scope.user = {};
+    $resource('/user/getUserInfo', {}).get(function (resp) {
+        //请求成功
+        $scope.user = resp.doctor;
+
+        //管理员菜单权限控制
+        if( $scope.user.mobile=='admin'||$scope.user.email=='admin@qq.com'){
+            $scope.menu.push({id: 3, url: '/department', title: '科室管理', fa: 'fa fa-cart-plus'})
         }
-        return JSON.parse("{}");
-    };
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
     $scope.logout = function () {
         if (confirm("确定要退出当前用户吗?")) {
             $window.location.href = '/user/logout';
@@ -519,9 +501,19 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         alert("网络错误,请重试");
     });
 
-    $scope.updatePatientInfo = function (p, c) {
+    $scope.findBed=function(p){
+        console.log(p)
+        
+        $resource('/beds/getBedsByRule', {"patientID": $scope.patientID}).get(function (resp) {
+            //请求成功
+            console.log(resp)
+        }, function (err) {
+            //处理错误
+            alert("网络错误,请重试");
+        });
+    }
 
-        //不懂为什么ng-module后ng-selected会失效,用dom操作吧
+    $scope.updatePatientInfo = function (p, c) {
         c.doctorID = angular.element(document.querySelector("#doctorID")).val();
         c.status = angular.element(document.querySelector("#cstatus")).val();
 
@@ -595,7 +587,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
         if(confirm("该操作不可恢复，是否要删除该病床？")){
             $resource('/beds/deleteBedByBedNo', b).get(function (resp) {
                 //请求成功
-                console.log(b)
                alert(resp.msg);
                 $window.location.reload();
             }, function (err) {
@@ -604,7 +595,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
             });
         }
     }
-
 }).controller('bedslistCtrl', function ($scope, $routeParams, $resource,$window) {
     $scope.deptNo = $routeParams.deptNo;
     //页面加载部门
@@ -639,8 +629,20 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
                 str = "空闲";
         }
         return str;
-    }
+    };
 
+    $scope.deleteBed=function (b) {
+        if(confirm("该操作不可恢复，是否要删除该病床？")){
+            $resource('/beds/deleteBedByBedNo', b).get(function (resp) {
+                //请求成功
+                alert(resp.msg);
+                $window.location.reload();
+            }, function (err) {
+                //处理错误
+                alert("网络错误,请重试");
+            });
+        }
+    }
 }).controller('editbedsCtrl', function ($scope, $routeParams, $resource) {
     $scope.deptNo = $routeParams.deptNo;
     $scope.bedNo = $routeParams.bedNo;
@@ -657,7 +659,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource','ngAnimate']).con
 
     //更新状态
     $scope.updateBedStatus=function (b) {
-        console.log(b)
         $resource('/beds/updateBedStatus', b).get(function (resp) {
             //请求成功
             history.back();

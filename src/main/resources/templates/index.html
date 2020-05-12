@@ -24,7 +24,8 @@
     <div class="row">
         <div class="col-md-2 col-sm-2 col-xs-6 container-left">
             <div class="divContainer">
-                <div class="nav-bar-left-top"><span class="{{ntype==0?'nactive':''}}"><a title="点击完善个人信息" href="#!/userInfo/0">{{user.name}}</a></span>
+                <div class="nav-bar-left-top"><span class="{{ntype==0?'nactive':''}}"><a title="点击完善个人信息"
+                                                                                         href="#!/userInfo/{{user.id}}">{{user.name}}</a></span>
                 </div>
                 <ul class="nav nav-pills nav-stacked nav-left-li" id="menu">
                     <li ng-repeat="m in menu">
@@ -36,14 +37,18 @@
             </div>
         </div>
         <div class="container-right col-md-10 col-sm-10 col-xs-6">
-            <div class="nav-bar-right col-sm-12">
+            <div class="nav-bar-right col-sm-12 text-center">
                 <div class="nav-bar-right-search">
-                    <input type="text" class="form-control" placeholder="搜索" ng-model="keyword"
-                           ng-keydown="search($event)">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="搜索" ng-model="keyword"
+                               ng-keydown="search($event)">
+                        <span class="input-group-btn"><input type="button" class="btn btn-info" value="搜索"></span>
+                    </div>
                 </div>
                 <div class="nav-bar-right-logout">
-                    <input type="button" class="btn btn-default" ng-click="logout()"
+                    <input ng-if="user.id>0" type="button" class="btn btn-default" ng-click="logout()"
                            value="退出" title="退出登录">
+                    <span ng-if="!user.id" class="btn btn-default"><a href="/user/logout">登录</a></span>
                 </div>
             </div>
             <div ng-view=""></div>
