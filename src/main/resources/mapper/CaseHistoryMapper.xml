@@ -2,7 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.CaseHistoryMapper">
     <select id="getCaseHistory" resultType="HashMap">
-        select casehistory.id, patientID, casehistory.deptNo, doctorID, status, description, treatmentPlan, submitTime,patient.name as patientName,department.deptName,doctor.name as doctorName from casehistory left join patient on casehistory.patientID=patient.id left join department on casehistory.deptNo=department.ID left join doctor on casehistory.doctorID=doctor.id
+        select casehistory.id, patientID, casehistory.deptNo, doctorID, status, description, treatmentPlan, submitTime,patient.name as patientName,department.deptName,doctor.name as doctorName
+        from casehistory
+        left join patient on casehistory.patientID=patient.id
+        left join department on casehistory.deptNo=department.ID
+        left join doctor on casehistory.doctorID=doctor.id
         <if test="patientID gt 0">
             where patientID=#{patientID}
         </if>

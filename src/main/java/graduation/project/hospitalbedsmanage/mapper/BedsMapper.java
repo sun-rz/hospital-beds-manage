@@ -28,5 +28,5 @@ public interface BedsMapper {
 
     List<Beds> getFreeBeds(int deptNo);
 
-    List<Beds> getFreeBedByRoomNo(int deptNo,int roomNo);
+    List<Beds> getOtherDeptFreeBeds();
 }

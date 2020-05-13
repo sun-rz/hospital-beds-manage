@@ -3,7 +3,8 @@
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.DoctorMapper">
 
     <select id="login" resultType="graduation.project.hospitalbedsmanage.entity.Doctor">
-        select * FROM doctor where (mobile =#{name} and password=#{password})
+        select * FROM doctor
+        where (mobile =#{name} and password=#{password})
         or
         ( email =#{name} and password=#{password}) limit 1
     </select>
@@ -21,12 +22,14 @@
     </select>
 
     <select id="getUserInfoByLoginName" resultType="HashMap">
-        select ID from doctor where id &lt;&gt; #{userId} and (mobile = #{loginName} or email = #{loginName})
+        select ID from doctor
+        where id &lt;&gt; #{userId} and (mobile = #{loginName} or email = #{loginName})
     </select>
 
     <select id="getDoctorByDeptNo" resultType="HashMap">
-        select doctor.id, name, age, gender, deptno, jobname, mobile, email,department.deptName FROM doctor left join
-        department on doctor.deptno=department.ID left join job on doctor.job=job.id
+        select doctor.id, name, age, gender, deptno, jobname, mobile, email,department.deptName FROM doctor
+        left join department on doctor.deptno=department.ID
+        left join job on doctor.job=job.id
         <if test="deptNo gt 0">
             where deptno=#{deptNo}
         </if>

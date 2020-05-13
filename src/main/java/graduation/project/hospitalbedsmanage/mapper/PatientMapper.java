@@ -20,5 +20,5 @@ public interface PatientMapper {
 
     int deletePatient(String patientID);
 
-    List getInHospitalPatient(int doctorID);
+    List getSameDoctorForPatient(int doctorID);
 }

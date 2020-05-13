@@ -112,42 +112,41 @@ public class BedsService {
     public Beds getBedsByRule(int deptNo, int level, int doctorID) {
         JSONObject obj;
         int docID = 0, roomNo = 0;
-        //先查询本科室空闲的病床
+        //查询本科室空闲的病床
         List<Beds> getFreeBeds = bedsMapper.getFreeBeds(deptNo);
-        if (getFreeBeds.size() > 0) {
 
-            //查询主治医师相同的患者
-            List getInHospitalPatient = patientMapper.getInHospitalPatient(doctorID);
-            System.out.println(getInHospitalPatient);
-            if (getInHospitalPatient.size() == 0) {//如果没有主治医师相同的,就返回第一个病房
+        //查询主治医师相同的患者
+        List sameDoctorForPatient = patientMapper.getSameDoctorForPatient(doctorID);
+        //System.out.println(getFreeBeds);
+
+        if (getFreeBeds.size() > 0) {
+            if (sameDoctorForPatient.size() == 0) {//如果没有主治医师相同的,就返回第一个病房
                 return (Beds) getFreeBeds.get(0);
             }
-            for (int i = 0; i < getInHospitalPatient.size(); i++) {
-                obj = JSONObject.fromObject(getInHospitalPatient.get(i));
+            //否则
+            for (int i = 0; i < sameDoctorForPatient.size(); i++) {
+                obj = JSONObject.fromObject(sameDoctorForPatient.get(i));
                 if (obj.has("roomNo")) {
                     roomNo = obj.getInt("roomNo");
-
-                    
+                    for (Beds b : getFreeBeds) {
+                        //System.out.println(b);
+                        if (roomNo == b.getRoomNo()) {//如果空病床的房号跟现有患者的房号相等
+                            return b;
+                        }
+                    }
                 }
-
             }
-            for (Beds b : getFreeBeds) {
-                //System.out.println(b);
-                //if(doctorID==b.)
-            }
+        } else {  //外借病床
 
-
-        } else {
-            //外借
-            Beds bed = borrowBed();
+            Beds bed = borrowBed(sameDoctorForPatient);
         }
         bedsMapper.getBedsByRule();
         return null;
     }
 
     //外借病床
-    private Beds borrowBed() {
-
+    private Beds borrowBed(List sameDoctorForPatient) {
+        List<Beds> otherDeptFreeBeds = bedsMapper.getOtherDeptFreeBeds();
         return null;
     }
 
