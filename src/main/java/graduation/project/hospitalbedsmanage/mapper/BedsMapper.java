@@ -25,4 +25,8 @@ public interface BedsMapper {
     int updateBedStatus(Beds bed);
 
     List getBedsByRule();
+
+    List<Beds> getFreeBeds(int deptNo);
+
+    List<Beds> getFreeBedByRoomNo(int deptNo,int roomNo);
 }

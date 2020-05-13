@@ -19,4 +19,6 @@ public interface PatientMapper {
     int updatePatientInfo(Patient patient);
 
     int deletePatient(String patientID);
+
+    List getInHospitalPatient(int doctorID);
 }

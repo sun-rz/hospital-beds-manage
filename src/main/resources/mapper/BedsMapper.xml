@@ -16,8 +16,16 @@
         </if>
     </select>
 
+    <select id="getFreeBedByRoomNo" resultType="HashMap">
+        select beds.id,beds.deptNo, beds.patientID, beds.status, beds.address, beds.useDate, beds.freeDate, beds.bedNo,beds.roomNo from beds where beds.deptNo=#{deptNo} and beds.roomNo=#{roomNo} status =0 order by id
+    </select>
+
     <select id="getBedsByRule" resultType="HashMap">
          select * from beds
+    </select>
+
+    <select id="getFreeBeds" resultType="graduation.project.hospitalbedsmanage.entity.Beds">
+        select id, deptNo, patientID, roomNo, status, bedNo, address from beds where deptNo=#{deptNo} and status =0 order by id
     </select>
 
     <insert id="addBed">

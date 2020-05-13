@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,16 +29,6 @@ public class PatientController {
 
     @Autowired
     private CaseHistoryService caseHistoryService;
-
-    @RequestMapping(value = "/patientsearch", method = RequestMethod.GET)
-    public @ResponseBody
-    List<Patient> getPatientInFo(String name, String deptNo, String bedNo, String in_hospital_date) {
-
-        List<Patient> list;
-        list = patientservice.getPatientInFo(name, deptNo, bedNo, in_hospital_date);
-        return list;
-
-    }
 
     /**
      * 获得患者信息

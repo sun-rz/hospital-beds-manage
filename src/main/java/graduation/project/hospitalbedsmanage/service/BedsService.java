@@ -2,7 +2,9 @@ package graduation.project.hospitalbedsmanage.service;
 
 import graduation.project.hospitalbedsmanage.entity.Beds;
 import graduation.project.hospitalbedsmanage.entity.Department;
+import graduation.project.hospitalbedsmanage.entity.Patient;
 import graduation.project.hospitalbedsmanage.mapper.BedsMapper;
+import graduation.project.hospitalbedsmanage.mapper.PatientMapper;
 import net.sf.json.JSONObject;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ import java.util.Map;
 public class BedsService {
     @Autowired
     BedsMapper bedsMapper;
+    @Autowired
+    PatientMapper patientMapper;
 
     StringBuilder sb = null;
 
@@ -93,7 +97,7 @@ public class BedsService {
     private void getRoomBeds(int deptNo, String bedNo, int roomNo, int beds) {
         JSONObject obj;
         for (int i = 1; i <= beds; i++) {
-            Beds bed = new Beds(bedNo + i, deptNo,roomNo, bedNo + "号病房-" + i + "号床");
+            Beds bed = new Beds(bedNo + i, deptNo, roomNo, bedNo + "号病房-" + i + "号床");
             List getbeds = getBed(bed);//先查询
             if (getbeds.size() < 1) {//如果不存在
                 addBed(bed);//添加
@@ -105,10 +109,50 @@ public class BedsService {
         }
     }
 
-    public List getBedsByRule() {
-        return bedsMapper.getBedsByRule();
+    public Beds getBedsByRule(int deptNo, int level, int doctorID) {
+        JSONObject obj;
+        int docID = 0, roomNo = 0;
+        //先查询本科室空闲的病床
+        List<Beds> getFreeBeds = bedsMapper.getFreeBeds(deptNo);
+        if (getFreeBeds.size() > 0) {
+
+            //查询主治医师相同的患者
+            List getInHospitalPatient = patientMapper.getInHospitalPatient(doctorID);
+            System.out.println(getInHospitalPatient);
+            if (getInHospitalPatient.size() == 0) {//如果没有主治医师相同的,就返回第一个病房
+                return (Beds) getFreeBeds.get(0);
+            }
+            for (int i = 0; i < getInHospitalPatient.size(); i++) {
+                obj = JSONObject.fromObject(getInHospitalPatient.get(i));
+                if (obj.has("roomNo")) {
+                    roomNo = obj.getInt("roomNo");
+                    List<Beds> bedByRoomNo = bedsMapper.getFreeBedByRoomNo(deptNo, roomNo);
+                    if(bedByRoomNo.size()==0){
+                        //外借
+                    }
+                    System.out.println(bedByRoomNo);
+                }
+
+            }
+            for (Beds b : getFreeBeds) {
+                //System.out.println(b);
+                //if(doctorID==b.)
+            }
+
+
+        } else {
+            //外借
+            Beds bed = borrowBed();
+        }
+        bedsMapper.getBedsByRule();
+        return null;
     }
 
+    //外借病床
+    private Beds borrowBed() {
+
+        return null;
+    }
 
 
     public List getBeds(int deptNo) {

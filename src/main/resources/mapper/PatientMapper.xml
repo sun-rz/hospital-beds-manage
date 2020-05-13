@@ -29,11 +29,23 @@
         order by level,in_hospital_date,patient.id
     </select>
 
+    <select id="getInHospitalPatient" resultType="HashMap">
+        select patient.id as patientID,patient.name,doctor.id as doctorID,doctor.name,patient.age,patient.gender,patient.level,beds.roomNo,patient.bedNo,patient.in_hospital_date,patient.out_hospital_date from  patient
+        left join casehistory on patient.id=casehistory.patientID
+        left join doctor on casehistory.doctorID=doctor.id
+        left join beds on patient.bedNo=beds.bedNo
+        where patient.out_hospital_date>'2020-05-01'
+        <if test="doctorID &gt; 0">
+            and casehistory.doctorID=#{doctorID}
+        </if>
+    </select>
+
     <insert id="addPatientInfo">
         <selectKey keyProperty="id" resultType="int" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into patient (name,age, gender, deptNo, level, bedNo, in_hospital_date, out_hospital_date) values (#{name},#{age},#{gender},#{deptNo},#{level},#{bedNo},#{in_hospital_date},#{out_hospital_date})
+        insert into patient (name,age, gender, deptNo, level, bedNo, in_hospital_date, out_hospital_date) values
+        (#{name},#{age},#{gender},#{deptNo},#{level},#{bedNo},#{in_hospital_date},#{out_hospital_date})
     </insert>
 
     <update id="updatePatientInfo">

@@ -3,6 +3,7 @@ package graduation.project.hospitalbedsmanage.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graduation.project.hospitalbedsmanage.entity.Beds;
+import graduation.project.hospitalbedsmanage.entity.Patient;
 import graduation.project.hospitalbedsmanage.service.BedsService;
 import graduation.project.hospitalbedsmanage.service.DepartmentService;
 import graduation.project.hospitalbedsmanage.util.CommonTools;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -41,13 +43,14 @@ public class BedsController {
     /**
      * 根据算法查找病床
      * @param deptNo
+     * @param level
+     * @param doctorID
      * @return
      */
     @ResponseBody
     @RequestMapping("/getBedsByRule")
-    public String getBedsByRule(String patientID) {
-        System.out.println(patientID);
-        List beds = bedsService.getBedsByRule();
+    public String getBedsByRule(String deptNo,String level,String doctorID) {
+        Beds beds = bedsService.getBedsByRule(CommonTools.ToInt(deptNo),CommonTools.ToInt(level),CommonTools.ToInt(doctorID));
 
         return CommonTools.getReturnMsg("ok",true);
     }

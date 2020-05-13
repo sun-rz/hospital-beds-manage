@@ -12,7 +12,7 @@ public class Patient {
     private int age;//年龄
     private int gender;//性别
     private int deptNo;//科室
-    private int level;//初始化优先级别
+    private int level;//优先级别
     private String bedNo;//床位号
     private String name; //姓名
     @DateTimeFormat(pattern="yyyy-MM-dd")

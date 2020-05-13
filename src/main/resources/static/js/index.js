@@ -504,7 +504,23 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
     $scope.findBed = function (p) {
         console.log(p)
 
-        $resource('/beds/getBedsByRule', {"patientID": $scope.patientID}).get(function (resp) {
+        if (!p.deptNo) {
+            alert("请选择科室信息");
+            return;
+        }
+        if (!p.level) {
+            alert("请选择优先级别");
+            return;
+        }
+        let cid = angular.element(document.querySelector("#doctorID")).val();
+
+        if (!cid) {
+            alert("请选择主治医生");
+            return;
+        }
+
+
+        $resource('/beds/getBedsByRule', {"deptNo": p.deptNo, level: p.level, doctorID: cid}).get(function (resp) {
             //请求成功
             console.log(resp)
         }, function (err) {
@@ -570,13 +586,13 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         for (let i = 0; i < $scope.bedList.length; i++) {
             switch ($scope.bedList[i].status) {
                 case 0:
-                    $scope.freeCount+=1;
+                    $scope.freeCount += 1;
                     break;
                 case 1:
-                    $scope.useCount+=1;
+                    $scope.useCount += 1;
                     break;
                 case 2:
-                    $scope.serviceCount+=1;
+                    $scope.serviceCount += 1;
                     break;
             }
         }
@@ -635,13 +651,13 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         for (let i = 0; i < $scope.bedList.length; i++) {
             switch ($scope.bedList[i].status) {
                 case 0:
-                    $scope.freeCount+=1;
+                    $scope.freeCount += 1;
                     break;
                 case 1:
-                    $scope.useCount+=1;
+                    $scope.useCount += 1;
                     break;
                 case 2:
-                    $scope.serviceCount+=1;
+                    $scope.serviceCount += 1;
                     break;
             }
         }

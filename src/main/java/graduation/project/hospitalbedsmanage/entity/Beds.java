@@ -1,5 +1,7 @@
 package graduation.project.hospitalbedsmanage.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -13,7 +15,9 @@ public class Beds {
     private int patientID;//患者ID
     private int status;//使用状态
     private String address;//地点
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date useDate;//申请使用日期
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date freeDate;//归还日期
 
     public Beds() {
