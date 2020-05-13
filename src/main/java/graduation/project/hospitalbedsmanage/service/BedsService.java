@@ -126,11 +126,8 @@ public class BedsService {
                 obj = JSONObject.fromObject(getInHospitalPatient.get(i));
                 if (obj.has("roomNo")) {
                     roomNo = obj.getInt("roomNo");
-                    List<Beds> bedByRoomNo = bedsMapper.getFreeBedByRoomNo(deptNo, roomNo);
-                    if(bedByRoomNo.size()==0){
-                        //外借
-                    }
-                    System.out.println(bedByRoomNo);
+
+                    
                 }
 
             }
