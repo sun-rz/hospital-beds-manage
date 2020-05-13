@@ -40,7 +40,6 @@
     }
 
     .ul-beds-title {
-        width: 80px;
         white-space: nowrap;
         text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
@@ -48,13 +47,14 @@
     }
 
     .ul-beds-icon .fa-bed {
-        font-size: 45px;
-        padding-left: 8px;
-        margin-bottom: 8px;
+        font-size: 48px;
+        margin: 0;
     }
 
     .ul-beds-icon {
+        text-align: center;
         padding: 5px;
+        font-weight:bold;
     }
 
     .ul-beds-icon:hover {
@@ -105,17 +105,21 @@
         }
     }
 
-    .ul-beds-title a{
+    .ul-beds-title a {
         color: #0084ff;
         text-decoration: none;
-    }
-    .close{
-        font-size: 14px;
-        opacity:0;
+        font-size: 16px;
+        display: block;
+        margin-bottom: 3px;
     }
 
-    .ul-beds li:hover .close{
-        opacity:1;
+    .close {
+        font-size: 14px;
+        opacity: 0;
+    }
+
+    .ul-beds li:hover .close {
+        opacity: 1;
         color: #ff0000;
     }
 </style>
@@ -142,10 +146,10 @@
                         ng-click="showModal()">
                         <span title="删除" class="close" data-dismiss="modal" aria-hidden="true" ng-click="deleteBed(bed)">×</span>
                         <div class="ul-beds-icon">
-                            <i class="fa fa-bed status{{bed.status}}"></i>
                             <div class="ul-beds-title">
-                                <a href="#!/editbeds/{{bed.deptNo}}/{{bed.bedNo}}">{{bed.address}}</a>
+                                <a href="#!/editbeds/{{bed.deptNo}}/{{bed.bedNo}}">{{bed.bedNo}}</a>
                             </div>
+                            <i class="fa fa-bed status{{bed.status}}"></i>
                         </div>
                     </li>
                 </ul>

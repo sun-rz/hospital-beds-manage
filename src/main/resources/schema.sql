@@ -22,6 +22,7 @@ create table IF NOT EXISTS beds
     id        int auto_increment PRIMARY KEY,
     deptNo    int,
     patientID int,
+    roomNo    int,
     status    int default 0 null,
     bedNo     varchar(32) NOT NULL unique,
     address   varchar(256),

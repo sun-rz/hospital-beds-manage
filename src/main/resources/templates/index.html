@@ -17,15 +17,29 @@
 
     <script type="text/javascript" src="/js/index.js" charset="utf-8"></script>
 </head>
-
 <body ng-app="myApp" class="ng-scope" ng-controller="indexController">
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-2 col-sm-2 col-xs-6 container-left">
+        <div class="col-md-2 col-sm-2 col-xs-4 container-left">
             <div class="divContainer">
-                <div class="nav-bar-left-top"><span class="{{ntype==0?'nactive':''}}"><a title="点击完善个人信息"
-                                                                                         href="#!/userInfo/{{user.id}}">{{user.name}}</a></span>
+                <div class="nav-bar-left-top">
+                    <span ng-if="user.id>0" class="{{ntype==0?'nactive':''}}">
+                        <span>{{user.name}}</span>
+                        <span class="icon_bar">
+                            <a href="#!/home">  <i class="fa fa-home" title="首页"></i></a>
+                        <a href="#!/userInfo/0">
+                            <i title="完善个人信息" class="fa fa-cog" aria-hidden="true"></i>
+                        </a>
+                        <i class="fa fa-power-off" title="注销登录" aria-hidden="true" ng-click="logout()"></i>
+                        </span>
+                    </span>
+
+                    <span ng-if="!user.id">
+                        <a href="/user/logout">
+                            <i title="登录" class="fa fa-user-o" aria-hidden="true"></i>
+                        </a>
+                    </span>
                 </div>
                 <ul class="nav nav-pills nav-stacked nav-left-li" id="menu">
                     <li ng-repeat="m in menu">
@@ -36,20 +50,17 @@
                 </ul>
             </div>
         </div>
-        <div class="container-right col-md-10 col-sm-10 col-xs-6">
+        <div class="container-right col-md-10 col-sm-10 col-xs-8">
             <div class="nav-bar-right col-sm-12 text-center">
-                <div class="nav-bar-right-search">
+                <div class="col-sm-2 hidden-xs"></div>
+                <div class="nav-bar-right-search col-sm-9 col-xs-12">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="搜索" ng-model="keyword"
                                ng-keydown="search($event)">
                         <span class="input-group-btn"><input type="button" class="btn btn-info" value="搜索"></span>
                     </div>
                 </div>
-                <div class="nav-bar-right-logout">
-                    <input ng-if="user.id>0" type="button" class="btn btn-default" ng-click="logout()"
-                           value="退出" title="退出登录">
-                    <span ng-if="!user.id" class="btn btn-default"><a href="/user/logout">登录</a></span>
-                </div>
+
             </div>
             <div ng-view=""></div>
         </div>

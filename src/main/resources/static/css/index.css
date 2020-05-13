@@ -70,6 +70,10 @@ form .required:after {
     background: #0084ff;
 }
 
+.icon_bar{
+    float: right;
+    margin-right: 15px;
+}
 
 /*右侧栏*/
 .container-right {
@@ -91,15 +95,8 @@ form .required:after {
     background: #0084ff;
 }
 
-.nav-bar-right-search {
-    width: 80%;
+.nav-bar-right-search,.nav-bar--search-left,.nav-bar-right-logout {
     display: inline-block;
-}
-
-.nav-bar-right-logout {
-    display: inline-block;
-    position: absolute;
-    right: 30px;
 }
 
 .nav-bar-right input,.nav-bar-right span {
