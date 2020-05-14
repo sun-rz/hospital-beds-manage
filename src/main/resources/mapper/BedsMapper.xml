@@ -31,7 +31,7 @@
     <select id="getFreeBeds" resultType="graduation.project.hospitalbedsmanage.entity.Beds">
         select id, deptNo, patientID, roomNo, status, bedNo, address
         from beds
-        where deptNo=#{deptNo} and status =0 and totalBeds>0 order by id
+        where deptNo=#{deptNo} and status =0 order by id
     </select>
 
     <select id="getOtherDeptFreeBeds" resultType="graduation.project.hospitalbedsmanage.entity.Beds">

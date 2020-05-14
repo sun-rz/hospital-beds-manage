@@ -450,6 +450,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
     };
 }).controller('editPatientCtrl', function ($scope, $routeParams, $resource) {
     $scope.patient = {};
+    $scope.msg = "";
     $scope.casehistory = {};
     $scope.patientID = $routeParams.id;
     $scope.title = "修改患者信息";
@@ -519,10 +520,15 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             return;
         }
 
-
         $resource('/beds/getBedsByRule', {"deptNo": p.deptNo, level: p.level, doctorID: cid}).get(function (resp) {
             //请求成功
             console.log(resp)
+            if(resp.success){
+                $scope.patient.bedNo=resp.bed.bedNo;
+                $scope.msg="床位分配成功";
+            }else{
+                $scope.msg="床位分配失败";
+            }
         }, function (err) {
             //处理错误
             alert("网络错误,请重试");

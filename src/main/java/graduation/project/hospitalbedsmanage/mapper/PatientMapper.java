@@ -21,4 +21,6 @@ public interface PatientMapper {
     int deletePatient(String patientID);
 
     List getSameDoctorForPatient(int doctorID);
+
+    List<Patient> getLateOutHospital(int doctorID);
 }

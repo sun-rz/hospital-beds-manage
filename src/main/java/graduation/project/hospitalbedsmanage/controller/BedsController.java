@@ -6,6 +6,7 @@ import graduation.project.hospitalbedsmanage.entity.Beds;
 import graduation.project.hospitalbedsmanage.entity.Patient;
 import graduation.project.hospitalbedsmanage.service.BedsService;
 import graduation.project.hospitalbedsmanage.service.DepartmentService;
+import graduation.project.hospitalbedsmanage.service.PatientService;
 import graduation.project.hospitalbedsmanage.util.CommonTools;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -26,6 +27,9 @@ public class BedsController {
 
     @Autowired
     DepartmentService departmentService;
+
+    @Autowired
+    PatientService patientService;
 
     /**
      * 自动分配病房
@@ -50,9 +54,23 @@ public class BedsController {
     @ResponseBody
     @RequestMapping("/getBedsByRule")
     public String getBedsByRule(String deptNo,String level,String doctorID) {
-        Beds beds = bedsService.getBedsByRule(CommonTools.ToInt(deptNo),CommonTools.ToInt(level),CommonTools.ToInt(doctorID));
+        JSONObject obj=new JSONObject();
 
-        return CommonTools.getReturnMsg("ok",true);
+        Beds bed = bedsService.getBedsByRule(CommonTools.ToInt(deptNo),CommonTools.ToInt(level),CommonTools.ToInt(doctorID));
+        System.out.println(bed);
+        if(null!=bed){
+            obj.put("success",true);
+            obj.put("bed",bed);
+            return obj.toString();
+        }else{
+            //没有找到病床怎么办?排队？人命关天啊！建议换一家医院
+
+            // 返回10个最近要出院的患者的时间信息
+           List<Patient> patients= patientService.getLateOutHospital(CommonTools.ToInt(doctorID));
+           obj.put("success",false);
+           obj.put("patientList",patients);
+            return obj.toString();
+        }
     }
 
     /**

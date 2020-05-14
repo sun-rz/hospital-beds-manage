@@ -31,15 +31,24 @@
     </select>
 
     <select id="getSameDoctorForPatient" resultType="HashMap">
-        select patient.id as patientID,patient.name,doctor.id as doctorID,doctor.name,patient.age,patient.gender,patient.level,beds.roomNo,patient.bedNo,patient.in_hospital_date,patient.out_hospital_date
-        from  patient
+        select patient.id as patientID,patient.name,doctor.id as
+        doctorID,doctor.name,patient.age,patient.gender,patient.level,beds.roomNo,patient.bedNo,patient.in_hospital_date,patient.out_hospital_date
+        from patient
         left join casehistory on patient.id=casehistory.patientID
         left join doctor on casehistory.doctorID=doctor.id
         left join beds on patient.bedNo=beds.bedNo
-        where patient.out_hospital_date>'2020-05-01'
+        where DATE_FORMAT(patient.out_hospital_date,'%Y-%m-%d') >DATE_SUB(curdate(),INTERVAL 0 DAY)
         <if test="doctorID &gt; 0">
             and casehistory.doctorID=#{doctorID}
         </if>
+    </select>
+
+    <select id="getLateOutHospital">
+        select patient.name,patient.level,patient.out_hospital_date
+        from patient
+        left join casehistory on patient.id = casehistory.patientID
+        where DATE_FORMAT(patient.out_hospital_date,'%Y-%m-%d') > DATE_SUB(curdate(),INTERVAL 0 DAY)
+        and casehistory.doctorID=#{doctorID} order by out_hospital_date limit 10
     </select>
 
     <insert id="addPatientInfo">

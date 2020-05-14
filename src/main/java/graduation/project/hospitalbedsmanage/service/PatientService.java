@@ -37,4 +37,8 @@ public class PatientService {
     public int deletePatient(String patientID) {
         return patientMapper.deletePatient(patientID);
     }
+
+    public List<Patient> getLateOutHospital(int doctorID) {
+        return patientMapper.getLateOutHospital(doctorID);
+    }
 }
