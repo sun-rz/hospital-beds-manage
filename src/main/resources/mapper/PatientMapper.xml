@@ -43,8 +43,8 @@
         </if>
     </select>
 
-    <select id="getLateOutHospital">
-        select patient.name,patient.level,patient.out_hospital_date
+    <select id="getLateOutHospital" resultType="graduation.project.hospitalbedsmanage.entity.Patient">
+        select patient.name,patient.level,patient.out_hospital_date,patient.bedNo
         from patient
         left join casehistory on patient.id = casehistory.patientID
         where DATE_FORMAT(patient.out_hospital_date,'%Y-%m-%d') > DATE_SUB(curdate(),INTERVAL 0 DAY)

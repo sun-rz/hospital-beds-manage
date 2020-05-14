@@ -69,9 +69,24 @@
                                ng-disabled="patient.bedNo" value="分配">
 		            </span>
                 </div>
-                <div ng-show="msg">
-                    {{msg}}
-                </div>
+                <div ng-show="msg" class="{{cls}}">{{msg}}</div>
+                <table ng-if="lateOutHospitalPatent" class="table table-condensed">
+                    <caption>即将出院患者信息</caption>
+                    <thead>
+                    <tr>
+                        <th>患者</th>
+                        <th>床位</th>
+                        <th>出院日期</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="patient in lateOutHospitalPatent">
+                        <td>{{patient.name}}</td>
+                        <td>{{patient.bedNo}}</td>
+                        <td>{{patient.out_hospital_date}}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div ng-include="'/patient/casehistory_edit.html'"></div>

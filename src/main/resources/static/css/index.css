@@ -70,7 +70,7 @@ form .required:after {
     background: #0084ff;
 }
 
-.icon_bar{
+.icon_bar {
     float: right;
     margin-right: 15px;
 }
@@ -95,11 +95,11 @@ form .required:after {
     background: #0084ff;
 }
 
-.nav-bar-right-search,.nav-bar--search-left,.nav-bar-right-logout {
+.nav-bar-right-search, .nav-bar--search-left, .nav-bar-right-logout {
     display: inline-block;
 }
 
-.nav-bar-right input,.nav-bar-right span {
+.nav-bar-right input, .nav-bar-right span {
     margin-top: 7px;
 }
 
@@ -150,58 +150,71 @@ form .required:after {
     background-color: #0084ff;
     color: white;
 }
-.nav-tabs{
+
+.nav-tabs {
     border-bottom: 1px solid #0084ff;
 }
-.btn-primary{
+
+.btn-primary {
     background: #0084ff;
     border-color: #0084ff;
 }
 
-.table .tractive{
+.table .tractive {
     background: #f1f1f1 !important;
 }
 
-label{
+label {
     display: block;
 }
-label:hover,i:hover{
+
+label:hover, i:hover {
     cursor: pointer;
 }
-.btn{
+
+.btn {
     margin-left: 15px;
 }
 
-.form-horizontal{
+.form-horizontal {
     margin-top: 100px;
 }
 
-.table-bottom-bar{
+.table-bottom-bar {
     border-top: 1px solid #ccc;
     padding: 15px;
-    margin:auto 15px;
+    margin: auto 15px;
     margin-bottom: 50px;
 }
-.table-bottom-bar span{
+
+.table-bottom-bar span {
     margin: auto 15px;
 }
-.form-control[disabled], .form-control[readonly]{
+
+.form-control[disabled], .form-control[readonly] {
     background: #fff;
 }
 
-.table a,.btn a{
+.table a, .btn a {
     display: block;
     color: #0084ff;
     text-decoration: none;
 }
 
-.list-bottom-bar{
+.list-bottom-bar {
     padding: 15px 15px 15px 15px;
     border-top: 1px solid #ccc;
-    margin:auto 15px;
+    margin: auto 15px;
     margin-bottom: 50px;
 }
 
+.succ-true {
+    color: green;
+}
+
+.succ-false {
+    color: red;
+}
 
 /*公祭日全网灰色哀悼主题色*/
 .theme-grey {

@@ -509,10 +509,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             alert("请选择科室信息");
             return;
         }
-        if (!p.level) {
-            alert("请选择优先级别");
-            return;
-        }
+
         let cid = angular.element(document.querySelector("#doctorID")).val();
 
         if (!cid) {
@@ -526,8 +523,11 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             if(resp.success){
                 $scope.patient.bedNo=resp.bed.bedNo;
                 $scope.msg="床位分配成功";
+                $scope.cls="succ-true";
             }else{
-                $scope.msg="床位分配失败";
+                $scope.msg="床位分配失败，请稍后再试";
+                $scope.cls="succ-false";
+                $scope.lateOutHospitalPatent=resp.patientList;
             }
         }, function (err) {
             //处理错误

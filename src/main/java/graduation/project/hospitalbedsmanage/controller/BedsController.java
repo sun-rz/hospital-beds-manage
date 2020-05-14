@@ -61,6 +61,11 @@ public class BedsController {
         if(null!=bed){
             obj.put("success",true);
             obj.put("bed",bed);
+            List<Patient> patients= patientService.getLateOutHospital(CommonTools.ToInt(doctorID));
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+            obj.put("success",false);
+            obj.put("patientList",JSONArray.fromObject(gson.toJson(patients)));
             return obj.toString();
         }else{
             //没有找到病床怎么办?排队？人命关天啊！建议换一家医院
