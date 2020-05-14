@@ -51,6 +51,10 @@
         update beds set status=#{status} where bedNo =#{bedNo}
     </update>
 
+    <update id="patientUseBed">
+       update beds set patientID=#{patient.id},status=#{status},useDate=#{patient.in_hospital_date},freeDate=#{patient.out_hospital_date} where bedNo=#{patient.bedNo}
+    </update>
+
     <delete id="deleteBedByBedNo">
         delete from beds where deptNo=#{deptNo} and bedNo = #{bedNo}
     </delete>

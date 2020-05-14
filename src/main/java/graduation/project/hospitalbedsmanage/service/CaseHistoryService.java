@@ -19,7 +19,6 @@ public class CaseHistoryService {
         return caseHistoryMapper.getCaseHistory(patientID);
     }
 
-
    @Transactional
     public int addCaseHistory(CaseHistory caseHistory) {
         return caseHistoryMapper.addCaseHistory(caseHistory);

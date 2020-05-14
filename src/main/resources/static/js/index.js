@@ -113,6 +113,16 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         alert("网络错误,请重试");
     });
 
+    //页面加载部门
+    $resource('/hospitalized/getHospitalizedPaient', {}).get(function (resp) {
+        //请求成功
+       $scope.paientList = resp.paientList;
+        console.log( $scope.paientList)
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
 }).controller("hospitalizedlistCtrl", function ($scope, $resource, $routeParams, $location, $window) {
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];

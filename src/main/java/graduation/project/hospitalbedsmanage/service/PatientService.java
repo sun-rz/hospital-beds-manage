@@ -30,14 +30,17 @@ public class PatientService {
         return patientMapper.addPatientInfo(patient);
     }
 
+    @Transactional
     public int updatePatientInfo(Patient patient) {
         return patientMapper.updatePatientInfo(patient);
     }
 
+    @Transactional
     public int deletePatient(String patientID) {
         return patientMapper.deletePatient(patientID);
     }
 
+    @Transactional
     public List<Patient> getLateOutHospital(int doctorID) {
         return patientMapper.getLateOutHospital(doctorID);
     }

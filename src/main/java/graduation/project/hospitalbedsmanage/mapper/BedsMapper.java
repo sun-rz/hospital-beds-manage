@@ -2,6 +2,7 @@ package graduation.project.hospitalbedsmanage.mapper;
 
 import graduation.project.hospitalbedsmanage.entity.Beds;
 import graduation.project.hospitalbedsmanage.entity.Department;
+import graduation.project.hospitalbedsmanage.entity.Patient;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface BedsMapper {
     List<Beds> getFreeBeds(int deptNo);
 
     List<Beds> getOtherDeptFreeBeds();
+
+    int patientUseBed(Patient patient, int status);
 }

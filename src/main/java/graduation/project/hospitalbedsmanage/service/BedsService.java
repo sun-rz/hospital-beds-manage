@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -31,6 +28,7 @@ public class BedsService {
      *
      * @param deptNo
      */
+    @Transactional
     public void autoModeBeds(int deptNo) {
         sb = new StringBuilder();
         List<Department> depts = bedsMapper.getBedsRooms(deptNo);
@@ -110,8 +108,8 @@ public class BedsService {
     }
 
     //查找病床
+    @Transactional
     public Beds getBedsByRule(int deptNo, int level, int doctorID) {
-
         //查询本科室空闲的病床
         List<Beds> getFreeBeds = bedsMapper.getFreeBeds(deptNo);
 
@@ -127,7 +125,7 @@ public class BedsService {
         }
     }
 
-    public Beds findBed(List<Beds> deptFreeBeds, List sameDoctorForPatient) {
+    public synchronized Beds findBed(List<Beds> deptFreeBeds, List sameDoctorForPatient) {
         JSONObject obj;
         int roomNo = 0;
         if (deptFreeBeds.size() > 0) {
@@ -151,23 +149,33 @@ public class BedsService {
         return null;
     }
 
+    @Transactional
     public List getBeds(int deptNo) {
         return bedsMapper.getBeds(deptNo);
     }
 
+    @Transactional
     public List getBed(Beds bed) {
         return bedsMapper.getBed(bed);
     }
 
+    @Transactional
     public int updateBedStatus(Beds bed) {
         return bedsMapper.updateBedStatus(bed);
     }
 
+    @Transactional
     public int addBed(Beds bed) {
         return bedsMapper.addBed(bed);
     }
 
+    @Transactional
     public int deleteBedByBedNo(Beds bed) {
         return bedsMapper.deleteBedByBedNo(bed);
+    }
+
+    @Transactional
+    public int patientUseBed(Patient patient, int status) {
+        return bedsMapper.patientUseBed(patient,status);
     }
 }

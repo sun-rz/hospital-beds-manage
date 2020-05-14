@@ -36,23 +36,27 @@ public class DepartmentService {
         return departmentMapper.deleteDept(deptNo);
     }
 
+    @Transactional
     public int updateDeptInfo(Department dept) {
         return departmentMapper.updateDeptInfo(dept);
     }
 
+    @Transactional
     public int addDeptInfo(Department dept) {
         return departmentMapper.addDeptInfo(dept);
     }
 
+    @Transactional
     public Department getDeptInfoByName(Department dept) {
         return departmentMapper.getDeptInfoByName(dept);
     }
 
+    @Transactional
     public List getDeptInfoByCondition(String condition) {
         return departmentMapper.getDeptInfoByCondition(condition);
     }
 
-
+    @Transactional
     public int updateDeptBeds(int deptNo) {
         return departmentMapper.updateDeptBeds(deptNo);
     }

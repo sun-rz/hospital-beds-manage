@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graduation.project.hospitalbedsmanage.entity.CaseHistory;
 import graduation.project.hospitalbedsmanage.entity.Patient;
+import graduation.project.hospitalbedsmanage.service.BedsService;
 import graduation.project.hospitalbedsmanage.service.CaseHistoryService;
 import graduation.project.hospitalbedsmanage.service.PatientService;
 import graduation.project.hospitalbedsmanage.util.CommonTools;
@@ -29,6 +30,9 @@ public class PatientController {
 
     @Autowired
     private CaseHistoryService caseHistoryService;
+
+    @Autowired
+    private BedsService bedsService;
 
     /**
      * 获得患者信息
@@ -58,9 +62,12 @@ public class PatientController {
 
         JSONObject object = JSONObject.fromObject(casehistory);
         if (result > 0) {
+
             CaseHistory caseHistory = new CaseHistory(patient.getId(), patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
             result = caseHistoryService.addCaseHistory(caseHistory);
             if (result > 0) {
+                //更新病床状态
+                bedsService.patientUseBed(patient,1);
                 return CommonTools.getReturnMsg("新增成功", true);
             }
             return CommonTools.getReturnMsg("新增病历信息失败", false);
@@ -91,7 +98,10 @@ public class PatientController {
                 caseHistory = new CaseHistory(patient.getId(), patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
                 result = caseHistoryService.addCaseHistory(caseHistory);
             }
+            System.out.println(patient.getBedNo());
             if (result > 0) {
+                //更新病床状态
+                bedsService.patientUseBed(patient,1);
                 return CommonTools.getReturnMsg("修改成功", true);
             }
             return CommonTools.getReturnMsg("修改病历信息失败", false);
