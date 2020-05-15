@@ -43,8 +43,22 @@ form .required:after {
     color: #fff;
     height: 50px;
     line-height: 50px;
-    padding-left: 30px;
+    padding-left: 15px;
     font-size: 16px;
+}
+
+.logo-title {
+    font-weight: bold;
+    font-family: "FZShuTi", "PTSans", "Arial", sans-serif;
+    font-size: 2.34em !important;
+    color: #fff;
+    z-index: 1099;
+}
+
+.logo-title img{
+    width: 36px;
+    height: 36px;
+    margin-bottom: 5px;
 }
 
 .nav-bar-left-top a {
@@ -70,11 +84,6 @@ form .required:after {
     background: #0084ff;
 }
 
-.icon_bar {
-    float: right;
-    margin-right: 15px;
-}
-
 /*右侧栏*/
 .container-right {
     position: absolute;
@@ -90,6 +99,24 @@ form .required:after {
     margin-right: 10px;
 }
 
+.nav-bar-right .nav-icon-bar {
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    color: #fff;
+    padding-right: 15px;
+}
+
+.nav-bar-right .icon-bar-username {
+    margin-right: 15px;
+}
+
+.nav-bar-right .nav-icon-bar a {
+    font-size: 16px;
+    color: #fff;
+    text-decoration: none;
+}
+
 .nav-bar-right {
     height: 50px;
     background: #0084ff;
@@ -99,9 +126,6 @@ form .required:after {
     display: inline-block;
 }
 
-.nav-bar-right input, .nav-bar-right span {
-    margin-top: 7px;
-}
 
 /**
 通用样式

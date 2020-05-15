@@ -28,19 +28,110 @@
         background: #0084ff;
     }
 
-    .div-btn {
-        margin-top: 15px;
+    .ul-beds li {
+        list-style: none;
+        float: left;
+        width: 95px;
+        height: 95px;
+        margin: 15px 15px;
+        background-size: 100%;
+        cursor: pointer;
+        border: 1px solid #999;
+    }
+
+    .ul-beds-title {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        overflow: hidden;
+        color: #fff;
+        background:#0084ff
+    }
+
+    .ul-beds-icon .fa-user {
+        font-size: 40px;
+        margin: 0;
+    }
+    .ul-beds-icon .bed-no{
+        font-size: 16px;
+    }
+    .ul-beds-icon {
+        text-align: center;
+        padding: 5px;
+        font-weight:bold;
+    }
+
+    .ul-beds-icon:hover {
+        background: #ddd;
+    }
+
+    /*正常*/
+    .ul-beds-icon .status0 {
+        color: #008000;
+    }
+
+    /*占用*/
+    .ul-beds-icon .status1 {
+        color: #ff0000;
+    }
+
+    /*维修*/
+    .ul-beds-icon .status2 {
+        color: #777;
+    }
+
+    .div-modal {
+        transition: all linear 0.3s;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        position: fixed;
+        z-index: 1050;
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+        outline: 0;
+        background: rgba(0, 0, 0, .5);
+    }
+
+    .ng-hide {
+        height: 0;
+        width: 0;
+        background-color: transparent;
+        top: -200px;
+        left: 50%;
+    }
+
+    @media (min-width: 768px) {
+        .modal-dialog {
+            width: 50%;
+            margin: 30px auto
+        }
+    }
+
+    .bed-no a {
+        color: #0084ff;
+        text-decoration: none;
+        font-size: 16px;
+        display: block;
+        margin-top: 1px;
+    }
+
+    .ul-beds-icon .man{
+        color: #0084ff
+    }
+
+    .ul-beds-icon .woman{
+        color: deeppink;
     }
 
 </style>
-
 <div class="">
-
     <div class="col-md-2 col-sm-2 col-xs-6 dept-container-left">
-
         <div class="divContainer">
             <ul class="nav nav-pills nav-stacked nav-left-li" id="nav-pills-sub">
-                <li ng-repeat="dept in deptlist" title="编号：{{dept.ID}}&#10;床位总数：{{dept.totalBeds}}&#10;病房数：{{dept.romms}}&#10;外借优先级：{{dept.borrowLevel}}">
+                <li ng-repeat="dept in deptlist"
+                    title="编号：{{dept.ID}}&#10;床位总数：{{dept.totalBeds}}&#10;病房数：{{dept.romms}}&#10;外借优先级：{{dept.borrowLevel}}">
                     <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/hospitalizedlist/2/{{dept.ID}}">
                         <i class="fa fa-university" aria-hidden="true"></i>{{dept.deptName}}
                     </a>
@@ -50,56 +141,34 @@
         </div>
     </div>
     <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
-        <div class="div-table divContainer">
-
-            <div class="table-responsive">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-default"><a href="#!/editdoctor/0/{{deptNo}}">新增</a></button>
-                    <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()" ng-disabled="checked.length==0">
-                </div>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>
-                            <label>
-                                <input title="全选" type="checkbox" ng-model="select_all"
-                                       ng-change="selectAll()">
-                            </label>
-                        </th>
-                        <th>编号</th>
-                        <th>姓名</th>
-                        <th>性别</th>
-                        <th>部门</th>
-                        <th>职务</th>
-                        <th>电话</th>
-                        <th>邮箱</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="doc in doctorList" class="{{doc.checked?'tractive':''}}">
-                        <td title="选择">
-                            <label>
-                                <input ng-value="{{doc.id}}" ng-model="doc.checked"
-                                       ng-change="selectOne()" type="checkbox">
-                            </label>
-                        </td>
-                        <td>{{doc.id}}</td>
-                        <td><a href="#!/editdoctor/{{doc.id}}/{{deptNo}}" title="点击查看详情">{{doc.name}}</a></td>
-                        <td>{{doc.gender>0?"女":"男"}}</td>
-                        <td>{{doc.deptName}}</td>
-                        <td>{{doc.jobname}}</td>
-                        <td>{{doc.mobile}}</td>
-                        <td>{{doc.email}}</td>
-                    </tr>
-                    <tr ng-if="doctorList==0">
-                        <td colspan="8">暂无数据！</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="table-bottom-bar" ng-show="doctorList.length>0">记录数：{{doctorList.length}}</div>
+        <div class="divContainer">
+            <div>
+                <ul class="ul-beds">
+                    <li ng-repeat="patient in paientList"
+                        title="病床编号：{{patient.bedNo}}&#10;床位名称：{{patient.address}}&#10;病床状态：{{getStatusTitle(patient.status)}}&#10;患者姓名：{{patient.patientName}}&#10;使用日期：{{patient.useDate}}&#10;归还日期：{{patient.freeDate}}"
+                        ng-click="showModal()">
+                        <div class="ul-beds-icon">
+                            <div class="ul-beds-title">
+                                {{patient.bedNo}}
+                            </div>
+                            <i class="fa fa-user {{patient.gender>0?'woman':'man'}} status{{patient.status}}"></i>
+                            <div class="bed-no">
+                                <a href="#!/editbeds/{{patient.deptNo}}/{{patient.bedNo}}">{{patient.patientName}}</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </div>
+            <div class="table-bottom-bar" style="float: left;display: inline-block;width: 100%;margin-top: 50px;"
+                 ng-show="bedList.length>0">
+                <span>记录数：{{bedList.length}}</span>
+                <span>空闲：{{freeCount}}</span>
+                <span>占用：{{useCount}}</span>
+                <span>维修：{{serviceCount}}</span>
+                <span>使用率：{{useCount/bedList.length*100 | number : 2}}%</span>
+            </div>
 
+        </div>
 
     </div>
 </div>

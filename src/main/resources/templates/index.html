@@ -21,25 +21,15 @@
 
 <div class="container-fluid">
     <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-10 logo-title">
+            <img src="/images/logo.png">
+            人民医院信息化管理系统
+        </div>
+
         <div class="col-md-2 col-sm-2 col-xs-4 container-left">
             <div class="divContainer">
                 <div class="nav-bar-left-top">
-                    <span ng-if="user.id>0" class="{{ntype==0?'nactive':''}}">
-                        <span>{{user.name}}</span>
-                        <span class="icon_bar">
-                            <a href="#!/home">  <i class="fa fa-home" title="首页"></i></a>
-                        <a href="#!/userInfo/0">
-                            <i title="完善个人信息" class="fa fa-cog" aria-hidden="true"></i>
-                        </a>
-                        <i class="fa fa-power-off" title="注销登录" aria-hidden="true" ng-click="logout()"></i>
-                        </span>
-                    </span>
 
-                    <span ng-if="!user.id">
-                        <a href="/user/logout">
-                            <i title="登录" class="fa fa-user-o" aria-hidden="true"></i>
-                        </a>
-                    </span>
                 </div>
                 <ul class="nav nav-pills nav-stacked nav-left-li" id="menu">
                     <li ng-repeat="m in menu">
@@ -51,16 +41,32 @@
             </div>
         </div>
         <div class="container-right col-md-10 col-sm-10 col-xs-8">
-            <div class="nav-bar-right col-sm-12 text-center">
-                <div class="col-sm-2 hidden-xs"></div>
-                <div class="nav-bar-right-search col-sm-9 col-xs-12">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="搜索" ng-model="keyword"
-                               ng-keydown="search($event)">
-                        <span class="input-group-btn"><input type="button" class="btn btn-info" value="搜索"></span>
-                    </div>
+            <div class="nav-bar-right col-sm-12 text-right">
+                <!-- <div class="col-sm-2 hidden-xs"></div>
+                 <div class="nav-bar-right-search col-sm-9 col-xs-12">
+                     <div class="input-group">
+                         <input type="text" class="form-control" placeholder="搜索" ng-model="keyword"
+                                ng-keydown="search($event)">
+                         <span class="input-group-btn"><input type="button" class="btn btn-info" value="搜索"></span>
+                     </div>
+                 </div>-->
+                <div class="nav-icon-bar">
+                           <span ng-if="user.id>0" class="{{ntype==0?'nactive':''}}">
+                               <span class="icon-bar-username">{{user.name}}</span>
+                               <span class="icon_bar">
+                                  <a href="#!/userInfo/0">
+                                      <i title="完善个人信息" class="fa fa-cog" aria-hidden="true"></i>
+                                  </a>
+                                   <i class="fa fa-power-off" title="注销登录" aria-hidden="true"
+                                      ng-click="logout()"></i>
+                                  </span>
+                           </span>
+                    <span ng-if="!user.id">
+                              <a href="/user/logout">
+                                  <i title="登录" class="fa fa-user-o" aria-hidden="true"></i>
+                               </a>
+                             </span>
                 </div>
-
             </div>
             <div ng-view=""></div>
         </div>

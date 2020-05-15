@@ -113,7 +113,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         alert("网络错误,请重试");
     });
 
-    //页面加载部门
+    //页面加载患者
     $resource('/hospitalized/getHospitalizedPaient', {}).get(function (resp) {
         //请求成功
        $scope.paientList = resp.paientList;
@@ -125,12 +125,20 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
 
 }).controller("hospitalizedlistCtrl", function ($scope, $resource, $routeParams, $location, $window) {
     $scope.deptNo = $routeParams.deptNo;
-    $scope.deptlist = [];
-
     //页面加载部门
     $resource('/dept/getDeptInfoByCondition', {"condition": "totalBeds>0"}).get(function (resp) {
         //请求成功
         $scope.deptlist = resp.deptList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+    //页面加载患者
+    $resource('/hospitalized/getHospitalizedPaient', {deptNo:$scope.deptNo}).get(function (resp) {
+        //请求成功
+        $scope.paientList = resp.paientList;
+        console.log( $scope.paientList)
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
