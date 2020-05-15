@@ -246,6 +246,13 @@ label:hover, i:hover {
     }
 }
 
+.group-search{
+    float: right;
+}
+
+.group-search input{
+    height: 30px;
+}
 
 /*公祭日全网灰色哀悼主题色*/
 .theme-grey {
