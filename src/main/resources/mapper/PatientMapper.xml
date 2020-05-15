@@ -51,6 +51,14 @@
         and casehistory.doctorID=#{doctorID} order by out_hospital_date limit 10
     </select>
 
+    <select id="getPatientInfoByBedNo" resultType="HashMap">
+        select patient.id,doctor.name as doctorName, patient.age, patient.gender, patient.deptNo, patient.level, patient.bedNo, patient.name as patientName, patient.in_hospital_date, patient.out_hospital_date,patient.patient_status
+        from beds
+        left join patient on beds.bedNo=patient.bedNo
+        left join casehistory on patient.id=casehistory.patientID
+        left join doctor on casehistory.doctorID=doctor.id where beds.bedNo=#{bedNo}
+    </select>
+
     <insert id="addPatientInfo">
         <selectKey keyProperty="id" resultType="int" order="AFTER">
             SELECT LAST_INSERT_ID()
@@ -63,6 +71,9 @@
         update patient set name=#{name},age=#{age},gender=#{gender},deptNo=#{deptNo},level=#{level},bedNo=#{bedNo},in_hospital_date=#{in_hospital_date},out_hospital_date=#{out_hospital_date} where id=#{id}
     </update>
 
+    <update id="updateOutHospitalDate">
+         update patient set out_hospital_date=#{out_hospital_date},patient_status=1 where id=#{patientID}
+    </update>
     <delete id="deletePatient">
         delete from patient where id in ${patientID}
     </delete>

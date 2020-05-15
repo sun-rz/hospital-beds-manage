@@ -240,6 +240,13 @@ label:hover, i:hover {
     color: red;
 }
 
+@media (max-width: 530px) {
+    .logo-title span {
+        display: none;
+    }
+}
+
+
 /*公祭日全网灰色哀悼主题色*/
 .theme-grey {
     -webkit-filter: grayscale(100%);

@@ -36,6 +36,7 @@ public class PatientController {
 
     /**
      * 获得患者信息
+     *
      * @param patient
      * @return
      */
@@ -50,7 +51,25 @@ public class PatientController {
     }
 
     /**
+     * 根据床位查找患者
+     *
+     * @param bedNo
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getPatientInfoByBedNo")
+    public String getPatientInfoByBedNo(String bedNo) {
+        List list = patientservice.getPatientInfoByBedNo(CommonTools.ToInt(bedNo));
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        JSONObject obj = new JSONObject();
+        obj.put("patient", JSONObject.fromObject(gson.toJson(list.get(0))));
+        return obj.toString();
+    }
+
+
+    /**
      * 添加患者信息
+     *
      * @param patient
      * @param casehistory
      * @return
@@ -67,7 +86,7 @@ public class PatientController {
             result = caseHistoryService.addCaseHistory(caseHistory);
             if (result > 0) {
                 //更新病床状态
-                bedsService.patientUseBed(patient,1);
+                bedsService.patientUseBed(patient, 1);
                 return CommonTools.getReturnMsg("新增成功", true);
             }
             return CommonTools.getReturnMsg("新增病历信息失败", false);
@@ -77,6 +96,7 @@ public class PatientController {
 
     /**
      * 修改患者信息
+     *
      * @param patient
      * @param casehistory
      * @return
@@ -89,19 +109,18 @@ public class PatientController {
 
         if (result > 0) {
             CaseHistory caseHistory;
-            if(object.has("id")) {
+            if (object.has("id")) {
                 //修改
                 caseHistory = new CaseHistory(object.getInt("id"), patient.getId(), patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
                 result = caseHistoryService.updateCaseHistory(caseHistory);
-            }else{
+            } else {
                 //病历被删除了,新增
                 caseHistory = new CaseHistory(patient.getId(), patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
                 result = caseHistoryService.addCaseHistory(caseHistory);
             }
-            System.out.println(patient.getBedNo());
             if (result > 0) {
                 //更新病床状态
-                bedsService.patientUseBed(patient,1);
+                bedsService.patientUseBed(patient, 1);
                 return CommonTools.getReturnMsg("修改成功", true);
             }
             return CommonTools.getReturnMsg("修改病历信息失败", false);
@@ -111,6 +130,7 @@ public class PatientController {
 
     /**
      * 删除患者信息
+     *
      * @param patientID
      * @return
      */

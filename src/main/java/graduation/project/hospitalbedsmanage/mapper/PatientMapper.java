@@ -10,7 +10,7 @@ import java.util.List;
 public interface PatientMapper {
 
 
-    List<Patient> getPatientInFo(String name,String deptNo,String bedNo,String in_hospital_date);
+    List<Patient> getPatientInFo(String name, String deptNo, String bedNo, String in_hospital_date);
 
     List getPatientInfo(Patient patient);
 
@@ -23,4 +23,8 @@ public interface PatientMapper {
     List getSameDoctorForPatient(int doctorID);
 
     List<Patient> getLateOutHospital(int doctorID);
+
+    List getPatientInfoByBedNo(int bedNo);
+
+    int updateOutHospitalDate(int patientID, String out_hospital_date);
 }

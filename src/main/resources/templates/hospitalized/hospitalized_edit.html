@@ -1,0 +1,95 @@
+<div class="container">
+    <form class="form-horizontal" role="form" ng-submit="outHospital(patient)">
+        <div class="text-center"><h3>{{title}}</h3></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">姓名</label>
+            <div class="col-sm-10">
+                <input class="form-control" ng-model="patient.patientName" type="text" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">年龄</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" ng-model="patient.age" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">性别</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="patient.gender"
+                        ng-options="option.value as option.name for option in gender" disabled>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">科室信息</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="patient.deptNo" required ng-change="getDocByDept(this)" disabled>
+                    <option value="{{dept.ID}}" ng-repeat="dept in deptlist" ng-selected="patient.deptNo==dept.ID">
+                        {{dept.deptName}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" disabled="">建议优先级</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="patient.level" disabled>
+                    <option value="1" ng-selected="patient.level==1">1</option>
+                    <option value="2" ng-selected="patient.level==2">2</option>
+                    <option value="3" ng-selected="patient.level==3">3</option>
+                    <option value="4" ng-selected="patient.level==4">4</option>
+                    <option value="5" ng-selected="patient.level==5">5</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">入院日期</label>
+            <div class="col-sm-10 ">
+                <input type="text" ng-model="patient.in_hospital_date" class="form-control" id="inhospital" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label required">出院日期</label>
+            <div class="col-sm-10">
+                <input type="text" ng-model="patient.out_hospital_date" class="form-control" id="outhospital" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">床位号</label>
+            <div class="col-sm-10">
+                  <input type="text" class="form-control" ng-model="patient.bedNo" readonly>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12 text-center">
+                <input type="button" value="返回" class="btn btn-default" onclick="history.back()">
+                <input type="submit" value="{{patient.patient_status==1?'已出院':'出院'}}" class="btn btn-primary" ng-disabled="patient.patient_status==1">
+            </div>
+        </div>
+    </form>
+
+</div>
+<script src="/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="/lib/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<link rel="stylesheet" href="lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css">
+<script>
+    $(function () {
+        $('#outhospital').datetimepicker({
+            language: 'zh-CN', //语言类型
+            weekStart: 1,//一周从哪一天开始
+            todayBtn: 1, // 当天日期按钮``
+            autoclose: 1,//选完时间后是否自动关闭
+            todayHighlight: 1,//当天日期高亮
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 1,
+            maxView: 4, //最高显示到年份
+            minView: 2, //最低显示到日
+            format: 'yyyy-mm-dd',//时间格式
+        });
+    });
+
+
+</script>

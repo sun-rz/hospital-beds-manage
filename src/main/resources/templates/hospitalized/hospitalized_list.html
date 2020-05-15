@@ -49,7 +49,7 @@
     }
 
     .ul-beds-icon .fa-user {
-        font-size: 40px;
+        font-size: 30px;
         margin: 0;
     }
     .ul-beds-icon .bed-no{
@@ -65,6 +65,9 @@
         background: #ddd;
     }
 
+    .out-hospital{
+        background: #28e028;
+    }
     /*正常*/
     .ul-beds-icon .status0 {
         color: #008000;
@@ -112,9 +115,10 @@
     .bed-no a {
         color: #0084ff;
         text-decoration: none;
-        font-size: 16px;
+        font-size: 18px;
         display: block;
-        margin-top: 1px;
+        height: 32px;
+        line-height:32px;
     }
 
     .ul-beds-icon .man{
@@ -144,8 +148,8 @@
         <div class="divContainer">
             <div>
                 <ul class="ul-beds">
-                    <li ng-repeat="patient in paientList"
-                        title="病床编号：{{patient.bedNo}}&#10;床位名称：{{patient.address}}&#10;病床状态：{{getStatusTitle(patient.status)}}&#10;患者姓名：{{patient.patientName}}&#10;使用日期：{{patient.useDate}}&#10;归还日期：{{patient.freeDate}}"
+                    <li ng-repeat="patient in paientList" class="{{patient.patient_status==1?'out-hospital':''}}"
+                        title="病床编号：{{patient.bedNo}}&#10;患者姓名：{{patient.patientName}}&#10;住院日期：{{patient.in_hospital_date}}&#10;出院日期：{{patient.out_hospital_date}}&#10;患者状态：{{patient.patient_status==1?'已出院':'在院'}}"
                         ng-click="showModal()">
                         <div class="ul-beds-icon">
                             <div class="ul-beds-title">
@@ -153,19 +157,17 @@
                             </div>
                             <i class="fa fa-user {{patient.gender>0?'woman':'man'}} status{{patient.status}}"></i>
                             <div class="bed-no">
-                                <a href="#!/editbeds/{{patient.deptNo}}/{{patient.bedNo}}">{{patient.patientName}}</a>
+                                <a href="#!/edithospitalized/{{patient.bedNo}}">{{patient.patientName}}</a>
                             </div>
                         </div>
                     </li>
                 </ul>
             </div>
             <div class="table-bottom-bar" style="float: left;display: inline-block;width: 100%;margin-top: 50px;"
-                 ng-show="bedList.length>0">
-                <span>记录数：{{bedList.length}}</span>
-                <span>空闲：{{freeCount}}</span>
-                <span>占用：{{useCount}}</span>
-                <span>维修：{{serviceCount}}</span>
-                <span>使用率：{{useCount/bedList.length*100 | number : 2}}%</span>
+                 ng-show="paientList.length>0">
+                <span>记录数：{{paientList.length}}</span>
+                <span>在院人数：{{inCount}}</span>
+                <span>出院人数：{{outCount}}</span>
             </div>
 
         </div>

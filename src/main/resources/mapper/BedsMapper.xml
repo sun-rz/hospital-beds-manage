@@ -48,7 +48,11 @@
     </insert>
 
     <update id="updateBedStatus">
-        update beds set status=#{status} where bedNo =#{bedNo}
+        update beds set status=#{status}
+         <if test="status==0">
+             ,patientID=null,useDate=null,freeDate=null
+         </if>
+         where bedNo =#{bedNo}
     </update>
 
     <update id="patientUseBed">

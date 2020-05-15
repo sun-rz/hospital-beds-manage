@@ -44,4 +44,13 @@ public class PatientService {
     public List<Patient> getLateOutHospital(int doctorID) {
         return patientMapper.getLateOutHospital(doctorID);
     }
+
+    @Transactional
+    public List getPatientInfoByBedNo(int bedNo) {
+        return patientMapper.getPatientInfoByBedNo(bedNo);
+    }
+
+    public int updateOutHospitalDate(int patientID,String out_hospital_date) {
+        return patientMapper.updateOutHospitalDate(patientID,out_hospital_date);
+    }
 }

@@ -23,7 +23,12 @@ public class Beds {
     public Beds() {
     }
 
-    public Beds(String bedNo, int deptNo,int roomNo,String address) {
+    public Beds(String bedNo, int status) {
+        this.bedNo = bedNo;
+        this.status = status;
+    }
+
+    public Beds(String bedNo, int deptNo, int roomNo, String address) {
         this.bedNo = bedNo;
         this.deptNo = deptNo;
         this.roomNo = roomNo;

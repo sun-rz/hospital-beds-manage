@@ -9,6 +9,9 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
     }).when('/hospitalizedlist/:type/:deptNo', {//住院管理
         templateUrl: '/hospitalized/hospitalized_list.html',
         controller: 'hospitalizedlistCtrl'
+    }).when('/edithospitalized/:bedNo', {//住院管理
+        templateUrl: '/hospitalized/hospitalized_edit.html',
+        controller: 'edithospitalizedCtrl'
     }).when('/department/:type/:deptNo', {//科室管理
         templateUrl: 'dept/department.html',
         controller: 'departmentControl'
@@ -103,7 +106,8 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
 
 }).controller('hospitalizedControl', function ($scope, $routeParams, $rootScope, $resource) {
     $rootScope.ntype = $routeParams.type;
-
+    $scope.inCount=0;
+    $scope.outCount=0;
     //页面加载部门
     $resource('/dept/getDeptInfoByCondition', {"condition": "totalBeds>0"}).get(function (resp) {
         //请求成功
@@ -117,7 +121,15 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
     $resource('/hospitalized/getHospitalizedPaient', {}).get(function (resp) {
         //请求成功
        $scope.paientList = resp.paientList;
-        console.log( $scope.paientList)
+        for (let i = 0; i < $scope.paientList.length; i++) {
+            switch ($scope.paientList[i].patient_status) {
+                case 1:
+                    $scope.outCount += 1;
+                    break;
+                default:
+                    $scope.inCount += 1;
+            }
+        }
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
@@ -125,6 +137,8 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
 
 }).controller("hospitalizedlistCtrl", function ($scope, $resource, $routeParams, $location, $window) {
     $scope.deptNo = $routeParams.deptNo;
+    $scope.inCount=0;
+    $scope.outCount=0;
     //页面加载部门
     $resource('/dept/getDeptInfoByCondition', {"condition": "totalBeds>0"}).get(function (resp) {
         //请求成功
@@ -138,11 +152,54 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
     $resource('/hospitalized/getHospitalizedPaient', {deptNo:$scope.deptNo}).get(function (resp) {
         //请求成功
         $scope.paientList = resp.paientList;
-        console.log( $scope.paientList)
+
+        for (let i = 0; i < $scope.paientList.length; i++) {
+            switch ($scope.paientList[i].patient_status) {
+                case 1:
+                    $scope.outCount += 1;
+                    break;
+                default:
+                    $scope.inCount += 1;
+            }
+        }
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
     });
+}).controller('edithospitalizedCtrl',function ($scope, $routeParams, $resource) {
+    $scope.bedNo=$routeParams.bedNo;
+    $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
+    //页面加载部门
+    $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
+        //请求成功
+        $scope.deptlist = resp.deptList;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+    $resource('/patient/getPatientInfoByBedNo', {bedNo:$scope.bedNo}).get(function (resp) {
+        //请求成功
+        $scope.patient = resp.patient;
+    }, function (err) {
+        //处理错误
+        alert("网络错误,请重试");
+    });
+
+    //
+    $scope.outHospital=function (p) {
+        if(confirm("是否为该患者办理出院手续")){
+            $resource('/hospitalized/outHospital', {bedNo:p.bedNo,patientID:p.id,out_hospital_date:p.out_hospital_date}).get(function (resp) {
+                //请求成功
+                alert(resp.msg);
+                history.back();
+            }, function (err) {
+                //处理错误
+                alert("网络错误,请重试");
+            });
+        }
+    }
+
 }).controller('departmentControl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;
     $scope.deptNo = $routeParams.deptNo;
