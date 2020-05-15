@@ -246,12 +246,8 @@ label:hover, i:hover {
     }
 }
 
-.group-search{
-    float: right;
-}
-
-.group-search input{
-    height: 30px;
+.nav-bar-right-search{
+    margin-top: 7px;
 }
 
 /*公祭日全网灰色哀悼主题色*/
