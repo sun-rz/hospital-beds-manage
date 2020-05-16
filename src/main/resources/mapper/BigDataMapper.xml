@@ -2,14 +2,73 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.BigDataMapper">
     <select id="getHospitalCount" resultType="HashMap">
-        select count(1) as mzTotal from patient
+        select count(1) as counts from patient
         union all
-        select count(1) as mzMonth from patient left join casehistory on casehistory.patientID=patient.id
+        select count(1) from patient left join casehistory on casehistory.patientID=patient.id
         where DATE_FORMAT(DATE_SUB(casehistory.submitTime, INTERVAL 0 MONTH),'%Y-%m')=DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 0 MONTH),'%Y-%m')
         union all
-        select count(1) as zyTotal from patient where bedNo is not null
+        select count(1) from patient where bedNo is not null
         union all
-        select count(1) as zyMonth from patient left join casehistory on casehistory.patientID=patient.id
+        select count(1) from patient left join casehistory on casehistory.patientID=patient.id
         where DATE_FORMAT(DATE_SUB(casehistory.submitTime, INTERVAL 0 MONTH),'%Y-%m')=DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 0 MONTH),'%Y-%m') and bedNo is not null
+        union all
+        select count(1) from patient where patient_status=3
+        union all
+        select count(1) from patient where patient.gender=0
+        union all
+        select count(1) from patient where patient.gender=1
+        union all
+        select count(1) from patient where patient.age &lt;=3
+        union all
+        select count(1) from patient where patient.age>3 and age &lt;= 10
+        union all
+        select count(1) from patient where patient.age>10 and age &lt;= 18
+        union all
+        select count(1) from patient where patient.age>18 and age &lt;= 45
+        union all
+        select count(1) from patient where patient.age>45 and age &lt;= 60
+        union all
+        select count(1) from patient where patient.age>60
+     </select>
+
+    <select id="getPatientMonthCount" resultType="HashMap">
+        select DATE_FORMAT(submitTime, '%Y-%m') as submitTime from casehistory
+        where submitTime between date_sub(DATE_FORMAT(now(), '%Y-%m-%d'), interval 11 month) and DATE_FORMAT(now(), '%Y-%m-%d')
+        order by submitTime desc
+    </select>
+  <select id="getPatientDayCount" resultType="HashMap">
+        select count(1) as counts from patient
+        left join casehistory c on patient.id = c.patientID
+        left join department d on patient.deptNo=d.ID
+        where c.submitTime between #{time08} and #{time10}
+        union all
+        select count(1) as counts from patient
+        left join casehistory c on patient.id = c.patientID
+        left join department d on patient.deptNo=d.ID
+        where c.submitTime between #{time10} and #{time12}
+        union all
+        select count(1) as counts from patient
+        left join casehistory c on patient.id = c.patientID
+        left join department d on patient.deptNo=d.ID
+        where c.submitTime between #{time12} and #{time14}
+        union all
+        select count(1) as counts from patient
+        left join casehistory c on patient.id = c.patientID
+        left join department d on patient.deptNo=d.ID
+        where c.submitTime between #{time14} and #{time16}
+        union all
+        select count(1) as counts from patient
+        left join casehistory c on patient.id = c.patientID
+        left join department d on patient.deptNo=d.ID
+        where c.submitTime between #{time16} and #{time18}
+        union all
+        select count(1) as counts from patient
+        left join casehistory c on patient.id = c.patientID
+        left join department d on patient.deptNo=d.ID
+        where c.submitTime between #{time18} and #{time24}
+    </select>
+
+    <select id="getDeptNoByCount" resultType="HashMap">
+     select deptNo,deptName,count(1) as counts from patient left join department on deptNo=department.ID group by patient.deptNo order by counts desc limit 6;
     </select>
 </mapper>

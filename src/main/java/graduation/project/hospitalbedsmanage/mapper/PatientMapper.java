@@ -9,9 +9,6 @@ import java.util.List;
 @Repository
 public interface PatientMapper {
 
-
-    List<Patient> getPatientInFo(String name, String deptNo, String bedNo, String in_hospital_date);
-
     List getPatientInfo(Patient patient);
 
     int addPatientInfo(Patient patient);

@@ -8,4 +8,10 @@ import java.util.List;
 public interface BigDataMapper {
 
     List getHospitalCount();
+
+    List getPatientMonthCount();
+
+    List getPatientDayCount(String time08, String time10, String time12, String time14, String time16, String time18,String time24,int deptNo);
+
+    List getDeptNoByCount();
 }

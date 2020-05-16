@@ -464,6 +464,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
 }).controller('patientControl', function ($scope, $routeParams, $rootScope, $resource, $window) {
     $rootScope.ntype = $routeParams.type;
     $scope.patientList = [];
+    $scope.keyword="";
     $scope.no_bed=0;
     $scope.outCount=0;
     $resource('/patient/getPatientInfo', {}).get(function (resp) {
@@ -550,6 +551,16 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         }
         return str;
     }
+
+    //搜索
+    $scope.search = function (event) {
+        if (event.keyCode == 13 || event.key == "Enter") { // enter 键
+            alert("此处回车触发搜索事件");
+            if ($scope.keyword != "") {
+
+            }
+        }
+    };
 }).controller('casehistoryControl', function ($scope, $routeParams, $rootScope, $resource, $window) {
     $rootScope.ntype = $routeParams.type;
     $scope.casehistoryList = [];
@@ -696,7 +707,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             //处理错误
             alert("网络错误,请重试");
         });
-    }
+    };
 
     $scope.updatePatientInfo = function (p, c) {
         c.doctorID = angular.element(document.querySelector("#doctorID")).val();

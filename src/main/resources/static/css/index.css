@@ -254,6 +254,10 @@ label:hover, i:hover {
     margin-top: 14px;
 }
 
+.btn-group-search{
+    float: right;
+}
+
 /*公祭日全网灰色哀悼主题色*/
 .theme-grey {
     -webkit-filter: grayscale(100%);

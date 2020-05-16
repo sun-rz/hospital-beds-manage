@@ -16,11 +16,6 @@ public class PatientService {
     PatientMapper patientMapper;
 
     @Transactional
-    public List<Patient> getPatientInFo(String name, String deptNo, String bedNo, String in_hospital_date) {
-        return patientMapper.getPatientInFo(name, deptNo, bedNo, in_hospital_date);
-    }
-
-    @Transactional
     public List getPatientInfo(Patient patient) {
         return patientMapper.getPatientInfo(patient);
     }

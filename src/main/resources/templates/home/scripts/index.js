@@ -1,15 +1,17 @@
 var symptomName = last_year_month();
 $(function(){
 
-    $.get("/bigData/getHospitalCount",{},function(result){
-        result=JSON.parse(result)
+    $.get("/bigData/getHospitalCount", {}, function (result) {
         console.log(result);
         init(result);
-        $("#mzTotal").html(result.getHospitalCount[0].mzTotal);
-        $("#mzMonth").html(result.getHospitalCount[1].mzTotal);
-        $("#zyTotal").html(result.getHospitalCount[2].mzTotal);
-        $("#zyMonth").html(result.getHospitalCount[3].mzTotal);
-
+        $("#count_zmzrs").html(result.getHospitalCount[0].counts);
+        $("#count_blbgs").html(result.getHospitalCount[0].counts);
+        $("#count_dymzrs").html(result.getHospitalCount[1].counts);
+        $("#count_zzyrs").html(result.getHospitalCount[2].counts);
+        $("#count_dyzyrs").html(result.getHospitalCount[3].counts);
+        $("#count_swrs").html(result.getHospitalCount[4].counts);
+    }, "json").fail(function () {
+        alert('服务器异常，请刷新页面或重新登录');
     });
 });
 
@@ -77,7 +79,7 @@ function init(result){
                 name:'主要传染病',
                 type:'bar',
                 barWidth : 20,
-                data:[2210,1085,926,669,634,452,412,312,156],
+                data:[1300,1085,926,669,634,452,412,312,156],
             },
         ]
     })
@@ -220,7 +222,7 @@ function init(result){
                 type:'line',
                 smooth:true,
                 itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                data:[120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90]
+                data:getDatas(result.getPatientMonthCount,symptomName)
             },
         ]
 
@@ -409,7 +411,7 @@ function init(result){
                 type:'line',
                 smooth:true,
                 itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                data:[520, 232,701, 434, 190, 230, 210,120, 132, 101, 134, 890]
+                data:getDatas(result.getPatientMonthCount,symptomName)
             },
         ]
 
@@ -421,13 +423,13 @@ function init(result){
 
         color:["#87cefa","#ff7f50","#32cd32","#da70d6",],
         legend: {
-            y : '260',
+            y : '330',
             x : 'center',
             textStyle : {
                 color : '#ffffff',
 
             },
-            data : ['厦门第一医院','厦门中山医院','厦门中医院','厦门第五医院',],
+            data :_getDept(result.getDeptNoByCount),
         },
         calculable : false,
         tooltip : {
@@ -449,7 +451,7 @@ function init(result){
                         color: '#fff'
                     },
                     formatter: function (value) {
-                        return value + "k条"
+                        return value + "人"
                     },
                 },
                 splitLine:{
@@ -494,7 +496,8 @@ function init(result){
             bottom: '20%',
             containLabel: true
         },
-        series : [
+        series :_series(result.getPatientDayCount)
+        /* [
             {
                 name:'厦门第一医院',
                 type:'line',
@@ -547,7 +550,7 @@ function init(result){
                 },
                 data:[45, 30, 50, 75, 52.1, 55, 6].reverse()
             }
-        ]
+        ]*/
     });
 
 
@@ -564,7 +567,7 @@ function init(result){
             {
                 name:'发病人数',
                 type:'pie',
-                radius : [30, 110],
+                radius : [30, 70],
                 center : ['50%', '50%'],
                 roseType : 'area',
                 x: '50%',
@@ -573,12 +576,12 @@ function init(result){
 
                 sort : 'ascending',
                 data:[
-                    {value:10, name:'婴儿(1-3岁)'},
-                    {value:5, name:'少儿(4-10岁)'},
-                    {value:15, name:'少年(10-18岁)'},
-                    {value:25, name:'青年(18-45岁)'},
-                    {value:125, name:'中年(45-60岁)'},
-                    {value:175, name:'老年(60岁以上)'},
+                    {value:result.getHospitalCount[7].counts, name:'婴儿(1-3岁)'},
+                    {value:result.getHospitalCount[8].counts, name:'少儿(4-10岁)'},
+                    {value:result.getHospitalCount[9].counts, name:'少年(10-18岁)'},
+                    {value:result.getHospitalCount[10].counts, name:'青年(18-45岁)'},
+                    {value:result.getHospitalCount[11].counts, name:'中年(45-60岁)'},
+                    {value:result.getHospitalCount[12].counts, name:'老年(60岁以上)'},
                 ]
             }
         ]
@@ -590,7 +593,7 @@ function init(result){
             label : {
                 position : 'center',
                 formatter : function (params){
-                    console.log(params)
+                    //console.log(params)
                     if(params.name == "女性"){
                         return "女性"+":"+(params.percent + '%')
                     }else{
@@ -621,11 +624,61 @@ function init(result){
                 x: '0%', // for funnel
                 itemStyle : labelFromatter,
                 data : [
-                    {name:'男性', value:158},
-                    {name:'女性', value:142},
+                    {name:'男性', value:result.getHospitalCount[5].counts},
+                    {name:'女性', value:result.getHospitalCount[6].counts},
                 ]
             },
         ],
     })
+}
 
+function getDatas(getPatientMonthCount,symptom_Name) {
+    var data=[];
+    var c;
+    for (var i=0;i<symptom_Name.length;i++){
+        c=getPatientMonthCount[symptom_Name[i]];
+        if(c){
+            data.push(c);
+        }else{
+            data.push(0);
+        }
+    }
+   return  data;
+}
+
+function _series(getPatientDayCount) {
+var _data=[];
+
+    for(var i=0; i<getPatientDayCount.length;i++){
+        //console.log(getPatientDayCount[i])
+        var  _counts=[];
+        var d={
+            name:'',
+            type:'line',
+            smooth:true,
+            itemStyle: {
+                normal: {
+                    lineStyle: {
+                        shadowColor : 'rgba(0,0,0,0.4)'
+                    }
+                }
+            },
+            data:[]
+        }
+        d.name=getPatientDayCount[i].name;
+        for(var j=0;j<getPatientDayCount[i].counts.length;j++){
+            _counts.push(getPatientDayCount[i].counts[j].counts)
+        }
+        d.data=_counts.reverse();
+        _data.push(d)
+    }
+  return _data;
+}
+
+function _getDept(getDeptNoByCount){
+    var data=[];
+    for(var j=0;j<getDeptNoByCount.length;j++){
+        data.push(getDeptNoByCount[j].deptName)
+    }
+    return data;
 }

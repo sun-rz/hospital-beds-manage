@@ -2,24 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.PatientMapper">
 
-    <select id="getPatientInFo" resultType="graduation.project.hospitalbedsmanage.entity.Patient">
-        select *
-        from patient
-        where 1=1
-        <if test="name != null and name != ''">
-            and name = #{name}
-        </if>
-        <if test="deptNo != null and deptNo != ''">
-            and deptNo = #{deptNo}
-        </if>
-        <if test="bedNo != null and bedNo != ''">
-            and bedNo = #{bedNo}
-        </if>
-        <if test="in_hospital_date != null and in_hospital_date != ''">
-            and in_hospital_date = #{in_hospital_date}
-        </if>
-    </select>
-
     <select id="getPatientInfo" resultType="HashMap">
         select patient.id,name,age, gender, deptNo, level, bedNo,patient.patient_status, in_hospital_date,out_hospital_date,department.deptName
         from patient
