@@ -13,6 +13,7 @@ public class Patient {
     private int gender;//性别
     private int deptNo;//科室
     private int level;//优先级别
+    private int patient_status;//出院状态
     private String bedNo;//床位号
     private String name; //姓名
     @DateTimeFormat(pattern="yyyy-MM-dd")
@@ -21,6 +22,14 @@ public class Patient {
     private Date out_hospital_date;//出院日期
 
     public Patient() {
+    }
+
+    public int getPatient_status() {
+        return patient_status;
+    }
+
+    public void setPatient_status(int patient_status) {
+        this.patient_status = patient_status;
     }
 
     public int getId() {
@@ -101,6 +110,7 @@ public class Patient {
                 "id=" + id +
                 ", age=" + age +
                 ", gender=" + gender +
+                ", patient_status=" + patient_status +
                 ", deptNo=" + deptNo +
                 ", level=" + level +
                 ", bedNo=" + bedNo +

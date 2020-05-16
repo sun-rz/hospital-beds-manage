@@ -2,13 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.HospitalizedMapper">
     <select id="getHospitalizedPaient" resultType="HashMap">
-        select patient.id,doctor.name as doctorName, patient.age, patient.gender, patient.deptNo, patient.level, patient.bedNo, patient.name as patientName, patient.in_hospital_date, patient.out_hospital_date,patient.patient_status from patient
+        select patient.id,doctor.name as doctorName, patient.age, patient.gender, patient.deptNo, patient.level,
+        patient.bedNo, patient.name as patientName, patient.in_hospital_date,
+        patient.out_hospital_date,patient.patient_status,department.deptName from patient
         left join casehistory on patient.id=casehistory.patientID
         left join doctor on casehistory.doctorID=doctor.id
+        left join department on patient.deptNo=department.ID
         where patient.bedNo is not null
         <if test="deptNo gt 0">
             and patient.deptNo=#{deptNo}
         </if>
-        order by patient.level desc ,out_hospital_date desc,patient.in_hospital_date desc,patient.id
+        order by patient.patient_status,patient.level desc ,patient.in_hospital_date desc,out_hospital_date desc,patient.id
     </select>
 </mapper>

@@ -135,6 +135,24 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         alert("网络错误,请重试");
     });
 
+    $scope.getOutHospitalTitle=function (patient_status) {
+        let str="";
+        switch (patient_status) {
+            case 1:
+                str="正常出院";
+                break;
+            case 2:
+                str="转院";
+                break;
+            case 3:
+                str="抢救无效死亡";
+                break;
+            default:
+                str="在院";
+        }
+        return str;
+    }
+
 }).controller("hospitalizedlistCtrl", function ($scope, $resource, $routeParams, $location, $window) {
     $scope.deptNo = $routeParams.deptNo;
     $scope.inCount=0;
@@ -166,8 +184,27 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         //处理错误
         alert("网络错误,请重试");
     });
+
+    $scope.getOutHospitalTitle=function (patient_status) {
+        let str="";
+        switch (patient_status) {
+            case 1:
+                str="正常出院";
+                break;
+            case 2:
+                str="转院";
+                break;
+            case 3:
+                str="抢救无效死亡";
+                break;
+            default:
+                str="在院";
+        }
+        return str;
+    }
 }).controller('edithospitalizedCtrl',function ($scope, $routeParams, $resource) {
     $scope.bedNo=$routeParams.bedNo;
+    $scope.patient_status=0;
     $scope.gender = [{"value": 0, "name": "男"}, {"value": 1, "name": "女"}];
     //页面加载部门
     $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
@@ -180,16 +217,23 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
 
     $resource('/patient/getPatientInfoByBedNo', {bedNo:$scope.bedNo}).get(function (resp) {
         //请求成功
-        $scope.patient = resp.patient;
+        $scope.patient = resp.patient[0];
+        if( $scope.patient){
+            $scope.patient_status=$scope.patient.patient_status;
+        }
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
     });
 
-    //
+    //出院
     $scope.outHospital=function (p) {
+        if($scope.patient_status==0){
+            alert("请选择患者状态");
+            return;
+        }
         if(confirm("是否为该患者办理出院手续")){
-            $resource('/hospitalized/outHospital', {bedNo:p.bedNo,patientID:p.id,out_hospital_date:p.out_hospital_date}).get(function (resp) {
+            $resource('/hospitalized/outHospital', {bedNo:p.bedNo,patientID:p.id,out_hospital_date:p.out_hospital_date,patient_status:$scope.patient_status}).get(function (resp) {
                 //请求成功
                 alert(resp.msg);
                 history.back();
@@ -199,6 +243,24 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             });
         }
     }
+
+        $scope.getOutHospitalTitle=function (patient_status) {
+        let str="";
+            switch (patient_status) {
+                case 1:
+                    str="正常出院";
+                    break;
+                case 2:
+                    str="转院";
+                    break;
+                case 3:
+                    str="抢救无效死亡";
+                    break;
+                default:
+                    str="在院";
+            }
+            return str;
+        }
 
 }).controller('departmentControl', function ($scope, $routeParams, $resource, $rootScope) {
     $rootScope.ntype = $routeParams.type;
@@ -402,10 +464,20 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
 }).controller('patientControl', function ($scope, $routeParams, $rootScope, $resource, $window) {
     $rootScope.ntype = $routeParams.type;
     $scope.patientList = [];
-
+    $scope.no_bed=0;
+    $scope.outCount=0;
     $resource('/patient/getPatientInfo', {}).get(function (resp) {
         //请求成功
         $scope.patientList = resp.patientList;
+
+        for (let i = 0; i < $scope.patientList.length; i++) {
+            if (!$scope.patientList[i].bedNo) {
+               $scope.no_bed+=1;
+            }
+            if($scope.patientList[i].patient_status>=1){
+                $scope.outCount+=1;
+            }
+        }
     }, function (err) {
         //处理错误
         alert("网络错误,请重试");
@@ -461,7 +533,23 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             });
         }
     };
-
+    $scope.getOutHospitalTitle=function (patient_status) {
+        let str="";
+        switch (patient_status) {
+            case 1:
+                str="正常出院";
+                break;
+            case 2:
+                str="转院";
+                break;
+            case 3:
+                str="抢救无效死亡";
+                break;
+            default:
+                str="在院";
+        }
+        return str;
+    }
 }).controller('casehistoryControl', function ($scope, $routeParams, $rootScope, $resource, $window) {
     $rootScope.ntype = $routeParams.type;
     $scope.casehistoryList = [];

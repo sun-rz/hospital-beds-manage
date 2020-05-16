@@ -1,154 +1,440 @@
-var symptomName = last_month_day();
-
+var symptomName = last_year_month();
 $(function(){
 
+    $.get("/bigData/getHospitalCount",{},function(result){
+        result=JSON.parse(result)
+        console.log(result);
+        init(result);
+        $("#mzTotal").html(result.getHospitalCount[0].mzTotal);
+        $("#mzMonth").html(result.getHospitalCount[1].mzTotal);
+        $("#zyTotal").html(result.getHospitalCount[2].mzTotal);
+        $("#zyMonth").html(result.getHospitalCount[3].mzTotal);
 
-  init();
-  init2();
-    $("#el-dialog").addClass("hide");
-  $(".close").click(function(event) {
-    $("#el-dialog").addClass("hide");
-  });
+    });
+});
 
-  var date = new Date();
-     var numble = date.getDate();
-     var today = getFormatMonth(new Date());
-     $("#date1").html(today);
-     $("#date2").html(today);
-     $("#date3").html(today);
-     $("#date4").html(today);
+function init(result){
 
+    var myColor = ['#1089E7', '#F57474', '#56D0E3', '#F8B448', '#8B78F6'];
 
-  lay('.demo-input').each(function(){
-     laydate.render({
-        type: 'month',
-         elem: this,
-         trigger: 'click',
-         theme: '#95d7fb',
-         calendar: true,
-         showBottom: true,
-         done: function () {
-            console.log( $("#startDate").val())
+    //主要传染病
+    var histogramChart1 = echarts.init(document.getElementById('histogramChart1'));
+    histogramChart1.setOption({
 
-         }
-     })
- });
-
-})
-function init(){
-  //地图
-  var mapChart = echarts.init(document.getElementById('mapChart'));
-  mapChart.setOption({
-      bmap: {
-          center: [118.096435,24.485408],
-          zoom: 12,
-          roam: true,
-
-      },
-      tooltip : {
-          trigger: 'item',
-          formatter:function(params, ticket, callback){
-              return params.value[2]
-          }
-      },
-      series: [{
-          type: 'scatter',
-          coordinateSystem: 'bmap',
-          data: [
-            [118.096435, 24.485408, '厦门市'] ,
-            [118.094564, 24.457358, '厦门第一医院'] ,
-            [118.104103, 24.477761, '厦门中山医院'],
-            [118.14748, 24.506295, '厦门中医院'],
-            [118.254841, 24.665349, '厦门第五医院'],
-           ]
-      }]
-  });
-  mapChart.on('click', function (params) {
-      $("#el-dialog").removeClass('hide');
-      $("#reportTitle").html(params.value[2]);
-  });
-
-  var bmap = mapChart.getModel().getComponent('bmap').getBMap()
-  bmap.addControl(new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP,BMAP_SATELLITE_MAP ]}));
-  bmap.setMapStyle({style:'midnight'})
-
-
-  var pieChart1 = echarts.init(document.getElementById('pieChart1'));
-  pieChart1.setOption({
-
-    color:["#87cefa","#ff7f50","#32cd32","#da70d6",],
-
-    legend: {
-        y : '260',
-        x : 'center',
-        textStyle : {
-            color : '#ffffff',
-
+        color:['#5bc0de'],
+        grid:{
+            left: '5%',
+            right: '5%',
+            bottom: '5%',
+            containLabel: true
         },
-         data : ['厦门第一医院','厦门中山医院','厦门中医院','厦门第五医院',],
-    },
-    tooltip : {
-        trigger: 'item',
-        formatter: "{a}<br/>{b}<br/>{c}G ({d}%)"
-    },
-    calculable : false,
-    series : [
-        {
-            name:'采集数据量',
-            type:'pie',
-            radius : ['40%', '70%'],
-            center : ['50%', '45%'],
-            itemStyle : {
-                normal : {
-                    label : {
-                        show : false
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a}<br/>{b}<br/>{c}人"
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                data : ['感染性腹泻','流行性感冒','登革热','手足口病','水痘','流行性眼腺炎','猩红热','甲型病毒性肝炎','疟疾'],
+                axisLine:{
+                    lineStyle:{
+                        color: '#5bc0de'
                     },
-                    labelLine : {
-                        show : false
-                    }
                 },
-                emphasis : {
-                    label : {
-                        show : true,
-                        position : 'center',
-                        textStyle : {
-                            fontSize : '20',
-                            fontWeight : 'bold'
-                        }
+                axisLabel : {
+                    interval:0,
+                    rotate:40,
+                    textStyle: {
+                        color: '#fff'
                     }
                 }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLine:{
+                    lineStyle:{
+                        color: '#5bc0de'
+                    },
+                },
+                splitLine: {
+                    "show": false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    formatter: function (value) {
+                        return value + ""
+                    },
+                },
+            }
+        ],
+        series : [
+            {
+                name:'主要传染病',
+                type:'bar',
+                barWidth : 20,
+                data:[2210,1085,926,669,634,452,412,312,156],
             },
-            data:[
-                {value:335, name:'厦门第一医院'},
-                {value:310, name:'厦门中山医院'},
-                {value:234, name:'厦门中医院'},
-                {value:135, name:'厦门第五医院'}
+        ]
+    })
 
-            ]
-        }
-    ]
+    //主要症状
+    var histogramChart2 = echarts.init(document.getElementById('histogramChart2'));
+    histogramChart2.setOption({
+
+        color:['#FD6C88'],
+        grid:{
+            left: '5%',
+            right: '5%',
+            bottom: '10%',
+            containLabel: true
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a}<br/>{b}<br/>{c}人"
+        },
+        calculable : true,
+        yAxis : [
+            {
+                type : 'category',
+                data : ['腹痛、腹胀、腹泻','恶心、呕吐、食欲不振','肌肉酸痛、乏力','持续高烧','头痛、眼眶痛、肌肉疼','皮疹、水泡','呼吸浅促','发热、咳嗽、流口水'],
+                axisLine:{
+                    lineStyle:{
+                        color: '#FD6C88'
+                    },
+                },
+                axisLabel : {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            }
+        ],
+        xAxis : [
+            {
+                type : 'value',
+                axisLine:{
+                    lineStyle:{
+                        color: '#FD6C88'
+                    },
+                },
+                splitLine: {
+                    "show": false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    formatter: function (value) {
+                        return value + ""
+                    },
+                },
+            }
+        ],
+        series : [
+            {
+                name:'主要症状',
+                type:'bar',
+                barWidth : 20,
+                data:[1750,1416,1136,819,704,413,251,175],
+            },
+        ]
+    })
+
+    //传染病发病趋势
+    var lineChart1 = echarts.init(document.getElementById('lineChart1'));
+    lineChart1.setOption({
+        title: {
+            text: '传染病趋势',
+            textStyle:{
+                fontSize:16,
+                color:'#ff7f50'
+            },
+        },
+        color:["#ff7f50"],
+        grid:{
+            left: '15%',
+            right: '5%',
+            bottom: '15%',
+
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a}<br/>{b}<br/>{c}人"
+        },
+
+        calculable : true,
+        yAxis: [
+            {
+                type: 'value',
+                axisLine:{
+                    lineStyle:{
+                        color: '#ff7f50'
+                    },
+                },
+                splitLine: {
+                    "show": false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    formatter: function (value) {
+                        return value + ""
+                    },
+                },
+            }
+        ],
+        xAxis: [
+            {
+                type: 'category',
+                data : symptomName,
+                boundaryGap : false,
+                axisLine:{
+                    lineStyle:{
+                        color: '#ff7f50'
+                    },
+                },
+                splitLine: {
+                    "show": false
+                },
+                axisLabel: {
+                    // interval:0,
+                    // rotate:40,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    formatter: function (value) {
+                        return value + ""
+                    },
+                },
+            }
+        ],
+        series : [
+            {
+                name:'传染病人数',
+                type:'line',
+                smooth:true,
+                itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                data:[120, 132, 101, 134, 90, 230, 210,120, 132, 101, 134, 90]
+            },
+        ]
+
+    })
+
+    //主要疾病排行
+    var histogramChart3 = echarts.init(document.getElementById('histogramChart3'));
+    histogramChart3.setOption({
+
+        grid: {
+            top: '12%',
+            left: '30%'
+        },
+        xAxis: {
+            show: false
+        },
+        yAxis: [{
+            show: true,
+            data:  ['抑郁症','高血压','痔疮','肺癌','子宫肌瘤	','乙肝','水痘','肺结核'],
+            inverse: true,
+            axisLine: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                color: '#fff',
+                formatter: (value, index) => {
+                    return [
+
+                        `{lg|${index+1}}  ` + '{title|' + value + '} '
+                    ].join('\n')
+                },
+                rich: {
+                    lg: {
+                        backgroundColor: '#339911',
+                        color: '#fff',
+                        borderRadius: 15,
+                        // padding: 5,
+                        align: 'center',
+                        width: 15,
+                        height: 15
+                    },
+                }
+            },
+
+
+        }, {
+            show: true,
+            inverse: true,
+            data: [2000, 1800, 1200, 1100,900,900,800,700],
+            axisLabel: {
+                textStyle: {
+                    fontSize: 12,
+                    color: '#fff',
+                },
+            },
+            axisLine: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+
+        }],
+        series: [{
+            name: '条',
+            type: 'bar',
+            yAxisIndex: 0,
+            data: [20,18,12,11,9,9,8,7],
+            barWidth: 10,
+            itemStyle: {
+                normal: {
+                    barBorderRadius: 20,
+                    color: function(params) {
+                        var num = myColor.length;
+                        return myColor[params.dataIndex % num]
+                    },
+                }
+            },
+            label: {
+                normal: {
+                    show: true,
+                    position: 'inside',
+                    formatter: '{c}%'
+                }
+            },
+        }, {
+            name: '框',
+            type: 'bar',
+            yAxisIndex: 1,
+            barGap: '-100%',
+            data: [100, 100, 100, 100,100, 100, 100, 100],
+            barWidth: 15,
+            itemStyle: {
+                normal: {
+                    color: 'none',
+                    borderColor: '#00c1de',
+                    borderWidth: 1,
+                    barBorderRadius: 15,
+                }
+            }
+        }, ]
+    })
+
+    //疾病发病趋势
+    var lineChart2 = echarts.init(document.getElementById('lineChart2'));
+    lineChart2.setOption({
+        title: {
+            text: '疾病发病趋势',
+            textStyle:{
+                fontSize:16,
+                color:'#32cd32'
+            },
+            x:"center"
+        },
+        color:["#32cd32"],
+        grid:{
+            left: '15%',
+            right: '5%',
+            bottom: '25%',
+
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a}<br/>{b}<br/>{c}人"
+        },
+
+        calculable : true,
+        yAxis: [
+            {
+                type: 'value',
+                axisLine:{
+                    lineStyle:{
+                        color: '#32cd32'
+                    },
+                },
+                splitLine: {
+                    "show": false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    formatter: function (value) {
+                        return value + ""
+                    },
+                },
+            }
+        ],
+        xAxis: [
+            {
+                type: 'category',
+                data : symptomName,
+                boundaryGap : false,
+                axisLine:{
+                    lineStyle:{
+                        color: '#32cd32'
+                    },
+                },
+                splitLine: {
+                    "show": false
+                },
+                axisLabel: {
+                    // interval:0,
+                    // rotate:40,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    formatter: function (value) {
+                        return value + ""
+                    },
+                },
+            }
+        ],
+        series : [
+            {
+                name:'疾病发病人数',
+                type:'line',
+                smooth:true,
+                itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                data:[520, 232,701, 434, 190, 230, 210,120, 132, 101, 134, 890]
+            },
+        ]
+
     });
 
 
-    var lineChart = echarts.init(document.getElementById('lineChart'));
-    lineChart.setOption({
+    var lineChart_2 = echarts.init(document.getElementById('lineChart_2'));
+    lineChart_2.setOption({
 
-      color:["#87cefa","#ff7f50","#32cd32","#da70d6",],
-      legend: {
-          y : '260',
-          x : 'center',
-          textStyle : {
-              color : '#ffffff',
+        color:["#87cefa","#ff7f50","#32cd32","#da70d6",],
+        legend: {
+            y : '260',
+            x : 'center',
+            textStyle : {
+                color : '#ffffff',
 
-          },
-           data : ['厦门第一医院','厦门中山医院','厦门中医院','厦门第五医院',],
-      },
-      calculable : false,
-      tooltip : {
-          trigger: 'item',
-          formatter: "{a}<br/>{b}<br/>{c}条"
-      },
-      yAxis: [
+            },
+            data : ['厦门第一医院','厦门中山医院','厦门中医院','厦门第五医院',],
+        },
+        calculable : false,
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a}<br/>{b}<br/>{c}条"
+        },
+        yAxis: [
             {
                 type: 'value',
                 axisLine : {onZero: false},
@@ -177,7 +463,7 @@ function init(){
         xAxis: [
             {
                 type: 'category',
-                data : ['8:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'],
+                data : ['8:00','10:00','12:00','14:00','16:00','18:00'],
                 axisLine:{
                     lineStyle:{
                         color: '#034c6a'
@@ -203,591 +489,143 @@ function init(){
             }
         ],
         grid:{
-                left: '5%',
-                right: '5%',
-                bottom: '20%',
-                containLabel: true
+            left: '5%',
+            right: '5%',
+            bottom: '20%',
+            containLabel: true
         },
         series : [
-          {
-              name:'厦门第一医院',
-              type:'line',
-              smooth:true,
-              itemStyle: {
-                  normal: {
-                      lineStyle: {
-                          shadowColor : 'rgba(0,0,0,0.4)'
-                      }
-                  }
-              },
-              data:[15, 0, 20, 45, 22.1, 25, 70, 55, 76]
-          },
-          {
-              name:'厦门中山医院',
-              type:'line',
-              smooth:true,
-              itemStyle: {
-                  normal: {
-                      lineStyle: {
-                          shadowColor : 'rgba(0,0,0,0.4)'
-                      }
-                  }
-              },
-              data:[25, 10, 30, 55, 32.1, 35, 80, 65, 76]
-          },
-          {
-              name:'厦门中医院',
-              type:'line',
-              smooth:true,
-              itemStyle: {
-                  normal: {
-                      lineStyle: {
-                          shadowColor : 'rgba(0,0,0,0.4)'
-                      }
-                  }
-              },
-              data:[35, 20, 40, 65, 42.1, 45, 90, 75, 96]
-          },
-          {
-              name:'厦门第五医院',
-              type:'line',
-              smooth:true,
-              itemStyle: {
-                  normal: {
-                      lineStyle: {
-                          shadowColor : 'rgba(0,0,0,0.4)'
-                      }
-                  }
-              },
-              data:[45, 30, 50, 75, 52.1, 55, 100, 85, 106]
-          }
-      ]
+            {
+                name:'厦门第一医院',
+                type:'line',
+                smooth:true,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            shadowColor : 'rgba(0,0,0,0.4)'
+                        }
+                    }
+                },
+                data:[15, 0, 20, 45, 22.1, 25,].reverse()
+            },
+            {
+                name:'厦门中山医院',
+                type:'line',
+                smooth:true,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            shadowColor : 'rgba(0,0,0,0.4)'
+                        }
+                    }
+                },
+                data:[25, 10, 30, 55, 32.1, 35, ].reverse()
+            },
+            {
+                name:'厦门中医院',
+                type:'line',
+                smooth:true,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            shadowColor : 'rgba(0,0,0,0.4)'
+                        }
+                    }
+                },
+                data:[35, 20, 40, 65, 42.1, 45, ].reverse()
+            },
+            {
+                name:'厦门第五医院',
+                type:'line',
+                smooth:true,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            shadowColor : 'rgba(0,0,0,0.4)'
+                        }
+                    }
+                },
+                data:[45, 30, 50, 75, 52.1, 55, 6].reverse()
+            }
+        ]
     });
 
-    var histogramChart = echarts.init(document.getElementById('histogramChart'));
-    histogramChart.setOption({
 
-      color:["#87cefa","#ff7f50","#32cd32","#da70d6",],
-      legend: {
-          y : '250',
-          x : 'center',
-          data:['厦门第一医院', '厦门中山医院','厦门中医院','厦门第五医院'],
-          textStyle : {
-              color : '#ffffff',
-
-          }
-      },
-
-      calculable :false,
-
-
-      grid:{
-              left: '5%',
-              right: '5%',
-              bottom: '20%',
-              containLabel: true
-      },
-
-      tooltip : {
-          trigger: 'axis',
-          axisPointer : {
-              type : 'shadow'
-          }
-      },
-
-      xAxis : [
-          {
-              type : 'value',
-              axisLabel: {
-                  show: true,
-                  textStyle: {
-                      color: '#fff'
-                  }
-              },
-              splitLine:{
-                  lineStyle:{
-                      color:['#f2f2f2'],
-                      width:0,
-                      type:'solid'
-                  }
-              }
-
-          }
-      ],
-
-      yAxis : [
-          {
-              type : 'category',
-              data:['门诊人数(人)', '住院人次(人)','人均费用(元)'],
-              axisLabel: {
-                  show: true,
-                  textStyle: {
-                      color: '#fff'
-                  }
-              },
-              splitLine:{
-                  lineStyle:{
-                      width:0,
-                      type:'solid'
-                  }
-              }
-          }
-      ],
-
-      series : [
-          {
-              name:'厦门第一医院',
-              type:'bar',
-              stack: '总量',
-              itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
-              data:[320, 302, 301]
-          },
-          {
-              name:'厦门中山医院',
-              type:'bar',
-              stack: '总量',
-              itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
-              data:[120, 132, 101]
-          },
-          {
-              name:'厦门中医院',
-              type:'bar',
-              stack: '总量',
-              itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
-              data:[220, 182, 191]
-          },
-          {
-              name:'厦门第五医院',
-              type:'bar',
-              stack: '总量',
-              itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
-              data:[150, 212, 201]
-          }
-
-      ]
-   });
-
-   var lineChart2 = echarts.init(document.getElementById('lineChart2'));
-   lineChart2.setOption({
-
-     color:["#87cefa","#ff7f50","#32cd32","#da70d6",],
-     legend: {
-         y : '260',
-         x : 'center',
-         textStyle : {
-             color : '#ffffff',
-
-         },
-          data : ['厦门第一医院','厦门中山医院','厦门中医院','厦门第五医院',],
-     },
-     calculable : false,
-     tooltip : {
-         trigger: 'item',
-         formatter: "{a}<br/>{b}<br/>{c}条"
-     },
-     yAxis: [
-           {
-               type: 'value',
-               axisLine : {onZero: false},
-               axisLine:{
-                   lineStyle:{
-                       color: '#034c6a'
-                   },
-               },
-
-               axisLabel: {
-                   textStyle: {
-                       color: '#fff'
-                   },
-                   formatter: function (value) {
-                       return value + "k条"
-                   },
-               },
-               splitLine:{
-                   lineStyle:{
-                       width:0,
-                       type:'solid'
-                   }
-               }
-           }
-       ],
-       xAxis: [
-           {
-               type: 'category',
-               data : ['8:00','10:00','12:00','14:00','16:00','18:00'],
-               axisLine:{
-                   lineStyle:{
-                       color: '#034c6a'
-                   },
-               },
-               splitLine: {
-                   "show": false
-               },
-               axisLabel: {
-                   textStyle: {
-                       color: '#fff'
-                   },
-                   formatter: function (value) {
-                       return value + ""
-                   },
-               },
-               splitLine:{
-                   lineStyle:{
-                       width:0,
-                       type:'solid'
-                   }
-               },
-           }
-       ],
-       grid:{
-               left: '5%',
-               right: '5%',
-               bottom: '20%',
-               containLabel: true
-       },
-       series : [
-         {
-             name:'厦门第一医院',
-             type:'line',
-             smooth:true,
-             itemStyle: {
-                 normal: {
-                     lineStyle: {
-                         shadowColor : 'rgba(0,0,0,0.4)'
-                     }
-                 }
-             },
-             data:[15, 0, 20, 45, 22.1, 25,].reverse()
-         },
-         {
-             name:'厦门中山医院',
-             type:'line',
-             smooth:true,
-             itemStyle: {
-                 normal: {
-                     lineStyle: {
-                         shadowColor : 'rgba(0,0,0,0.4)'
-                     }
-                 }
-             },
-             data:[25, 10, 30, 55, 32.1, 35, ].reverse()
-         },
-         {
-             name:'厦门中医院',
-             type:'line',
-             smooth:true,
-             itemStyle: {
-                 normal: {
-                     lineStyle: {
-                         shadowColor : 'rgba(0,0,0,0.4)'
-                     }
-                 }
-             },
-             data:[35, 20, 40, 65, 42.1, 45, ].reverse()
-         },
-         {
-             name:'厦门第五医院',
-             type:'line',
-             smooth:true,
-             itemStyle: {
-                 normal: {
-                     lineStyle: {
-                         shadowColor : 'rgba(0,0,0,0.4)'
-                     }
-                 }
-             },
-             data:[45, 30, 50, 75, 52.1, 55, 6].reverse()
-         }
-     ]
-   });
-
-
-
-}
-
-function init2(){
-  var lineChart3 = echarts.init(document.getElementById('lineChart3'));
-  lineChart3.setOption({
-
-    color:["#87cefa","#ff7f50",],
-    legend: {
-        y : 'top',
-        x : 'center',
-        textStyle : {
-            color : '#ffffff',
-
+    //年龄分布
+    var pieChart1 = echarts.init(document.getElementById('pieChart1'));
+    pieChart1.setOption({
+        color:["#32cd32","#ff7f50","#87cefa","#FD6C88","#4b5cc4","#faff72"],
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a}<br/>{b}<br/>{c}人"
         },
-         data : ['门诊人次','住院人次'],
-    },
-    calculable : false,
-    tooltip : {
-        trigger: 'item',
-        formatter: "{a}<br/>{b}<br/>{c}人"
-    },
-    dataZoom: {
-         show: true,
-         realtime : true,
-         start: 0,
-         end: 18,
-         height: 20,
-         backgroundColor: '#f8f8f8',
-         dataBackgroundColor: '#e4e4e4',
-         fillerColor: '#87cefa',
-         handleColor: '#87cefa',
-     },
-    yAxis: [
-          {
-              type: 'value',
-              axisLine : {onZero: false},
-              axisLine:{
-                  lineStyle:{
-                      color: '#034c6a'
-                  },
-              },
+        calculable : true,
+        series : [
+            {
+                name:'发病人数',
+                type:'pie',
+                radius : [30, 110],
+                center : ['50%', '50%'],
+                roseType : 'area',
+                x: '50%',
 
-              axisLabel: {
-                  textStyle: {
-                      color: '#fff'
-                  },
-                  formatter: function (value) {
-                      return value + "人"
-                  },
-              },
-              splitLine:{
-                  lineStyle:{
-                      width:0,
-                      type:'solid'
-                  }
-              }
-          }
-      ],
-      xAxis: [
-          {
-              type: 'category',
-              data : symptomName,
-              boundaryGap : false,
-              axisLine:{
-                  lineStyle:{
-                      color: '#034c6a'
-                  },
-              },
-              splitLine: {
-                  "show": false
-              },
-              axisLabel: {
-                  textStyle: {
-                      color: '#fff'
-                  },
-                  formatter: function (value) {
-                      return value + ""
-                  },
-              },
-              splitLine:{
-                  lineStyle:{
-                      width:0,
-                      type:'solid'
-                  }
-              },
-          }
-      ],
-      grid:{
-              left: '5%',
-              right: '5%',
-              bottom: '20%',
-              containLabel: true
-      },
-      series : [
-        {
-            name:'门诊费用',
-            type:'line',
-            smooth:true,
-            itemStyle: {
-                normal: {
-                    lineStyle: {
-                        shadowColor : 'rgba(0,0,0,0.4)'
+
+
+                sort : 'ascending',
+                data:[
+                    {value:10, name:'婴儿(1-3岁)'},
+                    {value:5, name:'少儿(4-10岁)'},
+                    {value:15, name:'少年(10-18岁)'},
+                    {value:25, name:'青年(18-45岁)'},
+                    {value:125, name:'中年(45-60岁)'},
+                    {value:175, name:'老年(60岁以上)'},
+                ]
+            }
+        ]
+    })
+
+    //性别分布
+    var labelFromatter = {
+        normal : {
+            label : {
+                position : 'center',
+                formatter : function (params){
+                    console.log(params)
+                    if(params.name == "女性"){
+                        return "女性"+":"+(params.percent + '%')
+                    }else{
+                        return "男性"+":"+(params.percent + '%')
                     }
-                }
+                },
             },
-            data:[1150, 180, 2100, 2415, 1212.1, 3125,1510, 810, 2100, 2415, 1122.1, 3215,1510, 801, 2001, 2245, 1232.1, 3245,1520, 830, 2200, 2145, 1223.1, 3225,150, 80, 200, 245, 122.1, 325]
+            labelLine : {
+                show : false
+            }
         },
-        {
-            name:'住院费用',
-            type:'line',
-            smooth:true,
-            itemStyle: {
-                normal: {
-                    lineStyle: {
-                        shadowColor : 'rgba(0,0,0,0.4)'
-                    }
-                }
+    };
+
+    var pieChart2 = echarts.init(document.getElementById('pieChart2'));
+    pieChart2.setOption({
+
+        color: ['#87cefa','#FD6C88'],
+        tooltip : {
+            trigger: 'item',
+            formatter: "{b}({c})<br/>{d}%"
+        },
+
+        series : [
+            {
+                type : 'pie',
+                center : ['50%', '50%'],
+                radius : [55, 95],
+                x: '0%', // for funnel
+                itemStyle : labelFromatter,
+                data : [
+                    {name:'男性', value:158},
+                    {name:'女性', value:142},
+                ]
             },
-            data:[2500, 1000, 3000, 5005, 3200.1, 3005, 2500, 1000, 3000, 5005, 3200.1, 3005,2500, 1000, 3000, 5005, 3200.1, 3005,2500, 1000, 3000, 5005, 3200.1, 3005, 2500, 1000, 3000, 5005, 3200.1, 3005,2500, 1000, 3000, 5005, 3200.1, 3005,]
-        },
-    ]
-  });
+        ],
+    })
 
-
-  var lineChart4 = echarts.init(document.getElementById('lineChart4'));
-  lineChart4.setOption({
-
-    color:["#87cefa","#ff7f50",],
-    calculable : false,
-    tooltip : {
-        trigger: 'item',
-        formatter: "{a}<br/>{b}<br/>{c}元"
-    },
-    dataZoom: {
-         show: true,
-         realtime : true,
-         start: 0,
-         end: 18,
-         height: 20,
-         backgroundColor: '#f8f8f8',
-         dataBackgroundColor: '#e4e4e4',
-         fillerColor: '#87cefa',
-         handleColor: '#87cefa',
-     },
-    yAxis: [
-          {
-              type: 'value',
-              axisLine : {onZero: false},
-              axisLine:{
-                  lineStyle:{
-                      color: '#034c6a'
-                  },
-              },
-
-              axisLabel: {
-                  textStyle: {
-                      color: '#fff'
-                  },
-                  formatter: function (value) {
-                      return value + "元"
-                  },
-              },
-              splitLine:{
-                  lineStyle:{
-                      width:0,
-                      type:'solid'
-                  }
-              }
-          }
-      ],
-      xAxis: [
-          {
-              type: 'category',
-              data : symptomName,
-              boundaryGap : false,
-              axisLine:{
-                  lineStyle:{
-                      color: '#034c6a'
-                  },
-              },
-              splitLine: {
-                  "show": false
-              },
-              axisLabel: {
-                  textStyle: {
-                      color: '#fff'
-                  },
-                  formatter: function (value) {
-                      return value + ""
-                  },
-              },
-              splitLine:{
-                  lineStyle:{
-                      width:0,
-                      type:'solid'
-                  }
-              },
-          }
-      ],
-      grid:{
-              left: '5%',
-              right: '5%',
-              bottom: '20%',
-              containLabel: true
-      },
-      series : [
-        {
-            name:'医疗费用',
-            type:'line',
-            smooth:true,
-            itemStyle: {
-                normal: {
-                    lineStyle: {
-                        shadowColor : 'rgba(0,0,0,0.4)'
-                    }
-                }
-            },
-            data:[1500, 800, 1200, 2450, 1122.1, 1325,1150, 180, 1200, 1245, 1122.1, 1325,150, 180, 1200, 2145, 1212.1, 3215,1510, 180, 2100, 2415, 122.1, 325,150, 80, 200, 245, 122.1, 325].reverse()
-        },
-    ]
-  });
-
-  //年龄分布
-  var pieChart2 = echarts.init(document.getElementById('pieChart2'));
-  pieChart2.setOption({
-    color:["#32cd32","#ff7f50","#87cefa","#FD6C88","#4b5cc4","#faff72"],
-    tooltip : {
-     trigger: 'item',
-     formatter: "{a}<br/>{b}<br/>{c}人"
-    },
-    calculable : true,
-    series : [
-        {
-            name:'发病人数',
-            type:'pie',
-            radius : [30, 110],
-            center : ['50%', '50%'],
-            roseType : 'area',
-            x: '50%',
-
-
-
-            sort : 'ascending',
-            data:[
-                {value:10, name:'婴儿(1-3岁)'},
-                {value:5, name:'少儿(4-10岁)'},
-                {value:15, name:'少年(10-18岁)'},
-                {value:25, name:'青年(18-45岁)'},
-                {value:125, name:'中年(45-60岁)'},
-                {value:175, name:'老年(60岁以上)'},
-            ]
-        }
-    ]
-  })
-
-  //医疗费用组成
-  var pieChart3 = echarts.init(document.getElementById('pieChart3'));
-  pieChart3.setOption({
-    color:["#32cd32","#ff7f50","#87cefa","#FD6C88","#4b5cc4","#faff72"],
-    tooltip : {
-     trigger: 'item',
-     formatter: "{a}<br/>{b}<br/>{c}元"
-    },
-    calculable : true,
-    series : [
-        {
-            name:'发病人数',
-            type:'pie',
-            radius : [30, 110],
-            center : ['50%', '50%'],
-            roseType : 'area',
-            x: '50%',
-
-
-
-            sort : 'ascending',
-            data:[
-                {value:10, name:'诊察费用'},
-                {value:500, name:'检查费用'},
-                {value:150, name:'检验费用'},
-                {value:250, name:'西药费用'},
-                {value:125, name:'中药费用'},
-                {value:1750, name:'手术费用'},
-            ]
-        }
-    ]
-  })
 }

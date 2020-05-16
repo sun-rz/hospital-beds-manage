@@ -53,9 +53,9 @@ public class HospitalizedController {
      */
     @ResponseBody
     @RequestMapping("/outHospital")
-    public String outHospital(String bedNo, String patientID, String out_hospital_date) {
+    public String outHospital(String bedNo, String patientID, String out_hospital_date,String patient_status) {
         //更新患者出院日期
-        int result = patientService.updateOutHospitalDate(CommonTools.ToInt(patientID), out_hospital_date);
+        int result = patientService.updateOutHospitalDate(CommonTools.ToInt(patientID), out_hospital_date,CommonTools.ToInt(patient_status));
         if (result > 0) {
             //更新病房状态
             result = bedsService.updateBedStatus(new Beds(bedNo, 0));

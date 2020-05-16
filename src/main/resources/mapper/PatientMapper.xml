@@ -21,13 +21,13 @@
     </select>
 
     <select id="getPatientInfo" resultType="HashMap">
-        select patient.id,name,age, gender, deptNo, level, bedNo, in_hospital_date,out_hospital_date,department.deptName
+        select patient.id,name,age, gender, deptNo, level, bedNo,patient.patient_status, in_hospital_date,out_hospital_date,department.deptName
         from patient
         left join department on patient.deptNo=department.ID
         <if test="id &gt; 0">
             where patient.id=#{id}
         </if>
-        order by level,in_hospital_date,patient.id
+         order by patient.patient_status,patient.level desc ,patient.in_hospital_date desc,out_hospital_date desc,patient.id
     </select>
 
     <select id="getSameDoctorForPatient" resultType="HashMap">
@@ -72,7 +72,7 @@
     </update>
 
     <update id="updateOutHospitalDate">
-         update patient set out_hospital_date=#{out_hospital_date},patient_status=1 where id=#{patientID}
+         update patient set out_hospital_date=#{out_hospital_date},patient_status=#{patient_status} where id=#{patientID}
     </update>
     <delete id="deletePatient">
         delete from patient where id in ${patientID}

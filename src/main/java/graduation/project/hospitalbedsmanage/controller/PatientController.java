@@ -62,7 +62,7 @@ public class PatientController {
         List list = patientservice.getPatientInfoByBedNo(CommonTools.ToInt(bedNo));
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         JSONObject obj = new JSONObject();
-        obj.put("patient", JSONObject.fromObject(gson.toJson(list.get(0))));
+        obj.put("patient", JSONArray.fromObject(gson.toJson(list)));
         return obj.toString();
     }
 

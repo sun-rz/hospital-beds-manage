@@ -1,4 +1,4 @@
-<div class="div-table divContainer" style="margin-top: 50px">
+<div class="div-table divContainer" style="margin-top: 60px">
     <div class="table-responsive">
         <div class="btn-group">
             <button type="button" class="btn btn-sm btn-default"><a href="#!/editPatient/0">新增</a></button>
@@ -19,13 +19,13 @@
                 <th>年龄</th>
                 <th>性别</th>
                 <th>科室</th>
-                <th>建议优先级</th>
+                <th>优先级</th>
                 <th>住院日期</th>
-                <th>床位分配结果</th>
+                <th>床位号</th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="patient in patientList" class="{{patient.checked?'tractive':''}}">
+            <tr ng-repeat="patient in patientList" title="患者状态：{{getOutHospitalTitle(patient.patient_status)}}" class="{{patient.checked?'tractive':''}} {{patient.patient_status>=1?'out-hospital':''}}">
                 <td title="选择">
                     <label>
                         <input ng-value="{{patient.id}}" ng-model="patient.checked"
@@ -46,7 +46,11 @@
             </tr>
             </tbody>
         </table>
-        <div class="table-bottom-bar" ng-show="patientList.length>0">记录数：{{patientList.length}}</div>
+        <div class="table-bottom-bar" ng-show="patientList.length>0">
+            <span>记录数：{{patientList.length}}</span>
+            <span>未分配床位患者：{{no_bed}}</span>
+            <span>出院人数：{{outCount}}</span>
+        </div>
     </div>
 </div>
 </div>

@@ -41,8 +41,8 @@ form .required:after {
 .nav-bar-left-top {
     background: #0084ff;
     color: #fff;
-    height: 50px;
-    line-height: 50px;
+    height: 60px;
+    line-height: 60px;
     padding-left: 15px;
     font-size: 16px;
 }
@@ -53,6 +53,8 @@ form .required:after {
     font-size: 2.34em !important;
     color: #fff;
     z-index: 1099;
+    height: 60px;
+    line-height: 60px;
 }
 
 .logo-title img{
@@ -100,8 +102,8 @@ form .required:after {
 }
 
 .nav-bar-right .nav-icon-bar {
-    height: 50px;
-    line-height: 50px;
+    height: 60px;
+    line-height: 60px;
     font-size: 16px;
     color: #fff;
     padding-right: 15px;
@@ -118,7 +120,7 @@ form .required:after {
 }
 
 .nav-bar-right {
-    height: 50px;
+    height: 60px;
     background: #0084ff;
 }
 
@@ -195,7 +197,6 @@ label {
 label:hover, i:hover {
     cursor: pointer;
 }
-
 .btn {
     margin-left: 15px;
 }
@@ -236,6 +237,9 @@ label:hover, i:hover {
     color: green;
 }
 
+.out-hospital{
+    background: #eee;
+}
 .succ-false {
     color: red;
 }
@@ -247,7 +251,7 @@ label:hover, i:hover {
 }
 
 .nav-bar-right-search{
-    margin-top: 7px;
+    margin-top: 14px;
 }
 
 /*公祭日全网灰色哀悼主题色*/
