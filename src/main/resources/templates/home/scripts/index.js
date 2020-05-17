@@ -649,26 +649,27 @@ function getDatas(getPatientMonthCount,symptom_Name) {
 function _series(getPatientDayCount) {
 var _data=[];
 
-    for(var i=0; i<getPatientDayCount.length;i++){
+    for(var i=0; i<getPatientDayCount.length;i++) {
         //console.log(getPatientDayCount[i])
-        var  _counts=[];
-        var d={
-            name:'',
-            type:'line',
-            smooth:true,
+        var _counts = [];
+        var d = {
+            name: '',
+            type: 'line',
+            smooth: true,
             itemStyle: {
                 normal: {
                     lineStyle: {
-                        shadowColor : 'rgba(0,0,0,0.4)'
+                        shadowColor: 'rgba(0,0,0,0.4)'
                     }
                 }
             },
-            data:[]
+            data: []
         }
-        if(JSON.stringify(getPatientDayCount[i])!="{}")
-        d.name=getPatientDayCount[i].name;
-        for(var j=0;j<getPatientDayCount[i].counts.length;j++){
-            _counts.push(getPatientDayCount[i].counts[j].counts)
+        if (getPatientDayCount[i] != null) {
+            d.name = getPatientDayCount[i].name;
+            for (var j = 0; j < getPatientDayCount[i].counts.length; j++) {
+                _counts.push(getPatientDayCount[i].counts[j].counts)
+            }
         }
         d.data=_counts.reverse();
         _data.push(d)
