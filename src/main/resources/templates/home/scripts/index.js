@@ -665,6 +665,7 @@ var _data=[];
             },
             data:[]
         }
+        if(getPatientDayCount)
         d.name=getPatientDayCount[i].name;
         for(var j=0;j<getPatientDayCount[i].counts.length;j++){
             _counts.push(getPatientDayCount[i].counts[j].counts)
