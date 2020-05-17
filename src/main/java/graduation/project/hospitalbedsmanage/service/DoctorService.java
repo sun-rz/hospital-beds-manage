@@ -64,4 +64,8 @@ public class DoctorService {
     public int deleteUserInfo(String userID) {
         return doctorMapper.deleteUserInfo(userID);
     }
+
+    public List<Map<String, Doctor>> searchDoctor(int deptNo, String keywords) {
+        return doctorMapper.searchDoctor(deptNo, keywords);
+    }
 }

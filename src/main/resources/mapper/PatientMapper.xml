@@ -3,12 +3,19 @@
 <mapper namespace="graduation.project.hospitalbedsmanage.mapper.PatientMapper">
 
     <select id="getPatientInfo" resultType="HashMap">
-        select patient.id,name,age, gender, deptNo, level, bedNo,patient.patient_status, in_hospital_date,out_hospital_date,department.deptName
+        select patient.id,patient.name,age, gender, deptNo, level, bedNo,patient.patient_status, in_hospital_date,out_hospital_date,department.deptName
         from patient
         left join department on patient.deptNo=department.ID
         <if test="id &gt; 0">
             where patient.id=#{id}
         </if>
+         order by patient.patient_status,patient.level desc ,patient.in_hospital_date desc,out_hospital_date desc,patient.id
+    </select>
+    <select id="searchPatientInfo" resultType="HashMap">
+        select patient.id,patient.name,age, gender, deptNo, level, bedNo,patient.patient_status, in_hospital_date,out_hospital_date,department.deptName
+        from patient
+        left join department on patient.deptNo=department.ID
+        where patient.name like concat('%',#{keywords},'%') or patient.bedNo like concat('%',#{keywords},'%') or department.deptName like concat('%',#{keywords},'%')
          order by patient.patient_status,patient.level desc ,patient.in_hospital_date desc,out_hospital_date desc,patient.id
     </select>
 

@@ -37,6 +37,16 @@ public class CaseHistoryController {
         return obj.toString();
     }
 
+    @ResponseBody
+    @RequestMapping("/searchCasehistory")
+    public String searchCasehistory(String keywords){
+        List list=caseHistoryService.searchCasehistory(keywords);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        JSONObject obj = new JSONObject();
+        obj.put("casehistoryList", JSONArray.fromObject(gson.toJson(list)));
+        return obj.toString();
+    }
+
     /**
      * 删除病历信息
      * @param caseHistoryID

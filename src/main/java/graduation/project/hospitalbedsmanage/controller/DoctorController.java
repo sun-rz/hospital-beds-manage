@@ -276,4 +276,20 @@ public class DoctorController {
         return obj.toString();
     }
 
+
+    /**
+     * 根据部门查询医护人员
+     *
+     * @param deptNo
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/searchDoctor")
+    public String searchDoctor(String deptNo,String keywords) {
+        List<Map<String, Doctor>> list = doctorService.searchDoctor(CommonTools.ToInt(deptNo),keywords);
+        JSONObject obj = new JSONObject();
+        obj.put("doctorList", JSONArray.fromObject(list));
+        return obj.toString();
+    }
+
 }

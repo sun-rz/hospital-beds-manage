@@ -72,6 +72,10 @@
                     <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()"
                            ng-disabled="checked.length==0">
                 </div>
+                <div class="btn-group btn-group-search">
+                    <input type="text" title="请输入姓名或电话或邮箱或职务" class="form-control input-sm" placeholder="请输入姓名或电话或邮箱或职务" ng-model="keyword"
+                           ng-keydown="searchDoctor($event)">
+                </div>
                 <table class="table">
                     <thead>
                     <tr>

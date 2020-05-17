@@ -50,8 +50,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         controller: 'passwordCtrl'
     }).otherwise('/home/1/0')
 }).controller("indexController", function ($scope, $location, $window, $rootScope, $resource) {
-    $scope.keyword = '';
-
     //解决刷新后无法选中
     let path = $location.path();
     var x = path.indexOf("/");
@@ -90,16 +88,6 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             $window.location.href = '/user/logout';
         }
     };
-    //搜索
-    $scope.search = function (event) {
-        if (event.keyCode == 13 || event.key == "Enter") { // enter 键
-            alert("此处回车触发搜索事件");
-            if ($scope.keyword != "") {
-
-            }
-        }
-    };
-
 }).controller('HomeController', function ($scope, $routeParams, $rootScope) {
 
     $rootScope.ntype = $routeParams.type;
@@ -262,7 +250,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             return str;
         }
 
-}).controller('departmentControl', function ($scope, $routeParams, $resource, $rootScope) {
+}).controller('departmentControl', function ($scope, $routeParams, $resource, $rootScope,$window) {
     $rootScope.ntype = $routeParams.type;
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];
@@ -283,10 +271,78 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         //处理错误
         alert("网络错误,请重试");
     });
+
+    //多选删除
+    $scope.checked = []; //定义一个数组 存入id或者想要用来交互的参数...
+    $scope.selectAll = function () {
+        if ($scope.select_all) { //判断是全选
+            $scope.checked = [];//先清空，防止在操作了一个轮回之后，重复添加了...
+            angular.forEach($scope.doctorsList, function (i) {  //doctorList这是循环从后台获取的数组，并添加到刚刚定义的数组里
+                i.checked = true; //全选即将所有的复选框变为选中
+                $scope.checked.push(i.id);//将选中的内容放到数组里
+            })
+        } else {//判断全不选
+            angular.forEach($scope.doctorsList, function (i) {
+                i.checked = false; //所有复选框为不选中
+                $scope.checked = [];//将数组清空
+            })
+        }
+    };
+
+    //单选
+    $scope.selectOne = function () {//下面的复选框单独点击
+        angular.forEach($scope.doctorsList, function (i) {//依旧是循环......
+            var index = $scope.checked.indexOf(i.id);//检索checked中是否有i.id 如果没有则会返回-1
+            if (i.checked && index === -1) {
+                $scope.checked.push(i.id);
+            } else if (!i.checked && index !== -1) {
+                $scope.checked.splice(index, 1);
+            }
+        });
+        if ($scope.doctorsList.length === $scope.checked.length) {//判断checked数组的长度是否与原来请求的后台数组的长度是否相等 即是否给全选框加上选中
+            $scope.select_all = true;
+        } else {
+            $scope.select_all = false;
+        }
+    };
+
+    //删除人员
+    $scope.deleteDoc = function () {
+        if ($scope.checked.length == 0) {
+            alert("请至少选择一条记录");
+            return;
+        }
+        if (confirm("该操作不可恢复，是否要删除选中数据？")) {
+            $resource('/user/deleteUserInfo', {"userID": JSON.stringify($scope.checked)}).get(function (resp) {
+                //请求成功
+                $window.location.reload();
+                alert(resp.msg);
+            }, function (err) {
+                //处理错误
+                alert("网络错误,请重试");
+            });
+        }
+    };
+
+    //搜索医护人员
+    $scope.searchDoctor = function (event) {
+        if (event.keyCode == 13 || event.key == "Enter") { // enter 键
+            if ($scope.keyword != "") {
+                $resource('/user/searchDoctor', {keywords:$scope.keyword}).get(function (resp) {
+                    //请求成功
+                    $scope.doctorsList = resp.doctorList;
+
+                }, function (err) {
+                    //处理错误
+                    alert("网络错误,请重试");
+                });
+            }
+        }
+    };
 }).controller('departmentlistControl', function ($scope, $resource, $routeParams, $location, $window) {
     $scope.deptNo = $routeParams.deptNo;
     $scope.deptlist = [];
-
+    $scope.keyword="";
     //页面加载部门
     $resource('/dept/getDeptInfo', {"deptNo": $scope.deptNo}).get(function (resp) {
         //请求成功
@@ -372,6 +428,22 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
                 //处理错误
                 alert("网络错误,请重试");
             });
+        }
+    };
+
+    //搜索医护人员
+    $scope.searchDoctor = function (event) {
+        if (event.keyCode == 13 || event.key == "Enter") { // enter 键
+            if ($scope.keyword != "") {
+                $resource('/user/searchDoctor', {deptNo: $scope.deptNo,keywords:$scope.keyword}).get(function (resp) {
+                    //请求成功
+                    $scope.doctorList = resp.doctorList;
+
+                }, function (err) {
+                    //处理错误
+                    alert("网络错误,请重试");
+                });
+            }
         }
     };
 
@@ -552,17 +624,32 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         return str;
     }
 
-    //搜索
-    $scope.search = function (event) {
+    //搜索患者
+    $scope.searchPatient = function (event) {
         if (event.keyCode == 13 || event.key == "Enter") { // enter 键
-            alert("此处回车触发搜索事件");
             if ($scope.keyword != "") {
+                $resource('/user/searchDoctor', {keywords:$scope.keyword}).get(function (resp) {
+                    //请求成功
+                    $scope.patientList = resp.patientList;
 
+                    for (let i = 0; i < $scope.patientList.length; i++) {
+                        if (!$scope.patientList[i].bedNo) {
+                            $scope.no_bed+=1;
+                        }
+                        if($scope.patientList[i].patient_status>=1){
+                            $scope.outCount+=1;
+                        }
+                    }
+                }, function (err) {
+                    //处理错误
+                    alert("网络错误,请重试");
+                });
             }
         }
     };
 }).controller('casehistoryControl', function ($scope, $routeParams, $rootScope, $resource, $window) {
     $rootScope.ntype = $routeParams.type;
+    $scope.keywords="";
     $scope.casehistoryList = [];
     $resource('/casehistory/getCaseHistory', {}).get(function (resp) {
         //请求成功
@@ -620,6 +707,22 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
                 //处理错误
                 alert("网络错误,请重试");
             });
+        }
+    };
+
+    //搜索病历
+    $scope.searchCasehistory = function (event) {
+        if (event.keyCode == 13 || event.key == "Enter") { // enter 键
+            if ($scope.keyword != "") {
+                $resource('/casehistory/searchCasehistory', {keywords:$scope.keyword}).get(function (resp) {
+                    //请求成功
+                    $scope.casehistoryList = resp.casehistoryList;
+                    console.log($scope.casehistoryList)
+                }, function (err) {
+                    //处理错误
+                    alert("网络错误,请重试");
+                });
+            }
         }
     };
 }).controller('editPatientCtrl', function ($scope, $routeParams, $resource) {

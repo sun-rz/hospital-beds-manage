@@ -6,8 +6,8 @@
                    ng-disabled="checked.length==0">
         </div>
         <div class="btn-group btn-group-search">
-            <input type="text" class="form-control input-sm" placeholder="请输入姓名" ng-model="keyword"
-                   ng-keydown="search($event)">
+            <input type="text" class="form-control input-sm" title="请输入姓名或床位号或科室名称" placeholder="请输入姓名或床位号或科室名称" ng-model="keyword"
+                   ng-keydown="searchPatient($event)">
         </div>
         <table class="table">
             <thead>

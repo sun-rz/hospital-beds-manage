@@ -6,6 +6,10 @@
                 <input type="button" class="btn btn-sm btn-default" ng-disabled="checked.length==0" value="删除"
                        ng-click="deleteCasehistory()">
             </div>
+            <div class="btn-group btn-group-search">
+                <input type="text" class="form-control input-sm" title="请输入姓名或科室名称或主治医师或更新日期" placeholder="请输入姓名或科室名称或主治医师或更新日期" ng-model="keyword"
+                       ng-keydown="searchCasehistory($event)">
+            </div>
             <table class="table">
                 <thead>
                 <tr>

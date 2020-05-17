@@ -33,4 +33,8 @@ public class CaseHistoryService {
     public int deleteCaseHistory(String caseHistoryID) {
         return caseHistoryMapper.deleteCaseHistory(caseHistoryID);
     }
+
+    public List searchCasehistory(String keywords) {
+        return caseHistoryMapper.searchCasehistory(keywords);
+    }
 }

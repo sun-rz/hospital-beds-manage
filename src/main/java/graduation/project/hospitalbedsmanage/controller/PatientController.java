@@ -50,6 +50,23 @@ public class PatientController {
         return obj.toString();
     }
 
+
+    /**
+     * 搜索患者信息
+     *
+     * @param keywords
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/searchPatientInfo")
+    public String searchPatientInfo(String keywords) {
+        List list = patientservice.searchPatientInfo(keywords);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        JSONObject obj = new JSONObject();
+        obj.put("patientList", JSONArray.fromObject(gson.toJson(list)));
+        return obj.toString();
+    }
+
     /**
      * 根据床位查找患者
      *

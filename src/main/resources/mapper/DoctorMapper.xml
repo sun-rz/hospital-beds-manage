@@ -36,6 +36,17 @@
         order by deptno,doctor.id
     </select>
 
+    <select id="searchDoctor" resultType="HashMap">
+        select doctor.id, doctor.name, age, gender, deptno, jobname, mobile, email,department.deptName FROM doctor
+        left join department on doctor.deptno=department.ID
+        left join job on doctor.job=job.id
+        where ( doctor.name like concat('%',#{keywords},'%') or mobile like concat('%',#{keywords},'%') or email like concat('%',#{keywords},'%') or jobname like concat('%',#{keywords},'%') )
+        <if test="deptNo gt 0">
+            and deptno=#{deptNo}
+        </if>
+        order by deptno,doctor.id
+    </select>
+
     <insert id="register" parameterType="graduation.project.hospitalbedsmanage.entity.Doctor">
        insert into doctor(name, password,mobile,email,age,gender,job,deptNo) values ( #{name}, #{password}, #{mobile}, #{email},#{age},#{gender},#{job},#{deptNo})
     </insert>

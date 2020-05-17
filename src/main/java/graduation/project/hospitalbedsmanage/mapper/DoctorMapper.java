@@ -28,4 +28,6 @@ public interface DoctorMapper {
     List<Map<String,Doctor>> getDoctorByDeptNo(int deptNo);
 
     int deleteUserInfo(String userID);
+
+    List<Map<String, Doctor>> searchDoctor(int deptNo, String keywords);
 }

@@ -48,4 +48,8 @@ public class PatientService {
     public int updateOutHospitalDate(int patientID,String out_hospital_date,int patient_status) {
         return patientMapper.updateOutHospitalDate(patientID,out_hospital_date,patient_status);
     }
+
+    public List searchPatientInfo(String keywords) {
+        return patientMapper.searchPatientInfo(keywords);
+    }
 }

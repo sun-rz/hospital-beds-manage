@@ -14,4 +14,6 @@ public interface CaseHistoryMapper {
     int addCaseHistory(CaseHistory caseHistory);
 
     int updateCaseHistory(CaseHistory caseHistory);
+
+    List searchCasehistory(String keywords);
 }

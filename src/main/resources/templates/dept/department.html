@@ -46,9 +46,25 @@
     <div class="col-md-10 col-sm-10 col-xs-6 dept-container-right">
         <div class="div-table divContainer">
             <div class="table-responsive">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-default"><a href="#!/editdoctor/0/{{deptNo}}">新增</a>
+                    </button>
+                    <input type="button" class="btn btn-sm btn-default" value="删除" ng-click="deleteDoc()"
+                           ng-disabled="checked.length==0">
+                </div>
+                <div class="btn-group btn-group-search">
+                    <input type="text" class="form-control input-sm" title="请输入姓名或电话或邮箱或职务" placeholder="请输入姓名或电话或邮箱或职务" ng-model="keyword"
+                           ng-keydown="searchDoctor($event)">
+                </div>
                 <table class="table">
                     <thead>
                     <tr>
+                        <th>
+                            <label>
+                                <input title="全选" type="checkbox" ng-model="select_all"
+                                       ng-change="selectAll()">
+                            </label>
+                        </th>
                         <th>编号</th>
                         <th>姓名</th>
                         <th>性别</th>
@@ -60,10 +76,16 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="doc in doctorsList" class="{{selectDoc?'tractive':''}}">
+                        <td title="选择">
+                            <label>
+                                <input ng-value="{{doc.id}}" ng-model="doc.checked"
+                                       ng-change="selectOne()" type="checkbox">
+                            </label>
+                        </td>
                         <td title>
                             {{doc.id}}
                         </td>
-                        <td>{{doc.name}}</td>
+                        <td><a href="#!/editdoctor/{{doc.id}}/{{deptNo}}" title="点击查看详情">{{doc.name}}</a></td>
                         <td>{{doc.gender>0?"女":"男"}}</td>
                         <td>{{doc.deptName}}</td>
                         <td>{{doc.jobname}}</td>
