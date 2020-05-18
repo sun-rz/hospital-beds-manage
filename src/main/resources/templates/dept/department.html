@@ -33,6 +33,7 @@
 <div class="">
     <div class="col-md-2 col-sm-2 col-xs-6 dept-container-left">
         <div class="divContainer">
+            <div class="alert alert-warning" ng-show="deptlist.length==00" style="margin: 10px">暂无部门数据</div>
             <ul class="nav nav-pills nav-stacked nav-left-li" id="nav-pills-sub">
                 <li ng-repeat="dept in deptlist" title="编号：{{dept.ID}}&#10;床位总数：{{dept.totalBeds}}&#10;病房数：{{dept.romms}}&#10;外借优先级：{{dept.borrowLevel}}">
                     <a ng-class="{{dept.ID==deptNo?'active':''}}" href="#!/departmentlist/3/{{dept.ID}}">
