@@ -128,6 +128,7 @@ public class BedsService {
     public synchronized Beds findBed(List<Beds> deptFreeBeds, List sameDoctorForPatient) {
         JSONObject obj;
         int roomNo = 0;
+        List<Beds>list=new ArrayList<Beds>();
         if (deptFreeBeds.size() > 0) {
             if (sameDoctorForPatient.size() == 0) {//如果没有主治医师相同的,就返回第一个病房
                 return deptFreeBeds.get(0);
@@ -141,10 +142,13 @@ public class BedsService {
                         //System.out.println(b);
                         if (roomNo == b.getRoomNo()) {//如果空病床的房号跟现有患者的房号相等
                             return b;
+                        }else{
+                            list.add(b);
                         }
                     }
                 }
             }
+            return list.get(0);
         }
         return null;
     }
