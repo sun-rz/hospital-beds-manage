@@ -40,7 +40,6 @@
        where deptNo in
        (select id from department where totalBeds>0 order by borrowLevel desc )
        and status =0
-       order by id
     </select>
 
     <insert id="addBed">
