@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS `patient`
     `gender`            int         DEFAULT NULL,
     `deptNo`            int         NOT NULL,
     `level`             int         DEFAULT NULL,
+    `patient_status`             int         DEFAULT NULL,
     `bedNo`             varchar(32)         DEFAULT NULL,
     `name`              varchar(24) DEFAULT NULL,
     `in_hospital_date`  datetime    DEFAULT NULL,
