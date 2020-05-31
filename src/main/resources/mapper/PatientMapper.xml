@@ -48,6 +48,10 @@
         left join doctor on casehistory.doctorID=doctor.id where beds.bedNo=#{bedNo}
     </select>
 
+    <select id="getPatientID" resultType="String">
+        select patientID from beds where bedNo=#{bedNo}
+    </select>
+
     <insert id="addPatientInfo">
         <selectKey keyProperty="id" resultType="int" order="AFTER">
             SELECT LAST_INSERT_ID()

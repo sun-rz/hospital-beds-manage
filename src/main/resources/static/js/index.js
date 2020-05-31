@@ -748,6 +748,15 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         $resource('/patient/getPatientInfo', {id: $scope.patientID}).get(function (resp) {
             //请求成功
             $scope.patient = resp.patientList[0];
+            if(resp.patientList[0].deptNo) {
+                $resource('/user/getDoctorByDeptNo', {"deptNo": resp.patientList[0].deptNo}).get(function (resp) {
+                    //请求成功
+                    $scope.doctorsList = resp.doctorList;
+                }, function (err) {
+                    //处理错误
+                    alert("网络错误,请重试");
+                });
+            }
         }, function (err) {
             //处理错误
             alert("网络错误,请重试");
@@ -771,16 +780,12 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         $scope.casehistory_title = "新增病历信息";
     }
 
-    $resource('/user/getDoctorByDeptNo', {"deptNo": $scope.patient.deptNo}).get(function (resp) {
-        //请求成功
-        $scope.doctorsList = resp.doctorList;
-    }, function (err) {
-        //处理错误
-        alert("网络错误,请重试");
-    });
-
     $scope.findBed = function (p) {
         console.log(p)
+        if (p.gender!=0&&p.gender!=1) {
+            alert("请选择性别");
+            return;
+        }
 
         if (!p.deptNo) {
             alert("请选择科室信息");
@@ -794,20 +799,21 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
             return;
         }
 
-        $resource('/beds/getBedsByRule', {"deptNo": p.deptNo, level: p.level, doctorID: cid}).get(function (resp) {
+        $resource('/beds/getBedsByRule', {"deptNo": p.deptNo, level: p.level, doctorID: cid,gender:p.gender}).get(function (resp) {
             //请求成功
-            console.log(resp)
             if(resp.success){
                 $scope.patient.bedNo=resp.bed.bedNo;
-                $scope.msg="床位分配成功";
+                $scope.msg=resp.msg;
                 $scope.cls="succ-true";
             }else{
-                $scope.msg="床位分配失败，请稍后再试";
+                $scope.msg=resp.msg;
                 $scope.cls="succ-false";
                 $scope.lateOutHospitalPatent=resp.patientList;
+                $scope.bedNo="";
             }
         }, function (err) {
             //处理错误
+            $scope.patient.bedNo="";
             alert("网络错误,请重试");
         });
     };
@@ -820,8 +826,10 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
         let url = $scope.action == "edit" ? "/patient/updatePatientInfo" : "/patient/addPatientInfo";
         $resource(url, p).get(function (resp) {
             //请求成功
-            history.back();
             alert(resp.msg);
+            if(resp.success){
+                history.back();
+            }
         }, function (err) {
             //处理错误
             alert("网络错误,请重试");

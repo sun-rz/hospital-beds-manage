@@ -24,6 +24,10 @@ public class Patient {
     public Patient() {
     }
 
+    public Patient(int id) {
+        this.id = id;
+    }
+
     public int getPatient_status() {
         return patient_status;
     }

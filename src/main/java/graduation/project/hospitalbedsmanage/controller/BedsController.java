@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Controller
 @RequestMapping("/beds")
@@ -30,6 +33,8 @@ public class BedsController {
 
     @Autowired
     PatientService patientService;
+    @Autowired
+    FindBedThread findBedThread;
 
     /**
      * 自动分配病房
@@ -54,23 +59,19 @@ public class BedsController {
      */
     @ResponseBody
     @RequestMapping("/getBedsByRule")
-    public String getBedsByRule(String deptNo, String level, String doctorID) {
-        JSONObject obj = new JSONObject();
+    public String getBedsByRule(String deptNo, String level, String doctorID,String gender) {
+        //存线程的返回结果
+        Future<JSONObject> bedsByRule = findBedThread.getBedsByRule(CommonTools.ToInt(deptNo), CommonTools.ToInt(level), CommonTools.ToInt(doctorID),CommonTools.ToInt(gender));
 
-        Beds bed = bedsService.getBedsByRule(CommonTools.ToInt(deptNo), CommonTools.ToInt(level), CommonTools.ToInt(doctorID));
-        if (null != bed) {
-            obj.put("success", true);
-            obj.put("bed", bed);
-            return obj.toString();
-        } else {
-            //没有找到病床怎么办?排队？人命关天啊！建议换一家医院
-
-            // 返回最近要出院的患者的时间信息
-            List<Patient> patients = patientService.getLateOutHospital(CommonTools.ToInt(doctorID));
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            obj.put("success", false);
-            obj.put("patientList", JSONArray.fromObject(gson.toJson(patients)));
-            return obj.toString();
+        try {
+            JSONObject b=bedsByRule.get();
+            return b.toString();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return CommonTools.getReturnMsg("床位分配失败，原因：系统出错",false);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return CommonTools.getReturnMsg("床位分配失败，原因：系统出错",false);
         }
     }
 

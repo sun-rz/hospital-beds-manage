@@ -26,4 +26,6 @@ public interface PatientMapper {
     int updateOutHospitalDate(int patientID, String out_hospital_date,int patient_status);
 
     List searchPatientInfo(String keywords);
+
+    String getPatientID(String bedNo);
 }

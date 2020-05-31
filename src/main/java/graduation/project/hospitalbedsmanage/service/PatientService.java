@@ -52,4 +52,8 @@ public class PatientService {
     public List searchPatientInfo(String keywords) {
         return patientMapper.searchPatientInfo(keywords);
     }
+
+    public String getPatientID(String bedNo) {
+        return patientMapper.getPatientID(bedNo);
+    }
 }

@@ -1,9 +1,9 @@
 server:
-  port: 80
+  port: 8080
   http:
     encoding:
       charset: utf8
-    #ÎÄ¼şÉÏ´«ÏŞÖÆ
+    #æ–‡ä»¶ä¸Šä¼ é™åˆ¶
     multipart:
       max-request-size: 100MB
       max-file-size: 100MB
@@ -12,22 +12,22 @@ server:
 
 spring:
   resources:
-    #¾²Ì¬×ÊÔ´Ä¿Â¼
+    #é™æ€èµ„æºç›®å½•
     static-locations: classpath:/static/, classpath:/templates/
 
   datasource:
     username: root
-    password: 123456
+    password: dsbhhhok123
     url: jdbc:mysql://localhost:3306/hospitalmanage?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
-    #Êı¾İ¿âÇı¶¯com.mysql.jdbc.Driver'ÒÑ¾­±»ÆúÓÃÁË¡¢Ó¦µ±Ê¹ÓÃĞÂµÄÇı¶¯com.mysql.cj.jdbc.Driver'
+    #æ•°æ®åº“é©±åŠ¨com.mysql.jdbc.Driver'å·²ç»è¢«å¼ƒç”¨äº†ã€åº”å½“ä½¿ç”¨æ–°çš„é©±åŠ¨com.mysql.cj.jdbc.Driver'
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-    #³õÊ¼»¯Êı¾İ
+    #åˆå§‹åŒ–æ•°æ®
     schema: classpath:schema.sql
     #data: classpath:data.sql
     sql-script-encoding: utf-8
 
-    #Ê×´ÎÆô¶¯ÉèÖÃÎªALWAYS,Ö®ºóÉèÖÃÎªNEVER
+    #é¦–æ¬¡å¯åŠ¨è®¾ç½®ä¸ºALWAYS,ä¹‹åè®¾ç½®ä¸ºNEVER
     initialization-mode: ALWAYS
 
 mybatis:
@@ -35,6 +35,6 @@ mybatis:
   type-aliases-package: graduation.project.hospitalbedsmanage.entity
   config-location: classpath:config/mybatis-config.xml
 
-#ÈÕÖ¾
+#æ—¥å¿—
 logging:
   config: classpath:config/logback.xml

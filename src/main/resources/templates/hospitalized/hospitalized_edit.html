@@ -76,7 +76,7 @@
         <div class="form-group">
             <div class="col-sm-12 text-center">
                 <input type="button" value="返回" class="btn btn-default" onclick="history.back()">
-                <input type="submit" value="{{getOutHospitalTitle(patient_status)}}" class="btn btn-primary" ng-disabled="patient.patient_status>=1">
+                <input type="submit" value="{{!patient.patient_status||patient.patient_status==0?'出院':getOutHospitalTitle(patient_status)}}" class="btn btn-primary" ng-disabled="patient.patient_status>=1">
             </div>
         </div>
     </form>

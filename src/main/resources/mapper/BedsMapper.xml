@@ -28,18 +28,18 @@
          select * from beds
     </select>
 
-    <select id="getFreeBeds" resultType="graduation.project.hospitalbedsmanage.entity.Beds">
+    <select id="getBedsByStatus" resultType="graduation.project.hospitalbedsmanage.entity.Beds">
         select id, deptNo, patientID, roomNo, status, bedNo, address
         from beds
-        where deptNo=#{deptNo} and status =0 order by id
+        where deptNo=#{deptNo} and status =#{status} order by id
     </select>
 
-    <select id="getOtherDeptFreeBeds" resultType="graduation.project.hospitalbedsmanage.entity.Beds">
+    <select id="getOtherDeptBedsByStatus" resultType="graduation.project.hospitalbedsmanage.entity.Beds">
        select id, deptNo, patientID, roomNo, status, bedNo, address
        from beds
        where deptNo in
        (select id from department where totalBeds>0 order by borrowLevel desc )
-       and status =0
+       and status =#{status}
     </select>
 
     <insert id="addBed">

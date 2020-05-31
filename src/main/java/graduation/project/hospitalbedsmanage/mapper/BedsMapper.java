@@ -27,9 +27,9 @@ public interface BedsMapper {
 
     List getBedsByRule();
 
-    List<Beds> getFreeBeds(int deptNo);
+    List<Beds> getBedsByStatus(int deptNo,int status);
 
-    List<Beds> getOtherDeptFreeBeds();
+    List<Beds> getOtherDeptBedsByStatus(int status);
 
     int patientUseBed(Patient patient, int status);
 }

@@ -94,12 +94,18 @@ public class PatientController {
     @ResponseBody
     @RequestMapping("/addPatientInfo")
     public String addPatientInfo(Patient patient, String casehistory) {
+        String getPatientID=patientservice.getPatientID(patient.getBedNo());
+        int pid = CommonTools.ToInt(getPatientID);
+        if(pid>0){
+            return CommonTools.getReturnMsg("床位已被占用，新增失败", false);
+        }
         int result = patientservice.addPatientInfo(patient);
-
+        getPatientID=patientservice.getPatientID(patient.getBedNo());
+        pid = CommonTools.ToInt(getPatientID);
         JSONObject object = JSONObject.fromObject(casehistory);
         if (result > 0) {
 
-            CaseHistory caseHistory = new CaseHistory(patient.getId(), patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
+            CaseHistory caseHistory = new CaseHistory(pid, patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
             result = caseHistoryService.addCaseHistory(caseHistory);
             if (result > 0) {
                 //更新病床状态
@@ -121,6 +127,12 @@ public class PatientController {
     @ResponseBody
     @RequestMapping("/updatePatientInfo")
     public String updatePatientInfo(Patient patient, String casehistory) {
+        String getPatientID=patientservice.getPatientID(patient.getBedNo());
+        int pid = CommonTools.ToInt(getPatientID);
+        if(pid>0&&pid!=patient.getId()){
+            return CommonTools.getReturnMsg("床位已被占用，修改失败", false);
+        }
+        System.out.println(pid);
         int result = patientservice.updatePatientInfo(patient);
         JSONObject object = JSONObject.fromObject(casehistory);
 
