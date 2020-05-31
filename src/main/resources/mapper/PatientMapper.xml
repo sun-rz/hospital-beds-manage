@@ -26,7 +26,7 @@
         left join casehistory on patient.id=casehistory.patientID
         left join doctor on casehistory.doctorID=doctor.id
         left join beds on patient.bedNo=beds.bedNo
-        where DATE_FORMAT(patient.out_hospital_date,'%Y-%m-%d') >DATE_SUB(curdate(),INTERVAL 0 DAY)
+        where out_hospital_date is null
         <if test="doctorID &gt; 0">
             and casehistory.doctorID=#{doctorID}
         </if>

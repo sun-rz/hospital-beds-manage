@@ -100,16 +100,17 @@ public class PatientController {
             return CommonTools.getReturnMsg("床位已被占用，新增失败", false);
         }
         int result = patientservice.addPatientInfo(patient);
-        getPatientID=patientservice.getPatientID(patient.getBedNo());
-        pid = CommonTools.ToInt(getPatientID);
+
         JSONObject object = JSONObject.fromObject(casehistory);
         if (result > 0) {
-
+            //更新病床状态
+            bedsService.patientUseBed(patient, 1);
+            getPatientID=patientservice.getPatientID(patient.getBedNo());
+            pid = CommonTools.ToInt(getPatientID);
             CaseHistory caseHistory = new CaseHistory(pid, patient.getDeptNo(), object.getInt("doctorID"), object.getInt("status"), object.getString("description"), object.getString("treatmentPlan"), new Date());
             result = caseHistoryService.addCaseHistory(caseHistory);
             if (result > 0) {
-                //更新病床状态
-                bedsService.patientUseBed(patient, 1);
+
                 return CommonTools.getReturnMsg("新增成功", true);
             }
             return CommonTools.getReturnMsg("新增病历信息失败", false);

@@ -1,9 +1,11 @@
 package graduation.project.hospitalbedsmanage.service;
 
 import graduation.project.hospitalbedsmanage.entity.Beds;
+import graduation.project.hospitalbedsmanage.entity.CaseHistory;
 import graduation.project.hospitalbedsmanage.entity.Department;
 import graduation.project.hospitalbedsmanage.entity.Patient;
 import graduation.project.hospitalbedsmanage.mapper.BedsMapper;
+import graduation.project.hospitalbedsmanage.mapper.CaseHistoryMapper;
 import graduation.project.hospitalbedsmanage.mapper.PatientMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
@@ -23,6 +25,9 @@ public class BedsService {
     BedsMapper bedsMapper;
     @Autowired
     PatientMapper patientMapper;
+
+    @Autowired
+    private CaseHistoryMapper caseHistoryMapper;
 
     StringBuilder sb = null;
 
@@ -123,29 +128,31 @@ public class BedsService {
         List sameDoctorForPatient = patientMapper.getSameDoctorForPatient(doctorID);
 
         if (getFreeBeds.size() > 0) {
-            return findBed(getFreeBeds, getUsedBeds, sameDoctorForPatient, deptNo, gender);
+            return findBed(getFreeBeds, getUsedBeds, sameDoctorForPatient, gender);
         } else { //外借病床
             //查询其他室空闲的病床
             List<Beds> otherDeptFreeBeds = bedsMapper.getOtherDeptBedsByStatus(0);
             //查询其他室使用的病床
             List<Beds> otherDeptUsedBeds = bedsMapper.getOtherDeptBedsByStatus(1);
-            return findBed(otherDeptFreeBeds, otherDeptUsedBeds, sameDoctorForPatient, deptNo, gender);
+            return findBed(otherDeptFreeBeds, otherDeptUsedBeds, sameDoctorForPatient, gender);
         }
     }
 
-    public synchronized Beds findBed(List<Beds> deptFreeBeds, List<Beds> deptUsedBeds, List sameDoctorForPatient, int deptNo, int gender) {
+    public synchronized Beds findBed(List<Beds> deptFreeBeds, List<Beds> deptUsedBeds, List sameDoctorForPatient, int gender) {
         JSONObject obj;
         int pid = 0;
         List<JSONObject> patients = new ArrayList<>();
         if (deptFreeBeds.size() > 0) {
             if (sameDoctorForPatient.size() == 0) {//如果没有主治医师相同
-                List<Beds> unsameGender = new ArrayList();
-                List<Beds> unsameDept = new ArrayList();
+                List<Beds> unsameRoom = new ArrayList();
+                List<Beds> sameRoom_unsameGender = new ArrayList();
+                List<Beds> unsameRoom_sameGender = new ArrayList();
                 for (Beds dub : deptUsedBeds) {
                     pid = dub.getPatientID();
                     if (pid == 0) continue;//病床信息数据错误
-
+                    int roomNo = dub.getRoomNo();
                     List<Patient> patientInfo = patientMapper.getPatientInfo(new Patient(dub.getPatientID()));
+
                     if (patientInfo.size() == 0) {//患者信息数据错误
                         log.error("患者信息数据错误");
                         return null;
@@ -154,74 +161,75 @@ public class BedsService {
                     patients.add(obj);
 
                     for (Beds fb : deptFreeBeds) {
-                        if (deptNo == fb.getDeptNo()) {//同科室
-                            if (gender == obj.getInt("gender")) {//同性别
-                                return fb;
-                            } else {
-                                unsameGender.add(fb);
-                            }
-                        } else {
-                            unsameDept.add(fb);//
+                        if (fb.getRoomNo() != roomNo && gender == obj.getInt("gender")) {//不同房间\同性别
+                            //同性别
+                            return fb;
+                        } else if (fb.getRoomNo() == roomNo && gender != obj.getInt("gender")) {//同房间\不同性别
+                            sameRoom_unsameGender.add(fb);
+                        } else if (fb.getRoomNo() == roomNo && gender == obj.getInt("gender")) {//同房间\同性别
+                            unsameRoom_sameGender.add(fb);
+                        } else {//不同房间不同性别
+                            unsameRoom.add(fb);
                         }
                     }
-                    for (Beds usd : unsameDept) { //不同科室
-                        for (JSONObject ps : patients) {
-                            if (gender == ps.getInt("gender")) {//同性别
-                                return usd;
-                            } else {
-                                unsameGender.add(usd);
-                            }
-                        }
-                    }
-                    //如果不同科室都没有性别相同的
-                    return unsameGender.get(0);
                 }
-                //如果病床都是空的
-                return deptFreeBeds.get(0);
-            }
 
-            List<Beds> unsameGender = new ArrayList();
-            List<Beds> unsameDept = new ArrayList();
-            //主治医生相同
-            for (int i = 0; i < sameDoctorForPatient.size(); i++) {
-                obj = JSONObject.fromObject(sameDoctorForPatient.get(i));
-                for (Beds dub : deptUsedBeds) {
-                    pid = dub.getPatientID();
-                    if (pid == 0) continue;//病床信息数据错误
+                if (unsameRoom.size() > 0) {
+                    return unsameRoom.get(0);
+                }
+                if (unsameRoom_sameGender.size() > 0) {
+                    return unsameRoom_sameGender.get(0);
+                } else if (sameRoom_unsameGender.size() > 0) {
+                    return sameRoom_unsameGender.get(0);
+                }
+            } else {
 
-                    List<Patient> patientInfo = patientMapper.getPatientInfo(new Patient(dub.getPatientID()));
-                    if (patientInfo.size() == 0) {//患者信息数据错误
-                        log.error("患者信息数据错误");
-                        return null;
-                    }
-                    obj = JSONObject.fromObject(patientInfo.get(0));
-                    patients.add(obj);
+                List<Beds> unsameRoom = new ArrayList();
+                List<Beds> sameRoom_unsameGender = new ArrayList();
+                List<Beds> unsameRoom_sameGender = new ArrayList();
 
-                    for (Beds dfb : deptFreeBeds) {
-                        if (deptNo == dfb.getDeptNo()) {//同科室
-                            if (obj.getInt("gender") == gender) {//同性别
+                //主治医生相同
+                for (int i = 0; i < sameDoctorForPatient.size(); i++) {
+                    obj = JSONObject.fromObject(sameDoctorForPatient.get(i));
+                    for (Beds dub : deptUsedBeds) {
+                        pid = dub.getPatientID();
+                        if (pid == 0) continue;//病床信息数据错误
+
+                        List<Patient> patientInfo = patientMapper.getPatientInfo(new Patient(dub.getPatientID()));
+                        if (patientInfo.size() == 0) {//患者信息数据错误
+                            log.error("患者信息数据错误");
+                            return null;
+                        }
+                        obj = JSONObject.fromObject(patientInfo.get(0));
+                        patients.add(obj);
+                        int roomNo = dub.getRoomNo();
+
+                        for (Beds dfb : deptFreeBeds) {
+                            if (dfb.getRoomNo() == roomNo && gender == obj.getInt("gender")) {//同房间\同性别
+                                //同性别
                                 return dfb;
-                            } else {
-                                unsameGender.add(dfb);
+                            } else if (dfb.getRoomNo() == roomNo && gender != obj.getInt("gender")) {//同房间\不同性别
+                                sameRoom_unsameGender.add(dfb);
+                            } else if (dfb.getRoomNo() != roomNo && gender == obj.getInt("gender")) {//不同房间\同性别
+                                unsameRoom_sameGender.add(dfb);
+                            } else {//不同房间不同性别
+                                unsameRoom.add(dfb);
                             }
-                        } else {
-                            unsameDept.add(dfb);
                         }
-                    }
 
-                    for (Beds usd : unsameDept) { //不同科室
-                        for (JSONObject ps : patients) {
-                            if (gender == ps.getInt("gender")) {//同性别
-                                return usd;
-                            } else {
-                                unsameGender.add(usd);
-                            }
+                        if (unsameRoom.size() > 0) {
+                            return unsameRoom.get(0);
+                        }
+                        if (unsameRoom_sameGender.size() > 0) {
+                            return unsameRoom_sameGender.get(0);
+                        } else if (sameRoom_unsameGender.size() > 0) {
+                            return sameRoom_unsameGender.get(0);
                         }
                     }
-                    //如果不同科室都没有性别相同的
-                    return unsameGender.get(0);
                 }
             }
+            //如果病床都是空的
+            return deptFreeBeds.get(0);
         }
         return null;
     }
