@@ -23,7 +23,7 @@
         select patient.id as patientID,patient.name,doctor.id as
         doctorID,doctor.name,patient.age,patient.gender,patient.level,beds.roomNo,patient.bedNo,patient.in_hospital_date,patient.out_hospital_date
         from patient
-        left join casehistory on patient.id=casehistory.patientID
+        inner join casehistory on patient.id=casehistory.patientID
         left join doctor on casehistory.doctorID=doctor.id
         left join beds on patient.bedNo=beds.bedNo
         where out_hospital_date is null
@@ -35,7 +35,7 @@
     <select id="getLateOutHospital" resultType="graduation.project.hospitalbedsmanage.entity.Patient">
         select patient.name,patient.level,patient.out_hospital_date,patient.bedNo
         from patient
-        left join casehistory on patient.id = casehistory.patientID
+        inner join casehistory on patient.id = casehistory.patientID
         where DATE_FORMAT(patient.out_hospital_date,'%Y-%m-%d') > DATE_SUB(curdate(),INTERVAL 0 DAY)
         and casehistory.doctorID=#{doctorID} order by out_hospital_date limit 10
     </select>
@@ -44,8 +44,8 @@
         select patient.id,doctor.name as doctorName, patient.age, patient.gender, patient.deptNo, patient.level, patient.bedNo, patient.name as patientName, patient.in_hospital_date, patient.out_hospital_date,patient.patient_status
         from beds
         left join patient on beds.bedNo=patient.bedNo
-        left join casehistory on patient.id=casehistory.patientID
-        left join doctor on casehistory.doctorID=doctor.id where beds.bedNo=#{bedNo}
+        inner join casehistory on patient.id=casehistory.patientID
+        left join doctor on casehistory.doctorID=doctor.id where patient_status is null and beds.bedNo=#{bedNo}
     </select>
 
     <select id="getPatientID" resultType="String">

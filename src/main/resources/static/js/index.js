@@ -216,7 +216,7 @@ var indexpp = angular.module('myApp', ['ngRoute', 'ngResource', 'ngAnimate']).co
 
     //出院
     $scope.outHospital=function (p) {
-        if($scope.patient_status==0){
+        if($scope.patient_status==0||!$scope.patient_status){
             alert("请选择患者状态");
             return;
         }

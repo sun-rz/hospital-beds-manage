@@ -5,7 +5,7 @@
         select patient.id,doctor.name as doctorName, patient.age, patient.gender, patient.deptNo, patient.level,
         patient.bedNo, patient.name as patientName, patient.in_hospital_date,
         patient.out_hospital_date,patient.patient_status,department.deptName from patient
-        left join casehistory on patient.id=casehistory.patientID
+        inner join casehistory on patient.id=casehistory.patientID
         left join doctor on casehistory.doctorID=doctor.id
         left join department on patient.deptNo=department.ID
         where patient.bedNo is not null

@@ -4,7 +4,7 @@
     <select id="getCaseHistory" resultType="HashMap">
         select casehistory.id, patientID, casehistory.deptNo, doctorID, status, description, treatmentPlan, submitTime,patient.name as patientName,department.deptName,doctor.name as doctorName
         from casehistory
-        left join patient on casehistory.patientID=patient.id
+        inner join patient on casehistory.patientID=patient.id
         left join department on casehistory.deptNo=department.ID
         left join doctor on casehistory.doctorID=doctor.id
         <if test="patientID gt 0">
